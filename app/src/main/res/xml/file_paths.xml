@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root-path name="files" path=".">
+    <files-path name="audios" path="file:///data/data/com.example.gismemo/files/audios/" />
+    <files-path name="photos" path="file:///data/data/com.example.gismemo/files/photos/" />
+    <files-path name="videos" path="file:///data/data/com.example.gismemo/files/videos/" />
+
+</root-path>

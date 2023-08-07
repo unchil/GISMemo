@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="Req_Permission_Array">
+        <item>android.permission.INTERNET</item>
+        <item>android.permission.ACCESS_COARSE_LOCATION</item>
+        <item>android.permission.ACCESS_FINE_LOCATION</item>
+        <item>android.permission.CAMERA</item>
+        <item>android.permission.RECORD_AUDIO</item>
+    </string-array>
+
+
+</resources>

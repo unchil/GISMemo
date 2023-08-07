@@ -1,0 +1,66 @@
+package com.example.gismemo.view
+
+import android.annotation.SuppressLint
+import android.net.Uri
+import android.webkit.WebView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
+import com.example.gismemo.R
+import com.example.gismemo.ui.theme.GISMemoTheme
+import com.google.accompanist.web.*
+import java.io.File
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun ImageWebViewer( url:String ) {
+    val webViewNavigator = rememberWebViewNavigator()
+    val webViewState = rememberWebViewState( url = url,  additionalHttpHeaders = emptyMap())
+    val webViewClient = AccompanistWebViewClient()
+    val webChromeClient = AccompanistWebChromeClient()
+
+    WebView(
+        modifier= Modifier.fillMaxSize(),
+        state = webViewState,
+        client = webViewClient,
+        chromeClient = webChromeClient,
+        navigator = webViewNavigator,
+        onCreated = { webView ->
+            with(webView) {
+                settings.run {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    javaScriptCanOpenWindowsAutomatically = false
+                }
+            }
+        }
+    )
+
+}
+
+@Preview
+@Composable
+fun PrevImageWebViewer() {
+
+
+    GISMemoTheme {
+        androidx.compose.material3.Surface(
+            modifier = Modifier.background(color = Color.White)
+        ) {
+
+
+            ImageWebViewer(url = "https://google.co.kr")
+            //  ImageWebViewer(url = "http://naver.com")
+
+        }
+
+    }
+}
