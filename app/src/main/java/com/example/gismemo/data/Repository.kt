@@ -223,7 +223,7 @@ class Repository{
 
 
         selectTagArrayList.forEach {
-                snippets = "${snippets} ${tagInfoDataList[it].name}"
+                snippets = "${snippets} #${tagInfoDataList[it].name}"
         }
 
 
@@ -439,7 +439,7 @@ class Repository{
         var snippets = ""
 
         selectTagList.forEach {
-            snippets = "${snippets} ${tagInfoDataList[it].name}"
+            snippets = "${snippets} #${tagInfoDataList[it].name}"
         }
 
 
