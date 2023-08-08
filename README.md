@@ -1,3 +1,4 @@
 # GISMemo
 
-Kotlin Compose RoomDatabase Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap 
+Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap 
+
