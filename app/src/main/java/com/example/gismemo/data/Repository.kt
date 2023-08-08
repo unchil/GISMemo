@@ -7,6 +7,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
+import com.example.gismemo.BuildConfig
+import com.example.gismemo.R
 import com.example.gismemo.api.OpenWeatherInterface
 import com.example.gismemo.api.RetrofitAdapter
 import com.example.gismemo.db.CURRENTWEATHER_TBL
@@ -489,7 +491,7 @@ class Repository{
 
     suspend fun getWeatherData(latitude: String, longitude: String){
 
-        val OPENWEATHER_KEY = ""
+        val OPENWEATHER_KEY = BuildConfig.OPENWEATHER_KEY
         val OPENWEATHER_UNITS = "metric"
 
         val service = RetrofitAdapter.create( service = OpenWeatherInterface::class.java, url = OPENWEATHER_URL)
