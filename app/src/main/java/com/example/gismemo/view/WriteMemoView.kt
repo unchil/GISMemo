@@ -99,23 +99,18 @@ import kotlin.collections.ArrayList
 
 
 enum class DrawingMenu {
-    Draw, Eraser
+DrawEraser
 }
 
 val DrawingMenuList = listOf(
-    DrawingMenu.Draw,
-    DrawingMenu.Eraser
+    DrawingMenu.DrawEraser
 )
 
 fun DrawingMenu.getDesc():Pair<ImageVector, ImageVector?> {
     return when(this){
-        DrawingMenu.Draw -> {
-            Pair( Icons.Outlined.EditOff , Icons.Outlined.Draw )
+        DrawingMenu.DrawEraser -> {
+            Pair( Icons.Outlined.Draw , Icons.Outlined.TouchApp)
         }
-        DrawingMenu.Eraser -> {
-            Pair( Icons.Outlined.PanTool , Icons.Outlined.TouchApp)
-        }
-
     }
 }
 
@@ -218,7 +213,8 @@ fun CreateMenu.getDesc():Pair<ImageVector, String?>{
 
 
 @SuppressLint("SuspiciousIndentation")
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class,
+@OptIn(
+    ExperimentalMaterial3Api::class,
     MapsComposeExperimentalApi::class, ExperimentalComposeUiApi::class
 )
 @Composable
@@ -233,12 +229,7 @@ fun WriteMemoView(navController: NavController ){
     val viewModel = remember {
         WriteMemoViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
-    /*
-    val viewModel =  remember {
-        WriteMemoViewModel(repository = RepositoryProvider.getRepository(context.applicationContext))
-    }
 
-     */
 
 
     val currentLocation =
@@ -274,7 +265,7 @@ fun WriteMemoView(navController: NavController ){
 
 
     var isDrawing by rememberSaveable { mutableStateOf(false) }
-    var isEraser by rememberSaveable { mutableStateOf(false) }
+
     val selectedTagArray: MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
     var isLock by rememberSaveable { mutableStateOf(false) }
     var isMark by rememberSaveable { mutableStateOf(false) }
@@ -399,7 +390,6 @@ fun WriteMemoView(navController: NavController ){
 
                         polylineList.add(currentPolyline.toList())
                         polylineListR.add(currentPolyline.toList())
-             //           viewModel.onEvent(WriteMemoViewModel.Event.UpdatePolylineList(polylineList))
                         currentPolyline.clear()
 
                     }
@@ -414,7 +404,7 @@ fun WriteMemoView(navController: NavController ){
         snapShotList.removeAt(page)
     }
 
-  //  val isVisibleCreateMenu = mutableStateOf(false)
+
     val isVisibleMenu = rememberSaveable {
         mutableStateOf(false)
     }
@@ -513,7 +503,7 @@ fun WriteMemoView(navController: NavController ){
 
                        polylineList.forEach {
                         Polyline(
-                            clickable = isEraser,
+                            clickable = !isDrawing,
                             points = it,
                             geodesic = true,
                             color = Color.Yellow,
@@ -521,7 +511,6 @@ fun WriteMemoView(navController: NavController ){
                             onClick = { polyline ->
                                 polylineList.remove(polyline.points)
                                 polylineListR.remove(polyline.points)
-                         //       viewModel.onEvent(WriteMemoViewModel.Event.UpdatePolylineList(polylineList))
                             }
 
                         )
@@ -675,34 +664,20 @@ fun WriteMemoView(navController: NavController ){
 
                             androidx.compose.material3.IconButton(onClick = {
                                 when(it){
-                                    DrawingMenu.Draw -> {
+
+                                    DrawingMenu.DrawEraser -> {
                                         isDrawing = !isDrawing
-                                        if(isDrawing) isEraser = false
-
                                         viewModel.onEvent(WriteMemoViewModel.Event.UpdateIsDrawing(isDrawing))
-                                        viewModel.onEvent(WriteMemoViewModel.Event.UpdateIsEraser(isEraser))
+                                        viewModel.onEvent(WriteMemoViewModel.Event.UpdateIsEraser(!isDrawing))
                                     }
-                                    DrawingMenu.Eraser -> {
-                                        isEraser = !isEraser
-                                        if(isEraser)  isDrawing = false
-
-                                        viewModel.onEvent(WriteMemoViewModel.Event.UpdateIsDrawing(isDrawing))
-                                        viewModel.onEvent(WriteMemoViewModel.Event.UpdateIsEraser(isEraser))
-                                    }
-
-
                                 }
                             }) {
 
                                 val icon = when(it){
-                                    DrawingMenu.Draw  -> {
-                                        if (isDrawing)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
-                                    }
-                                    DrawingMenu.Eraser  -> {
-                                        if (isEraser)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
-                                    }
 
-
+                                    DrawingMenu.DrawEraser -> {
+                                        if (!isDrawing)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
+                                    }
                                 }
 
                                 Icon(
@@ -829,33 +804,6 @@ fun WriteMemoView(navController: NavController ){
                 }
 
 
-
-/*
-                AssistChipGroupDialog(
-                    isVisible = isTagDialog ,
-                    getState= {
-                       selectedTagArray.value = it
-                        viewModel.onEvent(WriteMemoViewModel.Event.UpdateSelectedTags(it))
-
-                    },
-                    setState = selectedTagArray
-                ){
-
-                    Row (modifier = Modifier){
-                        androidx.compose.material3.TextButton(
-                            onClick = {
-                                tagInfoDataList.clear()
-                                selectedTagArray.value = arrayListOf()
-                                viewModel.onEvent(WriteMemoViewModel.Event.UpdateSelectedTags(arrayListOf()))
-                            }
-                        ) {
-                           Text(text = "Clear")
-                        }
-                    }
-                }
-
- */
-
                 Box(
                     modifier = Modifier
                         .clip(ShapeDefaults.ExtraSmall)
@@ -919,35 +867,6 @@ fun WriteMemoView(navController: NavController ){
                                         )
                                     }
                                 )
-
-                                /*
-                                androidx.compose.material3.TextButton(
-                                    onClick = {
-                                        tagInfoDataList.clear()
-                                        selectedTagArray.value = arrayListOf()
-                                        viewModel.onEvent(
-                                            WriteMemoViewModel.Event.UpdateSelectedTags(
-                                                arrayListOf()
-                                            )
-                                        )
-                                    }
-                                ) {
-                                    Text(text = "Clear")
-                                }
-
-
-
-                                androidx.compose.material3.TextButton(
-                                    onClick = {
-                                        isTagDialog = false
-                                    }
-                                ) {
-                                    Text(text = "Close")
-                                }
-
-
-                                 */
-
 
                             }
                         }
@@ -1120,7 +1039,6 @@ fun ConfirmDialog(
 
 
 @Composable
-//fun MemoDataContainer(onDelete:(index:Int)->Unit ){
 fun MemoDataContainer(
     onEvent:((WriteMemoViewModel.Event)->Unit)? = null,
     deleteHandle:((index:Int)->Unit)? = null,
@@ -1135,12 +1053,6 @@ fun MemoDataContainer(
         MemoContainerViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
-    /*
-    val viewModel =    remember {
-        MemoContainerViewModel(repository = RepositoryProvider.getRepository(context.applicationContext) )
-    }
-
-     */
 
     val currentTabView = remember {
         mutableStateOf(WriteMemoDataType.SNAPSHOT)
