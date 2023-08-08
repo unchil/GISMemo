@@ -57,12 +57,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
 
-
-
-
-//@AndroidEntryPoint
-
-
 class MainActivity : ComponentActivity() {
 
     private val permissionsManager = PermissionsManager()
