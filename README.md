@@ -22,6 +22,12 @@ Memos can be searched by *title*, *creation date*, *hashtag*, *security*, and *m
 
 Memos can be shared via e-mail through the *sharing function*.
 
+local.properties
+'''Grove
+MAPS_API_KEY=
+OPENWEATHER_KEY=
+'''
+
 | Tab      | Screen | Description     |
 |  :----:         |    :----:   |          :----  |
 | List   | <img src="https://github.com/unchil/GISMemo/blob/main/docu/resource/memomap.jpg"  width="600px" title="전체 맵" alt="테스트"></img>         |  It is a list screen of created memos, and features such as search, share, delete, and view details are provided.     |
