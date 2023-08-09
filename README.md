@@ -33,7 +33,14 @@ local.properties
 }
 ```
 
+```
+Add AudioWaveformlibrary
 
+build.gradle(:app)
+dependencies {
+ implementation project(':audiowaveform')
+}
+```
 
 | Tab      | Screen | Description     |
 |  :----:         |    :----:   |          :----  |
