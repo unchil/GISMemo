@@ -23,9 +23,7 @@ Memos can be searched by *title*, *creation date*, *hashtag*, *security*, and *m
 Memos can be shared via e-mail through the *sharing function*.
 
 
-
-<pre>
-<code>
+```
 GoogleMap and OpenWeather api key required
  
 local.properties 
@@ -33,9 +31,7 @@ local.properties
   MAPS_API_KEY=
   OPENWEATHER_KEY=
 }
-</code>
-</pre>
-
+```
 
 
 
