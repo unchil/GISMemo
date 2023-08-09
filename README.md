@@ -22,11 +22,22 @@ Memos can be searched by *title*, *creation date*, *hashtag*, *security*, and *m
 
 Memos can be shared via e-mail through the *sharing function*.
 
-local.properties
-'''Grove
-MAPS_API_KEY=
-OPENWEATHER_KEY=
-'''
+
+
+<pre>
+<code>
+GoogleMap and OpenWeather api key required
+ 
+local.properties 
+{
+  MAPS_API_KEY=
+  OPENWEATHER_KEY=
+}
+</code>
+</pre>
+
+
+
 
 | Tab      | Screen | Description     |
 |  :----:         |    :----:   |          :----  |
