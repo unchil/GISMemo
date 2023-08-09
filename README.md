@@ -6,9 +6,11 @@
 
 This GISMemo is a memo program based on Google Map: [Google Maps Platform][googlelink].
 
-Weather information provided by OpenWeather: [OpenWeatherMap][openweatherlink] and snapshots from Google Map are included by default when creating notes.
+Weather information provided by OpenWeather: [OpenWeatherMap][openweatherlink]. 
 
-The audio amplitude used with exoplayer is the Compose AudioWaveform: [compose-audiowaveform][compose-audiowaveform_link] library.
+The audio amplitude used with exoplayer is the Compose AudioWaveformlibrary: [compose-audiowaveform][compose-audiowaveform_link] .
+ 
+Memos are basically saved as snapshots of weather information and maps at the time and location of the memo.
 
 The main information of a memo consists of *voice translation text*, *photos*, *videos*, and *snapshots* of drawings drawn on the map.
 
