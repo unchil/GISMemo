@@ -18,6 +18,13 @@ Memos can be searched by *title*, *creation date*, *hashtag*, *security*, and *m
 
 Memos can be shared via e-mail through the *sharing function*.
 
+| Tab      | Screen | Description     |
+|  :----:         |    :----:   |          :----  |
+| List   | <img src="https://github.com/unchil/GISMemo/blob/main/docu/resource/memomap.jpg"  width="600px" title="전체 맵" alt="테스트"></img>         |  It is a list screen of created memos, and features such as search, share, delete, and view details are provided.     |
+| Write   | <img src="https://github.com/unchil/GISMemo/blob/main/docu/resource/memomap.jpg"  width="500px" title="전체 맵" alt="테스트"></img>         | This screen is for writing notes. It provides functions such as screenshots of pictures drawn on maps, texts using voice recognition, photos, and videos, and it is possible to set security, markers, and hashtags.     |
+| Markers   | <img src="https://github.com/unchil/GISMemo/blob/main/docu/resource/memomap.jpg"  width="500px" title="전체 맵" alt="테스트"></img>         |  The location of the memo with the marker set is displayed.If you touch the information window of the marker, a brief screen of the memo is displayed, and if you touch the screen, you move to the detailed view screen.     |
+| Setting   | Text        | And more      |
+
 
 
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
