@@ -49,7 +49,7 @@ dependencies {
 | Markers   | <img src="https://github.com/unchil/GISMemo/blob/main/docu/resource/memomap.jpg"  width="500px" title="전체 맵" alt="테스트"></img>         |  The location of the memo with the marker set is displayed.If you touch the information window of the marker, a brief screen of the memo is displayed, and if you touch the screen, you move to the detailed view screen.     |
 | Setting   | Text        | And more      |
 
-
+### License
 
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
