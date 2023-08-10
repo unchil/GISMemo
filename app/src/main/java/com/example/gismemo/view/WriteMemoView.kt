@@ -275,8 +275,6 @@ fun WriteMemoView(navController: NavController ){
     var polylineList  =   mutableStateListOf<DrawingPolyline>( )
     val polylineListR:MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
 
-  //  val polylineList =  viewModel.currentPolylineList.collectAsState().value.toMutableList()
-
     val snapShotList:MutableList<Uri> = rememberSaveable { mutableListOf() }
 
     val configuration = LocalConfiguration.current
@@ -549,7 +547,6 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSaveMenuList)
-                        //     .padding(top = 10.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
@@ -587,7 +584,6 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentMyLocation)
-                        //  .padding(end = 10.dp).padding(top = 10.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
@@ -617,7 +613,6 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentCreateMenuList)
-                        //        .padding(start = 10.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))){
                     CreateMenuList.forEach {
@@ -653,8 +648,6 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentDrawingMenuList)
-                        //    .padding(end = 10.dp)
-                        //   .padding(bottom = 120.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
@@ -695,8 +688,6 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSettingMenuList)
-                        // .padding(start = 10.dp)
-                        //   .padding(bottom = 120.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
@@ -779,7 +770,6 @@ fun WriteMemoView(navController: NavController ){
 
 
                 Column(modifier = Modifier
-                    //    .padding(end = 10.dp)
                     .align(alignmentMapTypeMenuList)
                     .clip(RoundedCornerShape(6.dp))
                     .background(color = Color.LightGray.copy(alpha = 0.7f)),
@@ -949,7 +939,7 @@ fun ConfirmDialog(
 
                 Text(
                     modifier = Modifier.padding(bottom = 10.dp),
-                    text = "메모 저장",
+                    text = "Memo Save",
                     textAlign = TextAlign.Center,
                      style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     )
@@ -993,12 +983,12 @@ fun ConfirmDialog(
                         },
                         value =  titleText.value,
                         onValueChange = {  titleText.value = it },
-                        label = { androidx.compose.material3.Text("제목") },
+                        label = { androidx.compose.material3.Text("Title") },
                         shape = OutlinedTextFieldDefaults.shape,
                         keyboardActions = KeyboardActions.Default
                     )
 
-                Text(text = "작성된 메모를 저장 후 화면을 클리어 합니다." )
+                Text(text = "Save the written memo and clear the screen." )
 
                 Row (modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,  ){
@@ -1009,7 +999,7 @@ fun ConfirmDialog(
                             isAlertDialog.value = false
                         }
                     ) {
-                        Text("취소",
+                        Text("Cancel",
                             textAlign = TextAlign.Center,
                             style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp))
                     }
@@ -1021,7 +1011,7 @@ fun ConfirmDialog(
                             onEvent(titleText.value)
                         }
                     ) {
-                        Text("확인",
+                        Text("Confirm",
                             textAlign = TextAlign.Center,
                             style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         )
@@ -1130,7 +1120,6 @@ fun MemoDataContainer(
 
 
         Column(modifier = Modifier
-           //    .verticalScroll(scrollStateV)
         ) {
             memoData.value?.let {
                 PagerMemoDataView(item = it, onDelete = if(deleteHandle != null) onDelete else null, channel = channel)
@@ -1276,7 +1265,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
 fun PrevWriteMemo(){
@@ -1292,8 +1280,7 @@ fun PrevWriteMemo(){
                     color = MaterialTheme.colors.onPrimary,
                     contentColor = MaterialTheme.colors.primary
                 ) {
-               //     WriteMemoView(navController = navController)
-                    TestRemembertSaveable()
+                    WriteMemoView(navController = navController)
                 }
             }
 
@@ -1304,29 +1291,3 @@ fun PrevWriteMemo(){
 
 
 
-@Composable
-fun TestRemembertSaveable(){
-
-    var isClickValue by rememberSaveable { mutableStateOf(false) }
-
-    Column() {
-
-        Text(text ="${isClickValue}" )
-
-        androidx.compose.material3.IconButton(
-            modifier = Modifier,
-            onClick = {
-                isClickValue = !isClickValue
-            },
-            content = {
-                Icon(
-                    modifier = Modifier,
-                    imageVector = Icons.Outlined.Mic,
-                    contentDescription = "SpeechToText"
-                )
-            }
-        )
-    }
-
-
-}
