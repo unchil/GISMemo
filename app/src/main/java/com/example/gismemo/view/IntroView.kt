@@ -71,13 +71,11 @@ fun IntroView(
     navController: NavHostController
 ) {
 
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    var db = LocalLuckMemoDB.current
+    val db = LocalLuckMemoDB.current
     val coroutineScope = rememberCoroutineScope()
 
     val viewModel = remember {
- //       ListViewModel(repository = RepositoryProvider.getRepository(context.applicationContext))
         ListViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
     val memoListStream = viewModel.memoListPaging.collectAsLazyPagingItems()
@@ -107,8 +105,6 @@ fun IntroView(
     val channel = remember { Channel<Int>(Channel.CONFLATED) }
 
     val lazyListState = rememberLazyListState()
-
-  //  var selectedItem by rememberSaveable { mutableStateOf(0) }
 
     var isPortrait by remember { mutableStateOf(false) }
 
@@ -273,40 +269,6 @@ fun IntroView(
                         verticalArrangement = Arrangement.Top
                     ) {
 
-                        /*
-                        if(isPortrait) {
-                            BottomNavigation(
-                                modifier = Modifier.height(100.dp),
-                                backgroundColor = Color.Transparent,
-                                contentColor = Color.Black,
-                            )
-                            {
-                                mainScreens.forEachIndexed { index, item ->
-                                    NavigationRailItem(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .padding(vertical = 2.dp),
-                                        icon = {
-                                            item.icon?.let {
-                                                Icon(
-                                                    it,
-                                                    contentDescription = item.name
-                                                )
-                                            }
-                                        },
-                                        label = { Text(item.name ?: "") },
-                                        selected = selectedItem == index,
-                                        onClick = {
-                                    //        selectedItem = index
-                                            navController.navigateTo(mainScreens[index].route)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-
-                         */
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(0.dp),
@@ -323,7 +285,6 @@ fun IntroView(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    //       .padding(2.dp)
                                     .pullRefresh(state = pullRefreshState)
                             ) {
 
@@ -372,44 +333,6 @@ fun IntroView(
                                 )
 
                             }
-
-                            /*
-                            if(!isPortrait){
-                                Box(modifier = Modifier.fillMaxWidth() ) {
-                                    NavigationRail(
-                                        modifier = Modifier,
-                                        containerColor = Color.Transparent,
-                                        contentColor = Color.Black,
-                                        header = {
-                                            Spacer(Modifier.height(20.dp))
-                                        }
-                                    ) {
-                                        mainScreens.forEachIndexed { index, item ->
-                                            NavigationRailItem(
-                                                modifier = Modifier.padding(vertical = 2.dp),
-                                                icon = {
-                                                    item.icon?.let {
-                                                        Icon(
-                                                            it,
-                                                            contentDescription = item.name
-                                                        )
-                                                    }
-                                                },
-                                                label = { Text(item.name ?: "") },
-                                                selected = selectedItem == index,
-                                                onClick = {
-                                        //            selectedItem = index
-                                                    navController.navigateTo(mainScreens[index].route)
-                                                }
-                                            )
-
-                                        }
-                                    }
-                                }
-                            }
-
-                             */
-
 
                         }
 
@@ -568,7 +491,6 @@ fun MemoSwipeView(
 
         SwipeToDismiss(
             modifier = Modifier
-            //    .clip(shape)
             ,
             state = dismissState,
             background = {
@@ -614,7 +536,6 @@ fun MemoSwipeView(
                         .height(SwipeBoxHeight)
                         .offset(x = dismissContentOffset)
                         .background(Color.LightGray)
-                    //     .clip(shape)
                     ,
 
                     contentAlignment = Alignment.Center
@@ -703,9 +624,7 @@ private fun BackgroundContent(
 
                 IconButton(
                     onClick = {
-                        //       isAnchor.value = false
                         onClick(ListItemBackgroundAction.SHARE)
-
                     }
                 ) {
                     Icon(
