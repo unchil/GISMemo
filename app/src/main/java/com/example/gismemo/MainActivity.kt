@@ -16,6 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,8 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -87,6 +91,18 @@ class MainActivity : ComponentActivity() {
     //    KakaoSdk.init(this, "dfb918015eb4cc70b5db5d2e875dc58a")
 
         setContent {
+
+
+            val hapticFeedback = LocalHapticFeedback.current
+            val isPressed = remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = isPressed.value) {
+                if (isPressed.value) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    isPressed.value = false
+                }
+            }
+
+
 
             val context = LocalContext.current
             val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
@@ -180,7 +196,9 @@ class MainActivity : ComponentActivity() {
 
                                                             IconButton(
                                                                 modifier = Modifier,
+
                                                                 onClick = {
+                                                                    isPressed.value = true
                                                                     selectedItem.value = index
                                                                     navController.navigateTo(
                                                                         mainScreens[index].route
@@ -268,6 +286,7 @@ class MainActivity : ComponentActivity() {
                                                                     IconButton(
                                                                         modifier = Modifier,
                                                                         onClick = {
+                                                                            isPressed.value = true
                                                                             selectedItem.value =
                                                                                 index
                                                                             navController.navigateTo(

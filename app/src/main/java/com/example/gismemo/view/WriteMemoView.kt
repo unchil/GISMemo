@@ -16,6 +16,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -48,10 +50,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.TextStyle
@@ -219,6 +223,21 @@ fun CreateMenu.getDesc():Pair<ImageVector, String?>{
 )
 @Composable
 fun WriteMemoView(navController: NavController ){
+
+
+
+
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -554,7 +573,9 @@ fun WriteMemoView(navController: NavController ){
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
 
-                            androidx.compose.material3.IconButton(onClick = {
+                            androidx.compose.material3.IconButton(
+                                onClick = {
+                                    isPressed.value = true
                                 when(it){
                                     SaveMenu.CLEAR -> {
                                         channel.trySend(snackbarChannelList.first {
@@ -588,8 +609,9 @@ fun WriteMemoView(navController: NavController ){
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
                     androidx.compose.material3.IconButton(
-                        onClick = {
 
+                        onClick = {
+                            isPressed.value = true
                             context.getDeviceLocation {it?.let {
                                 viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
                                 cameraPositionState.position = defaultCameraPosition
@@ -618,7 +640,9 @@ fun WriteMemoView(navController: NavController ){
                     CreateMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(onClick = {
+                            androidx.compose.material3.IconButton(
+                                onClick = {
+                                    isPressed.value = true
                                 when(it){
                                     CreateMenu.SNAPSHOT -> {
                                         isSnapShot = true
@@ -655,7 +679,9 @@ fun WriteMemoView(navController: NavController ){
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
 
-                            androidx.compose.material3.IconButton(onClick = {
+                            androidx.compose.material3.IconButton(
+                                onClick = {
+                                    isPressed.value = true
                                 when(it){
 
                                     DrawingMenu.DrawEraser -> {
@@ -692,7 +718,10 @@ fun WriteMemoView(navController: NavController ){
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
                     androidx.compose.material3.IconButton(
-                        onClick = { isVisibleMenu.value = !isVisibleMenu.value }
+                        onClick = {
+                            isPressed.value = true
+                            isVisibleMenu.value = !isVisibleMenu.value
+                        }
                     ) {
                         Icon(
                             modifier = Modifier.scale(1f),
@@ -704,7 +733,10 @@ fun WriteMemoView(navController: NavController ){
                     SettingMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(onClick = {
+                            androidx.compose.material3.IconButton(
+
+                                onClick = {
+                                    isPressed.value = true
                                 when(it){
                                     SettingMenu.SECRET -> {
                                         isLock = !isLock
@@ -744,7 +776,9 @@ fun WriteMemoView(navController: NavController ){
 
 
                     androidx.compose.material3.IconButton(
+
                         onClick = {
+
                             coroutineScope.launch {
                                 if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
                                     || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded){
@@ -752,8 +786,10 @@ fun WriteMemoView(navController: NavController ){
                                 }else {
                                     scaffoldState.bottomSheetState.hide()
                                 }
+
                             }
-                        }
+                        },
+
                     ) {
                         Icon(
                             modifier = Modifier,
@@ -777,7 +813,10 @@ fun WriteMemoView(navController: NavController ){
                     MapTypeMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(onClick = {
+                            androidx.compose.material3.IconButton(
+
+                                onClick = {
+                                    isPressed.value = true
                                 val mapType = MapType.values().first { mapType ->
                                     mapType.name == it.name
                                 }
@@ -828,6 +867,7 @@ fun WriteMemoView(navController: NavController ){
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = {
+                                        isPressed.value = true
                                         tagInfoDataList.clear()
                                         selectedTagArray.value = arrayListOf()
                                         viewModel.onEvent(
@@ -848,7 +888,10 @@ fun WriteMemoView(navController: NavController ){
 
                                 IconButton(
                                     modifier = Modifier,
-                                    onClick = { isTagDialog = false    },
+                                    onClick = {
+                                        isPressed.value = true
+                                        isTagDialog = false
+                                              },
                                     content = {
                                         Icon(
                                             modifier = Modifier,
@@ -870,7 +913,8 @@ fun WriteMemoView(navController: NavController ){
                 if(isAlertDialog.value){
                     ConfirmDialog(
                         isAlertDialog = isAlertDialog,
-                        onEvent = saveHandler)
+                        onEvent = saveHandler,
+                        isPressed =    isPressed )
                 }
 
 
@@ -890,6 +934,7 @@ fun WriteMemoView(navController: NavController ){
 fun ConfirmDialog(
     isAlertDialog: MutableState<Boolean> ,
     onEvent: (title:String) -> Unit,
+    isPressed : MutableState<Boolean>,
 ){
 
     val titleTimeStamp = SimpleDateFormat(
@@ -954,7 +999,9 @@ fun ConfirmDialog(
 
                                 androidx.compose.material3.IconButton(
                                     modifier = Modifier,
+
                                     onClick = {
+                                        isPressed.value = true
                                         titleText.value  = ""
                                         startLauncherRecognizerIntent.launch(recognizerIntent())
                                     },
@@ -969,7 +1016,9 @@ fun ConfirmDialog(
 
 
 
-                                IconButton(onClick = {
+                                IconButton(
+                                    onClick = {
+                                        isPressed.value = true
                                     titleText.value = ""
                                 }) {
                                     Icon(
@@ -995,7 +1044,9 @@ fun ConfirmDialog(
 
 
                     androidx.compose.material3.TextButton(
+
                         onClick = {
+                            isPressed.value = true
                             isAlertDialog.value = false
                         }
                     ) {
@@ -1006,7 +1057,9 @@ fun ConfirmDialog(
 
 
                     androidx.compose.material3.TextButton(
+
                         onClick = {
+                            isPressed.value = true
                             isAlertDialog.value = false
                             onEvent(titleText.value)
                         }
@@ -1033,6 +1086,17 @@ fun MemoDataContainer(
     onEvent:((WriteMemoViewModel.Event)->Unit)? = null,
     deleteHandle:((index:Int)->Unit)? = null,
     channel:Channel<Int>? = null){
+
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
 
     val context = LocalContext.current
     val scrollStateV = rememberScrollState()
@@ -1070,6 +1134,7 @@ fun MemoDataContainer(
                 selected = currentTabView.value ==  it,
                 selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
+                    isPressed.value = true
                     currentTabView.value = it
                     currentTabIndex.value = index
                 },

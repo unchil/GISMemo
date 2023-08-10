@@ -7,6 +7,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -26,8 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -70,6 +75,18 @@ val SwipeBoxHeight = 70.dp
 fun IntroView(
     navController: NavHostController
 ) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed = interactionSource.collectIsPressedAsState()
+
+    val hapticFeedback = LocalHapticFeedback.current
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
+
+
 
     val configuration = LocalConfiguration.current
     val db = LocalLuckMemoDB.current
@@ -329,7 +346,8 @@ fun IntroView(
                                         .padding(end = 10.dp, bottom = upButtonPadingValue)
                                         .align(Alignment.BottomEnd),
                                     listState = lazyListState,
-                                    coroutineScope = coroutineScope
+                                    coroutineScope = coroutineScope,
+                                    interactionSource = interactionSource
                                 )
 
                             }
@@ -681,7 +699,8 @@ fun SearchingProgressIndicator(
 fun UpButton(
     modifier:Modifier,
     listState: LazyListState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    interactionSource: MutableInteractionSource
 ){
 
     val showButton by remember {
@@ -694,6 +713,7 @@ fun UpButton(
         FloatingActionButton(
             modifier = Modifier.then(modifier),
             containerColor = Color.LightGray,
+            interactionSource =  interactionSource,
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(0)

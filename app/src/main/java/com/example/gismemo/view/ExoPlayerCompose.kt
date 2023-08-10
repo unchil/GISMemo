@@ -29,14 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+
+import androidx.media3.ui.PlayerView
+
 import com.example.gismemo.ui.theme.GISMemoTheme
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.ui.StyledPlayerControlView
-import com.google.android.exoplayer2.ui.StyledPlayerView
+
+
+
 import com.linc.audiowaveform.AudioWaveform
 import com.linc.audiowaveform.infiniteLinearGradient
 import com.linc.audiowaveform.model.AmplitudeType
@@ -58,7 +60,7 @@ typealias Amplitudes = List<Int>
         .amplitudesAsList()
 }
 
-fun Context.getExoPlayer(exoPlayerListener: Player.Listener):ExoPlayer {
+fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
     return ExoPlayer.Builder(this).build().apply {
         addListener(exoPlayerListener)
         prepare()
@@ -140,8 +142,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 
     }
 
-
-
     val exoPlayer =   remember { context.getExoPlayer(exoPlayerListener) }
 
     LaunchedEffect(key1 = uri, key2 = uriList){
@@ -154,8 +154,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                 exoPlayer.setMediaItem(MediaItem.fromUri(it))
             }
         }
-
-
 
         if(uriList.isNotEmpty()){
             if (exoPlayer.mediaItemCount > 0) {
@@ -170,9 +168,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                 exoPlayer.setMediaItems(mediaItems)
             }
         }
-
-
-
     }
 
 
@@ -195,6 +190,8 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
             text = mediaItemTitle,
             textAlign = TextAlign.Center
         )
+
+
 
 
         if (isVisibleAmplitudes && mediaItemAmplitudes.isNotEmpty()) {
@@ -238,18 +235,18 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                 ) {
                     AndroidView(
                         factory = { context ->
-
-
+                            /*
                             StyledPlayerView(context).apply {
                                 player = exoPlayer
                                 controllerShowTimeoutMs = 0
-
                             }
+                             */
 
 /*
                             PlayerControlView(context).apply {
                                 player = exoPlayer
                                showTimeoutMs = 0
+
                                 val params = FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -258,6 +255,19 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                             }
 
  */
+
+                            PlayerView(context).apply {
+                                player = exoPlayer
+                                this.controllerShowTimeoutMs = 0
+
+                                val params = FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                                layoutParams = params
+                            }
+
+
 
                         },
                         modifier = Modifier.fillMaxSize()
@@ -282,33 +292,16 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 @Composable
 private fun PrevExoplayerCompose(){
 
-    val audio1 = "/data/data/com.example.gismemo/files/audios/20230601-092114739_record.ogg"
-    val audio2 = "/data/data/com.example.gismemo/files/audios/20230601-092114739_record.ogg"
-    val audio3 = "/data/data/com.example.gismemo/files/audios/20230601-092138204_record.ogg"
-    val audio4 = "/data/data/com.example.gismemo/files/audios/20230601-092209944_record.ogg"
 
-    val image1= "/data/data/com.example.gismemo/files/photos/2023-06-08-18-31-40-085.jpeg"
-    val image2 = "/data/data/com.example.gismemo/files/photos/2023-06-08-18-31-49-422.jpeg"
-    val image3 = "/data/data/com.example.gismemo/files/photos/2023-06-08-18-39-24-078.jpeg"
-
-
-
-    val video1 ="/data/data/com.example.gismemo/files/videos/2023-06-08-18-24-16-156.mp4"
-    val video2 ="/data/data/com.example.gismemo/files/videos/2023-06-08-18-31-43-497.mp4"
-    val video3 ="/data/data/com.example.gismemo/files/videos/2023-06-08-18-39-10-729.mp4"
-
-    val uriList1 = listOf( audio1.toUri() ,   audio1.toUri(),  audio1.toUri() )
-    val uriList2 = listOf( image1.toUri(),  image2.toUri(),  image3.toUri())
-    val uriList3 = listOf( video1.toUri(),  audio1.toUri(),  audio2.toUri(),  audio3.toUri(), video2.toUri(),  video3.toUri())
     GISMemoTheme {
 
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+    //       ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/audios/20230601-092114739_record.ogg".toUri())
 
-            ExoplayerCompose( uriList = uriList1, isVisibleAmplitudes = true)
-      //      ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/videos/2023-06-17-10-07-47-280.mp4".toUri())
+            ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/videos/2023-06-08-18-24-16-156.mp4".toUri())
         }
 
     }
