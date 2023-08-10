@@ -39,7 +39,9 @@ Add AudioWaveformlibrary
 
 build.gradle(:app)
 dependencies {
- implementation project(':audiowaveform')
+    implementation project(':audiowaveform')
+     implementation 'com.github.lincollincol:amplituda:2.2.2'
+    implementation 'com.github.lincollincol:compose-audiowaveform:1.1.1'
 }
 ```
 
