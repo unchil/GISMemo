@@ -67,13 +67,7 @@ fun WeatherContent(isSticky:Boolean = false ){
     val viewModel = remember {
         WeatherViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
-    /*
-    val viewModel = remember {
-        WeatherViewModel(  repository = RepositoryProvider.getRepository(context.applicationContext)     )
-    }
 
-
-     */
     val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
     if( weatherData.value == null){
@@ -99,7 +93,6 @@ fun WeatherContent(isSticky:Boolean = false ){
 
         Column(
             modifier = Modifier
-                //  .clip(RoundedCornerShape(6.dp))
                 .background(color = Color.White)
         ) {
 
