@@ -76,13 +76,12 @@ fun IntroView(
     navController: NavHostController
 ) {
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed = interactionSource.collectIsPressedAsState()
-
     val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = isPressed.value) {
         if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
         }
     }
 
@@ -347,7 +346,7 @@ fun IntroView(
                                         .align(Alignment.BottomEnd),
                                     listState = lazyListState,
                                     coroutineScope = coroutineScope,
-                                    interactionSource = interactionSource
+                              //      interactionSource = interactionSource
                                 )
 
                             }
@@ -380,6 +379,17 @@ fun MemoSwipeView(
     val context = LocalContext.current
     val db = LocalLuckMemoDB.current
     val coroutineScope = rememberCoroutineScope()
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
 
     val permissions = listOf(
         Manifest.permission.USE_BIOMETRIC,
@@ -487,7 +497,7 @@ fun MemoSwipeView(
             .padding(top = 2.dp) ,
         shape = ShapeDefaults.ExtraSmall ,
         onClick = {
-
+            isPressed.value = true
             if(item.isSecret && checkBiometricSupport()) {
                 biometricPrompt(context, BiometricCheckType.DETAILVIEW, onResult)
             }else {
@@ -623,6 +633,18 @@ private fun BackgroundContent(
     )
 
 
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -642,6 +664,7 @@ private fun BackgroundContent(
 
                 IconButton(
                     onClick = {
+                        isPressed.value = true
                         onClick(ListItemBackgroundAction.SHARE)
                     }
                 ) {
@@ -663,6 +686,7 @@ private fun BackgroundContent(
             Row {
                 IconButton(
                     onClick = {
+                        isPressed.value = true
                         //  isAnchor.value = false
                         onClick(ListItemBackgroundAction.DELETE)
                     }
@@ -700,7 +724,7 @@ fun UpButton(
     modifier:Modifier,
     listState: LazyListState,
     coroutineScope: CoroutineScope,
-    interactionSource: MutableInteractionSource
+  //  interactionSource: MutableInteractionSource
 ){
 
     val showButton by remember {
@@ -709,14 +733,27 @@ fun UpButton(
         }
     }
 
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
+
     if( showButton) {
         FloatingActionButton(
             modifier = Modifier.then(modifier),
             containerColor = Color.LightGray,
-            interactionSource =  interactionSource,
+      //      interactionSource =  interactionSource,
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(0)
+                    isPressed.value = true
                 }
             }
         ) {

@@ -385,6 +385,7 @@ fun WriteMemoView(navController: NavController ){
 
 
     val onMapLongClickHandler: (LatLng) -> Unit = {
+        isPressed.value = true
         markerState.position = it
        // cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
         viewModel.onEvent(WriteMemoViewModel.Event.SetCurrentLocation(it))
@@ -526,6 +527,7 @@ fun WriteMemoView(navController: NavController ){
                             color = Color.Yellow,
                             width = 20F,
                             onClick = { polyline ->
+                                isPressed.value = true
                                 polylineList.remove(polyline.points)
                                 polylineListR.remove(polyline.points)
                             }

@@ -17,8 +17,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -47,6 +49,15 @@ import java.io.FileOutputStream
 @Composable
 fun DetailMemoView(navController: NavController, id:Long){
 
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val db = LocalLuckMemoDB.current
@@ -244,7 +255,9 @@ fun DetailMemoView(navController: NavController, id:Long){
                 MapTypeMenuList.forEach {
                     AnimatedVisibility(visible = isVisibleMenu.value,
                     ) {
-                        androidx.compose.material3.IconButton(onClick = {
+                        androidx.compose.material3.IconButton(
+                            onClick = {
+                                isPressed.value = true
                             val mapType = MapType.values().first { mapType ->
                                 mapType.name == it.name
                             }
@@ -268,7 +281,10 @@ fun DetailMemoView(navController: NavController, id:Long){
                     .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
                 androidx.compose.material3.IconButton(
-                    onClick = { isVisibleMenu.value = !isVisibleMenu.value }
+                    onClick = {
+                        isPressed.value = true
+                        isVisibleMenu.value = !isVisibleMenu.value
+                    }
                 ) {
                     Icon(
                         modifier = Modifier.scale(1f),
@@ -280,7 +296,9 @@ fun DetailMemoView(navController: NavController, id:Long){
                 SettingMenuList.forEach {
                     AnimatedVisibility(visible = isVisibleMenu.value,
                     ) {
-                        androidx.compose.material3.IconButton(onClick = {
+                        androidx.compose.material3.IconButton(
+                            onClick = {
+                                isPressed.value = true
                             when(it){
                                 SettingMenu.SECRET -> {
                                     isLock = !isLock
@@ -384,6 +402,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                         ) {
                             androidx.compose.material3.TextButton(
                                 onClick = {
+                                    isPressed.value = true
                                     tagInfoDataList.clear()
                                     selectedTagArray.value = arrayListOf()
                                     viewModel.onEvent(DetailMemoViewModel.Event.UpdateTagList(id,  arrayListOf()))
@@ -395,6 +414,7 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                             androidx.compose.material3.TextButton(
                                 onClick = {
+                                    isPressed.value = true
                                     isTagDialog = false
                                 }
                             ) {

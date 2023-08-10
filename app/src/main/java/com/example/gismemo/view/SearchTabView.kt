@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -134,6 +136,16 @@ fun RadioButtonGroupView(
     state:MutableState<RadioGroupState>,
     content: @Composable (( ) -> Unit)? = null
 ){
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
     val (selectedOption, onOptionSelected) = mutableStateOf(state.value.second[state.value.first.value])
 
     Row(
@@ -155,6 +167,7 @@ fun RadioButtonGroupView(
                     .selectable(
                         selected = (it == selectedOption),
                         onClick = {
+                            isPressed.value = true
                             onOptionSelected( it )
                             state.value.first.value= index
                         },
@@ -200,6 +213,16 @@ fun AssistChipGroupView(
     val itemModifier = Modifier.wrapContentSize()
 
 
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
     AnimatedVisibility(visible = isVisible) {
 
 
@@ -229,6 +252,7 @@ fun AssistChipGroupView(
                         AssistChip(
                             modifier = itemModifier,
                             onClick = {
+                                isPressed.value = true
                                 it.isSet.value = !it.isSet.value
 
                                 if (getState != null) {
@@ -288,6 +312,18 @@ fun SearchView(
     onEvent: ((ListViewModel.Event) -> Unit)? = null,
     onMessage:(() -> Unit)? = null
 ){
+
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
 
     val isVisible:MutableState<Boolean> = mutableStateOf(true)
 
@@ -440,6 +476,7 @@ fun SearchView(
                     IconButton(
                         modifier = Modifier,
                         onClick = {
+                            isPressed.value = true
                             onSearch(query_title.value)
                         },
                         content = {
@@ -458,6 +495,7 @@ fun SearchView(
                         IconButton(
                             modifier = Modifier,
                             onClick = {
+                                isPressed.value = true
                                 startLauncherRecognizerIntent.launch(recognizerIntent())
                             },
                             content = {
@@ -473,6 +511,7 @@ fun SearchView(
                         IconButton(
                             modifier = Modifier,
                             onClick = {
+                                isPressed.value = true
                                 initStateValue()
                                 onMessage?.let {
                                     it()
@@ -546,7 +585,10 @@ fun SearchView(
 
             androidx.compose.material.IconButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { isTagBox = !isTagBox },
+                onClick = {
+                    isPressed.value = true
+                    isTagBox = !isTagBox
+                          },
                 content = {
                     Row(
                         modifier = Modifier,
@@ -588,7 +630,10 @@ fun SearchView(
 
             androidx.compose.material.IconButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { isDateBox.value = !isDateBox.value },
+                onClick = {
+                    isPressed.value = true
+                    isDateBox.value = !isDateBox.value
+                          },
                 content = {
                     Row(
                         modifier = Modifier,

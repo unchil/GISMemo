@@ -80,6 +80,8 @@ import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 
 import android.hardware.biometrics.BiometricPrompt
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.core.content.ContextCompat
 import com.example.gismemo.db.LocalLuckMemoDB
 
@@ -376,6 +378,17 @@ fun MemoMapView(navController: NavController){
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
 
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
+
+
     val context = LocalContext.current
 
 
@@ -523,10 +536,12 @@ fun MemoMapView(navController: NavController){
                                 //  icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE),
                                 draggable = true,
                                 onInfoWindowClick = {
+                                    isPressed.value = true
                                     isMemoCardView.value = false
                                 },
                                 onInfoWindowClose = {},
                                 onInfoWindowLongClick = { marker ->
+                                    isPressed.value = true
                                     isMemoCardView.value = true
                                     isCurrentMemo.value = it.id
                                 },
@@ -572,7 +587,7 @@ fun MemoMapView(navController: NavController){
 
                         androidx.compose.material3.IconButton(
                             onClick = {
-
+                                isPressed.value = true
                                 cameraPositionState.position = defaultCameraPosition
                                 if (currentLocation != null) {
                                     markerState.position = currentLocation.toLatLng()
@@ -610,7 +625,10 @@ fun MemoMapView(navController: NavController){
                     ) {
 
                         androidx.compose.material3.IconButton(
-                            onClick = { isVisibleMenu.value = !isVisibleMenu.value }
+                            onClick = {
+                                isPressed.value = true
+                                isVisibleMenu.value = !isVisibleMenu.value
+                            }
                         ) {
                             Icon(
                                 modifier = Modifier.scale(1f),
@@ -625,6 +643,7 @@ fun MemoMapView(navController: NavController){
                                 visible = isVisibleMenu.value,
                             ) {
                                 androidx.compose.material3.IconButton(onClick = {
+                                    isPressed.value = true
                                     val mapType = MapType.values().first { mapType ->
                                         mapType.name == it.name
                                     }
@@ -666,6 +685,17 @@ fun MemoView(
     item: MEMO_TBL,
     event: ((MemoMapViewModel.Event)->Unit)? = null,
     navController: NavController? = null){
+
+
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value) {
+        if (isPressed.value) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
 
     val context = LocalContext.current
 
@@ -726,6 +756,7 @@ fun MemoView(
         ,
         onClick = {
 
+            isPressed.value = true
             if(item.isSecret && checkBiometricSupport()) {
                 biometricPrompt(context, BiometricCheckType.DETAILVIEW, onResult)
             }else {
