@@ -47,7 +47,7 @@ dependencies {
 
 
 
-|     |     |    |
+|     |  Portrait   |  Landscape  |
 |:---:|:---:|:---:|
 |**List**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/gismemo_list_portrait.jpg)|```It is a list screen of created memos, and features such as search, share, delete, and view details are provided.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/gismemo_list_landscape.jpg)</img>|
 |**Write**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/gismemo_write_portrait.jpg)|```This screen is for writing notes. It provides functions such as screenshots of pictures drawn on maps, texts using voice recognition, photos, and videos, and it is possible to set security, markers, and hashtags.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/gismemo_write_landscape.jpg)|                                                             
