@@ -125,16 +125,12 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
     val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-
-    val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         SpeechToTextViewModel (repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
-
- //   val viewModel =    SpeechToTextViewModel(repository = RepositoryProvider.getRepository(context.applicationContext) )
 
     val currentBackStack by navController.currentBackStackEntryAsState()
 
@@ -270,24 +266,6 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
                             )
                         }
                     )
-
-                    /*
-                    IconButton(
-                        modifier = Modifier.scale(1.5f),
-                        onClick = {
-                            backStack()
-                       },
-                        content = {
-                            Icon(
-                                modifier = Modifier,
-                                imageVector = Icons.Outlined.Save,
-                                contentDescription = "Save"
-                            )
-                        }
-                    )
-
-
-                     */
                 }
 
 
@@ -320,7 +298,7 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
 @Preview
 @Composable
 fun PrevSpeechRecognizerCompose(){
-    val context  = LocalContext.current.applicationContext
+
     val navController = rememberAnimatedNavController()
     val permissionsManager = PermissionsManager()
 
@@ -335,8 +313,6 @@ fun PrevSpeechRecognizerCompose(){
                 ) {
                     Box(
                         modifier = Modifier
-                        //    .width(360.dp)
-                        //      .height(240.dp)
                     ) {
                         SpeechRecognizerCompose(navController = navController)
                     }
