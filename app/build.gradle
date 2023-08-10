@@ -143,10 +143,10 @@ dependencies {
 
  */
 
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.7'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.0'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.19.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.0'
 
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"

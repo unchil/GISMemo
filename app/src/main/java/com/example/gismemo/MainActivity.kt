@@ -156,38 +156,6 @@ class MainActivity : ComponentActivity() {
 
                                         if (isPortrait) {
 
-/*
-                                BottomNavigation(
-                                    modifier = Modifier.height(100.dp),
-                                    backgroundColor = Color.Transparent,
-                                    contentColor = Color.Black,
-                                )
-                                {
-                                    mainScreens.forEachIndexed { index, item ->
-                                        NavigationRailItem(
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                                .padding(vertical = 2.dp),
-                                            icon = {
-                                                item.icon?.let {
-                                                    Icon(
-                                                        it,
-                                                        contentDescription = item.name
-                                                    )
-                                                }
-                                            },
-                                            label = { androidx.compose.material.Text(item.name ?: "") },
-                                            selected = selectedItem.value == index,
-                                            onClick = {
-                                               selectedItem.value = index
-                                                navController.navigateTo(mainScreens[index].route)
-                                            }
-                                        )
-                                    }
-                                }
-
-
- */
 
                                             Row(
                                                 modifier = Modifier
@@ -272,49 +240,6 @@ class MainActivity : ComponentActivity() {
 
 
                                             if (!isPortrait) {
-/*
-                                    Box(modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 2.dp)   ) {
-                                        NavigationRail(
-                                            modifier = Modifier
-                                                .width(100.dp)
-                                                .background(color = Color.White)
-                                                .shadow(6.dp),
-                                            containerColor = Color.Transparent,
-                                            contentColor = Color.Black,
-                                            header = {
-                                           //     Spacer(Modifier.height(20.dp))
-                                            }
-                                        ) {
-                                            mainScreens.forEachIndexed { index, item ->
-                                                NavigationRailItem(
-                                                    modifier = Modifier.padding(vertical = 2.dp),
-                                                    icon = {
-                                                        item.icon?.let {
-                                                            Icon(
-                                                                it,
-                                                                contentDescription = item.name
-                                                            )
-                                                        }
-                                                    },
-                                                    label = {
-                                                        androidx.compose.material.Text(
-                                                            item.name ?: ""
-                                                        )
-                                                    },
-                                                    selected = selectedItem.value == index,
-                                                    onClick = {
-                                                        selectedItem.value = index
-                                                        navController.navigateTo(mainScreens[index].route)
-                                                    }
-                                                )
-
-                                            }
-                                        }
-                                    }
-
- */
 
                                                 Box(
                                                     modifier = Modifier
