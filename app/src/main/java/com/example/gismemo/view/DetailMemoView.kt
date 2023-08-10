@@ -47,8 +47,7 @@ import java.io.FileOutputStream
 @Composable
 fun DetailMemoView(navController: NavController, id:Long){
 
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+
     val coroutineScope = rememberCoroutineScope()
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
@@ -236,61 +235,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                 cameraPositionState = cameraPositionState )
 
 
-/*
-            Column(modifier = Modifier
-                .padding(end = 4.dp)
-                .align(Alignment.CenterEnd),
-                verticalArrangement = Arrangement.spacedBy(-10.dp),
-            ) {
-
-                FloatingActionButton(
-                    onClick = {  isExpanded = true  },
-
-                    containerColor = Color.White,
-                    modifier =Modifier.scale(0.7f),
-                    shape = RoundedCornerShape(3.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier.scale(1.3f),
-                        imageVector = Icons.Outlined.Layers,
-                        contentDescription = "DropdownMenu",
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = isExpanded,
-                    modifier = Modifier,
-                    onDismissRequest = { isExpanded = false },
-                ) {
-
-                    MapType.values().filter {
-                        it.name == "NORMAL" || it.name == "TERRAIN" || it.name == "HYBRID"
-                    }.forEach {
-
-                        DropdownMenuItem(
-                            text = { Text(text = it.name) },
-                            onClick = { mapProperties = mapProperties.copy(mapType = it) },
-                            leadingIcon = {
-                                Icon(
-                                    modifier = Modifier,
-                                    imageVector =  when (it.name) {
-                                        "NORMAL" -> Icons.Outlined.Map
-                                        "TERRAIN" -> Icons.Outlined.Forest
-                                        "HYBRID" -> Icons.Outlined.Public
-                                        else -> Icons.Outlined.Layers
-                                    } ,
-                                    contentDescription = "Layers" ) }  )
-
-                    }
-                }
-
-
-            }
-
- */
 
             Column(modifier = Modifier
-                //   .padding(end = 10.dp)
                 .align(Alignment.TopEnd)
                 .clip(RoundedCornerShape(6.dp))
                 .background(color = Color.LightGray.copy(alpha = 0.7f)),
@@ -318,8 +264,6 @@ fun DetailMemoView(navController: NavController, id:Long){
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    //   .padding(start = 10.dp)
-                    //     .padding(bottom = 120.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
@@ -405,139 +349,6 @@ fun DetailMemoView(navController: NavController, id:Long){
 
 
             }
-
-/*
-            Row(modifier = Modifier
-                .padding(bottom = 10.dp)
-                .align(Alignment.BottomStart),
-                horizontalArrangement = Arrangement.spacedBy(-10.dp),
-            ){
-
-                FloatingActionButton(
-                    onClick = {
-                        isLock = !isLock
-                        memo?.let {
-                            viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsSecret(id = it.id , isSecret = isLock))
-                        }
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "메모의 보안 설정 값이 ${   if (isLock) " [ 보안 ] " else " [ 비보안 ] " } 으로 변경 되었 습니다. ",
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-
-                    },
-                    containerColor = Color.White,
-                    modifier =Modifier.scale(0.7f),
-                    shape = RoundedCornerShape(3.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier.scale(1.3f),
-                        imageVector = if (isLock)  Icons.Outlined.Lock else Icons.Outlined.LockOpen ,
-                        contentDescription = "Lock",
-                    )
-                }
-
-                FloatingActionButton(
-                    onClick = {
-                        isMark = !isMark
-                        memo?.let {
-                            viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsMark(id = it.id , isMark = isMark))
-                        }
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "메모의 마커 설정 값이 ${   if (isMark) " [ 저장 함 ] " else " [ 저장 하지 않음 ] " } 으로 변경 되었 습니다. ",
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-
-                    },
-                    containerColor = Color.White,
-                    modifier =Modifier.scale(0.7f),
-                    shape = RoundedCornerShape(3.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier.scale(1.3f),
-                        imageVector = if (isMark)  Icons.Outlined.LocationOn else Icons.Outlined.LocationOff ,
-                        contentDescription = "Mark",
-                    )
-                }
-
-
-                FloatingActionButton(
-                    onClick = {
-                        isTagDialog.value = !isTagDialog.value
-                    },
-                    containerColor = Color.White,
-                    modifier =Modifier.scale(0.7f),
-                    shape = RoundedCornerShape(3.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier.scale(1.3f),
-                        imageVector =  Icons.Outlined.Class ,
-                        contentDescription = "Tag",
-                    )
-                }
-
-
-                FloatingActionButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
-                                || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded){
-                                scaffoldState.bottomSheetState.expand()
-                            }else {
-                                scaffoldState.bottomSheetState.hide()
-                            }
-                        }
-                    },
-                    containerColor = Color.White,
-                    modifier =Modifier.scale(0.7f),
-                    shape = RoundedCornerShape(3.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier.scale(1.3f),
-                        //  imageVector = Icons.Outlined.Tab,
-                        imageVector = Icons.Outlined.FolderOpen,
-                        contentDescription = "Data Container",
-
-                        )
-                }
-
-            }
-
-*/
-
-/*
-            if (isTagDialog.value){
-
-                AssistChipGroupDialog(
-                    isVisible = isTagDialog ,
-                    getState= { selectedTagList ->
-                        memo?.let {
-                            viewModel.onEvent(DetailMemoViewModel.Event.UpdateTagList(id, selectedTagList))
-                        }
-                    },
-                    setState = selectedTagArray
-                ) {
-                    Row(modifier = Modifier) {
-
-                        androidx.compose.material3.TextButton(
-                            onClick = {
-                                tagInfoDataList.clear()
-                                selectedTagArray.value = arrayListOf()
-                            }
-                        ) {
-                            androidx.compose.material.Text(text = "Clear")
-                        }
-
-                    }
-
-
-                }
-            }
-
- */
 
 
             Box(
