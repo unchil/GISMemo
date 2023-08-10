@@ -104,7 +104,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                 if(isVisibleAmplitudes) {
                     if (player.isPlaying) {
                        coroutineJob = lifecycleOwner.lifecycleScope.launch {
-                     //   coroutineJob = coroutineScope.launch {
                             while (true) {
                                 waveformProgress =
                                     player.currentPosition.toFloat() / player.duration
@@ -136,25 +135,12 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
             }
 
 
-
-
-
-
-
         }
 
 
     }
 
-/*
-    val exoPlayer = remember(context) {
-        ExoPlayer.Builder(context).build().apply {
-            addListener(exoPlayerListener)
-            prepare()
-        }
-    }
 
- */
 
     val exoPlayer =   remember { context.getExoPlayer(exoPlayerListener) }
 
@@ -260,10 +246,7 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 
                             }
 
-
-
 /*
-
                             PlayerControlView(context).apply {
                                 player = exoPlayer
                                showTimeoutMs = 0
@@ -275,7 +258,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                             }
 
  */
-
 
                         },
                         modifier = Modifier.fillMaxSize()
