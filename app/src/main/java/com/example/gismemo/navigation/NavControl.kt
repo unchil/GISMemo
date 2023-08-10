@@ -104,27 +104,27 @@ sealed class GisMemoDestinations(
 
     object IntroView : GisMemoDestinations(
         route = "introview",
-        name = "리스트",
+        name = "List",
         icon = Icons.Outlined.FormatListBulleted
     )
 
 
     object WriteMemoView : GisMemoDestinations(
         route = "writememo",
-        name = "작성",
+        name = "Write",
         icon = Icons.Outlined.EditNote
     )
 
 
     object MapView : GisMemoDestinations(
         route = "mapview",
-        name = "마커",
+        name = "Map",
         icon = Icons.Outlined.Map
     )
 
     object SettingView : GisMemoDestinations(
         route = "settings",
-        name = "설정",
+        name = "Setting",
         icon = Icons.Outlined.Settings
     )
 
