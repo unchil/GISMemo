@@ -219,7 +219,7 @@ class Repository{
         val memoTextTblList = mutableListOf<MEMO_TEXT_TBL>()
 
         val desc =
-            "지도:${currentSnapShot.value.size} 코맨트:${currentAudioText.value.size} 사진:${currentPhoto.value.size} 비디오:${currentVideo.value.size}"
+            "map:${currentSnapShot.value.size} comment:${currentAudioText.value.size} photo:${currentPhoto.value.size} video:${currentVideo.value.size}"
         val snapshot = currentSnapShot.value.first().encodedPath ?: ""
         var snippets = ""
 
