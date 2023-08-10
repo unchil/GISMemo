@@ -1082,7 +1082,7 @@ fun SearchView(
                 onActiveChange = {
                     isVisible.value = it
                 },
-                placeholder = { Text("검색 할 제목을 입력 하세요") },
+                placeholder = { Text("Enter a title to search for") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
