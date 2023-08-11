@@ -43,6 +43,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import coil.size.Size
+import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.LuckMemoDB
 import com.example.gismemo.navigation.GisMemoDestinations
@@ -60,6 +61,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
+
+
+val LocalUsableHaptic = compositionLocalOf{ true }
 
 class MainActivity : ComponentActivity() {
 
@@ -93,19 +97,19 @@ class MainActivity : ComponentActivity() {
         setContent {
 
 
+            val context = LocalContext.current
+            val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
+            val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
+            val isUsableHaptic = repository.isUsableHaptic.collectAsState()
             val hapticFeedback = LocalHapticFeedback.current
             val isPressed = remember { mutableStateOf(false) }
-            LaunchedEffect(key1 = isPressed.value) {
-                if (isPressed.value) {
+            LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic.value) {
+                if (isPressed.value && isUsableHaptic.value) {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     isPressed.value = false
                 }
             }
 
-
-
-            val context = LocalContext.current
-            val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
 
             val coroutineScope = rememberCoroutineScope()
 
@@ -152,193 +156,201 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CompositionLocalProvider( LocalLuckMemoDB provides luckMemoDB) {
-                        CompositionLocalProvider( LocalPermissionsManager provides permissionsManager) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                if (!isConnect.value) {
-                                    ChkNetWork(
-                                        onCheckState = {
-                                            coroutineScope.launch {
-                                                isConnect.value = checkInternetConnected()
-                                            }
-                                        }
-                                    )
-                                } else {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Top
-                                    ) {
-
-                                        if (isPortrait) {
+                    CompositionLocalProvider( LocalUsableHaptic provides isUsableHaptic.value) {
+                        CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
+                            CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
 
 
-                                            Row(
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterHorizontally)
-                                                    .fillMaxWidth()
-                                                    .height(90.dp)
-                                                    .shadow(6.dp),
-                                                horizontalArrangement = Arrangement.Center,
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-
-                                                mainScreens.forEachIndexed { index, item ->
 
 
-                                                    Column(
-                                                        modifier = Modifier.padding(horizontal = 10.dp),
-                                                        verticalArrangement = Arrangement.Center,
-                                                        horizontalAlignment = Alignment.CenterHorizontally
-                                                    ) {
-
-                                                        Box(modifier = Modifier) {
-
-                                                            IconButton(
-                                                                modifier = Modifier,
-
-                                                                onClick = {
-                                                                    isPressed.value = true
-                                                                    selectedItem.value = index
-                                                                    navController.navigateTo(
-                                                                        mainScreens[index].route
-                                                                    )
-                                                                },
-                                                                content = {
-                                                                    item.icon?.let {
-                                                                        Icon(
-                                                                            modifier = Modifier,
-                                                                            imageVector = it,
-                                                                            contentDescription = item.name
-                                                                        )
-                                                                    }
-                                                                }
-                                                            )
-
-                                                            if (selectedItem.value == index) {
-                                                                Box(
-                                                                    modifier = Modifier
-                                                                        .align(Alignment.Center)
-                                                                        .width(40.dp)
-                                                                        .height(40.dp)
-                                                                        .border(
-                                                                            width = 25.dp,
-                                                                            color = Color.Blue.copy(
-                                                                                alpha = 0.1f
-                                                                            ),
-                                                                            shape = ShapeDefaults.Large
-                                                                        )
-                                                                )
-
-                                                            }
-
-                                                        }
-
-                                                        item.name?.let { Text(text = it) }
-
-                                                    }
-
-
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    if (!isConnect.value) {
+                                        ChkNetWork(
+                                            onCheckState = {
+                                                coroutineScope.launch {
+                                                    isConnect.value = checkInternetConnected()
                                                 }
-
                                             }
-
-                                        }
-
-                                        Row(
+                                        )
+                                    } else {
+                                        Column(
                                             modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.spacedBy(0.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Top
                                         ) {
 
-                                            Box(modifier = Modifier.fillMaxWidth(gridWidth)) {
-                                                GisMemoNavHost(navController)
-                                            }
+                                            if (isPortrait) {
 
 
-                                            if (!isPortrait) {
-
-                                                Box(
+                                                Row(
                                                     modifier = Modifier
+                                                        .align(Alignment.CenterHorizontally)
                                                         .fillMaxWidth()
-                                                        .padding(vertical = 2.dp)
+                                                        .height(90.dp)
+                                                        .shadow(6.dp),
+                                                    horizontalArrangement = Arrangement.Center,
+                                                    verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Column(
-                                                        modifier = Modifier
-                                                            .align(Alignment.Center)
-                                                            .fillMaxHeight()
-                                                            .width(90.dp)
-                                                            .shadow(6.dp),
-                                                        verticalArrangement = Arrangement.Center,
-                                                        horizontalAlignment = Alignment.CenterHorizontally
-                                                    ) {
 
-                                                        mainScreens.forEachIndexed { index, item ->
+                                                    mainScreens.forEachIndexed { index, item ->
 
-                                                            Column(
-                                                                modifier = Modifier.padding(vertical = 0.dp),
-                                                                verticalArrangement = Arrangement.Center,
-                                                                horizontalAlignment = Alignment.CenterHorizontally
-                                                            ) {
 
-                                                                Box(modifier = Modifier) {
-                                                                    IconButton(
-                                                                        modifier = Modifier,
-                                                                        onClick = {
-                                                                            isPressed.value = true
-                                                                            selectedItem.value =
-                                                                                index
-                                                                            navController.navigateTo(
-                                                                                mainScreens[index].route
+                                                        Column(
+                                                            modifier = Modifier.padding(horizontal = 10.dp),
+                                                            verticalArrangement = Arrangement.Center,
+                                                            horizontalAlignment = Alignment.CenterHorizontally
+                                                        ) {
+
+                                                            Box(modifier = Modifier) {
+
+                                                                IconButton(
+                                                                    modifier = Modifier,
+
+                                                                    onClick = {
+                                                                        isPressed.value = true
+                                                                        selectedItem.value = index
+                                                                        navController.navigateTo(
+                                                                            mainScreens[index].route
+                                                                        )
+                                                                    },
+                                                                    content = {
+                                                                        item.icon?.let {
+                                                                            Icon(
+                                                                                modifier = Modifier,
+                                                                                imageVector = it,
+                                                                                contentDescription = item.name
                                                                             )
-                                                                        },
-                                                                        content = {
-                                                                            item.icon?.let {
-                                                                                Icon(
-                                                                                    modifier = Modifier,
-                                                                                    imageVector = it,
-                                                                                    contentDescription = item.name
-                                                                                )
-                                                                            }
                                                                         }
+                                                                    }
+                                                                )
+
+                                                                if (selectedItem.value == index) {
+                                                                    Box(
+                                                                        modifier = Modifier
+                                                                            .align(Alignment.Center)
+                                                                            .width(40.dp)
+                                                                            .height(40.dp)
+                                                                            .border(
+                                                                                width = 25.dp,
+                                                                                color = Color.Blue.copy(
+                                                                                    alpha = 0.1f
+                                                                                ),
+                                                                                shape = ShapeDefaults.Large
+                                                                            )
                                                                     )
 
-                                                                    if (selectedItem.value == index) {
-                                                                        Box(
-                                                                            modifier = Modifier
-                                                                                .align(Alignment.Center)
-                                                                                .width(40.dp)
-                                                                                .height(40.dp)
-                                                                                .border(
-                                                                                    width = 25.dp,
-                                                                                    color = Color.Blue.copy(
-                                                                                        alpha = 0.1f
-                                                                                    ),
-                                                                                    shape = ShapeDefaults.Large
-                                                                                )
-                                                                        )
-                                                                    }
                                                                 }
-
-                                                                item.name?.let { Text(text = it) }
 
                                                             }
 
+                                                            item.name?.let { Text(text = it) }
+
+                                                        }
+
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(0.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+
+                                            ) {
+
+                                                Box(modifier = Modifier.fillMaxWidth(gridWidth)) {
+                                                    GisMemoNavHost(navController)
+                                                }
+
+
+                                                if (!isPortrait) {
+
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(vertical = 2.dp)
+                                                    ) {
+                                                        Column(
+                                                            modifier = Modifier
+                                                                .align(Alignment.Center)
+                                                                .fillMaxHeight()
+                                                                .width(90.dp)
+                                                                .shadow(6.dp),
+                                                            verticalArrangement = Arrangement.Center,
+                                                            horizontalAlignment = Alignment.CenterHorizontally
+                                                        ) {
+
+                                                            mainScreens.forEachIndexed { index, item ->
+
+                                                                Column(
+                                                                    modifier = Modifier.padding(
+                                                                        vertical = 0.dp
+                                                                    ),
+                                                                    verticalArrangement = Arrangement.Center,
+                                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                                ) {
+
+                                                                    Box(modifier = Modifier) {
+                                                                        IconButton(
+                                                                            modifier = Modifier,
+                                                                            onClick = {
+                                                                                isPressed.value =
+                                                                                    true
+                                                                                selectedItem.value =
+                                                                                    index
+                                                                                navController.navigateTo(
+                                                                                    mainScreens[index].route
+                                                                                )
+                                                                            },
+                                                                            content = {
+                                                                                item.icon?.let {
+                                                                                    Icon(
+                                                                                        modifier = Modifier,
+                                                                                        imageVector = it,
+                                                                                        contentDescription = item.name
+                                                                                    )
+                                                                                }
+                                                                            }
+                                                                        )
+
+                                                                        if (selectedItem.value == index) {
+                                                                            Box(
+                                                                                modifier = Modifier
+                                                                                    .align(Alignment.Center)
+                                                                                    .width(40.dp)
+                                                                                    .height(40.dp)
+                                                                                    .border(
+                                                                                        width = 25.dp,
+                                                                                        color = Color.Blue.copy(
+                                                                                            alpha = 0.1f
+                                                                                        ),
+                                                                                        shape = ShapeDefaults.Large
+                                                                                    )
+                                                                            )
+                                                                        }
+                                                                    }
+
+                                                                    item.name?.let { Text(text = it) }
+
+                                                                }
+
+                                                            }
                                                         }
                                                     }
+
                                                 }
 
                                             }
 
                                         }
-
                                     }
                                 }
                             }
                         }
                     }
-
                 }
             }
 

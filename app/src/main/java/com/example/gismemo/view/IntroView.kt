@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.size.Size
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.MEMO_TBL
@@ -76,14 +77,6 @@ fun IntroView(
     navController: NavHostController
 ) {
 
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
-        }
-    }
 
 
 
@@ -94,6 +87,8 @@ fun IntroView(
     val viewModel = remember {
         ListViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
+
+
     val memoListStream = viewModel.memoListPaging.collectAsLazyPagingItems()
     val isRefreshing = viewModel.isRefreshing.collectAsState()
     val isSearchRefreshing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
@@ -344,9 +339,7 @@ fun IntroView(
                                     modifier = Modifier
                                         .padding(end = 10.dp, bottom = upButtonPadingValue)
                                         .align(Alignment.BottomEnd),
-                                    listState = lazyListState,
-                                    coroutineScope = coroutineScope,
-                              //      interactionSource = interactionSource
+                                    listState = lazyListState
                                 )
 
                             }
@@ -378,16 +371,20 @@ fun MemoSwipeView(
 
     val context = LocalContext.current
     val db = LocalLuckMemoDB.current
+
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
+
 
 
 
@@ -497,7 +494,7 @@ fun MemoSwipeView(
             .padding(top = 2.dp) ,
         shape = ShapeDefaults.ExtraSmall ,
         onClick = {
-            isPressed.value = true
+            hapticProcessing()
             if(item.isSecret && checkBiometricSupport()) {
                 biometricPrompt(context, BiometricCheckType.DETAILVIEW, onResult)
             }else {
@@ -634,12 +631,15 @@ private fun BackgroundContent(
 
 
 
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
 
@@ -664,7 +664,7 @@ private fun BackgroundContent(
 
                 IconButton(
                     onClick = {
-                        isPressed.value = true
+                        hapticProcessing()
                         onClick(ListItemBackgroundAction.SHARE)
                     }
                 ) {
@@ -686,7 +686,7 @@ private fun BackgroundContent(
             Row {
                 IconButton(
                     onClick = {
-                        isPressed.value = true
+                        hapticProcessing()
                         //  isAnchor.value = false
                         onClick(ListItemBackgroundAction.DELETE)
                     }
@@ -722,10 +722,9 @@ fun SearchingProgressIndicator(
 @Composable
 fun UpButton(
     modifier:Modifier,
-    listState: LazyListState,
-    coroutineScope: CoroutineScope,
-  //  interactionSource: MutableInteractionSource
+    listState: LazyListState
 ){
+
 
     val showButton by remember {
         derivedStateOf {
@@ -734,16 +733,17 @@ fun UpButton(
     }
 
 
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
-
-
 
     if( showButton) {
         FloatingActionButton(
@@ -753,7 +753,7 @@ fun UpButton(
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(0)
-                    isPressed.value = true
+                    hapticProcessing()
                 }
             }
         ) {

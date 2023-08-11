@@ -26,6 +26,8 @@ class WriteMemoViewModel (
     val currentLocationStateFlow: StateFlow<CURRENTLOCATION_TBL?>
             = repository._currentLocation
 
+
+
     /*
 
     val currentTagArrayList: StateFlow< ArrayList<Int>>

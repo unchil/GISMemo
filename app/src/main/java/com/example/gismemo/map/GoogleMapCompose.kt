@@ -83,6 +83,7 @@ import android.hardware.biometrics.BiometricPrompt
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.core.content.ContextCompat
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.db.LocalLuckMemoDB
 
 
@@ -378,15 +379,28 @@ fun MemoMapView(navController: NavController){
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
 
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
+/*
+
+    val isPressed =   mutableStateOf(false)
+    LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic) {
+        if (isPressed.value &&  isUsableHaptic ) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
             isPressed.value = false
         }
     }
 
+ */
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
 
 
     val context = LocalContext.current
@@ -536,12 +550,14 @@ fun MemoMapView(navController: NavController){
                                 //  icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE),
                                 draggable = true,
                                 onInfoWindowClick = {
-                                    isPressed.value = true
+                                 //   isPressed.value = true
+                                    hapticProcessing()
                                     isMemoCardView.value = false
                                 },
                                 onInfoWindowClose = {},
                                 onInfoWindowLongClick = { marker ->
-                                    isPressed.value = true
+                                    //   isPressed.value = true
+                                    hapticProcessing()
                                     isMemoCardView.value = true
                                     isCurrentMemo.value = it.id
                                 },
@@ -558,7 +574,8 @@ fun MemoMapView(navController: NavController){
 
                     if (isMemoCardView.value) {
                         Box(
-                            modifier = Modifier.fillMaxWidth(cardViewRate)
+                            modifier = Modifier
+                                .fillMaxWidth(cardViewRate)
                                 .align(Alignment.BottomCenter)
                                 .padding(10.dp)
                                 .shadow(AppBarDefaults.TopAppBarElevation)
@@ -580,14 +597,16 @@ fun MemoMapView(navController: NavController){
                     Column(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(end = 10.dp).padding(top = 10.dp)
+                            .padding(end = 10.dp)
+                            .padding(top = 10.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(color = Color.LightGray.copy(alpha = 0.7f))
                     ) {
 
                         androidx.compose.material3.IconButton(
                             onClick = {
-                                isPressed.value = true
+                                //   isPressed.value = true
+                                hapticProcessing()
                                 cameraPositionState.position = defaultCameraPosition
                                 if (currentLocation != null) {
                                     markerState.position = currentLocation.toLatLng()
@@ -626,7 +645,8 @@ fun MemoMapView(navController: NavController){
 
                         androidx.compose.material3.IconButton(
                             onClick = {
-                                isPressed.value = true
+                                //   isPressed.value = true
+                                hapticProcessing()
                                 isVisibleMenu.value = !isVisibleMenu.value
                             }
                         ) {
@@ -643,7 +663,8 @@ fun MemoMapView(navController: NavController){
                                 visible = isVisibleMenu.value,
                             ) {
                                 androidx.compose.material3.IconButton(onClick = {
-                                    isPressed.value = true
+                                    //   isPressed.value = true
+                                    hapticProcessing()
                                     val mapType = MapType.values().first { mapType ->
                                         mapType.name == it.name
                                     }
@@ -688,14 +709,18 @@ fun MemoView(
 
 
 
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
+
 
     val context = LocalContext.current
 
@@ -756,7 +781,8 @@ fun MemoView(
         ,
         onClick = {
 
-            isPressed.value = true
+
+            hapticProcessing()
             if(item.isSecret && checkBiometricSupport()) {
                 biometricPrompt(context, BiometricCheckType.DETAILVIEW, onResult)
             }else {

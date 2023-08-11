@@ -23,7 +23,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import androidx.core.util.Consumer
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
@@ -123,6 +126,17 @@ sealed class RecordingStatus {
 @Composable
 
 fun CameraCompose( navController: NavController? = null   ) {
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val isPressed = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic) {
+        if (isPressed.value &&  isUsableHaptic ) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            isPressed.value = false
+        }
+    }
+
 
 
     val permissions =
@@ -323,7 +337,7 @@ fun CameraCompose( navController: NavController? = null   ) {
                     showFlashIcon = currentCameraInfo.value?.hasFlashUnit() ?: false,
                     torchState = torchState.value,
                     onFlashTapped = {
-
+                        isPressed.value = true
                         torchState.value = when (torchState.value) {
                             TorchState.OFF -> TorchState.ON
                             else -> TorchState.OFF
@@ -353,22 +367,27 @@ fun CameraCompose( navController: NavController? = null   ) {
                 recordingStatus = recordingStatus.value,
                 showFlipIcon = isDualCamera.value,
                 onRecordTapped = {
+                    isPressed.value = true
                     takeVideo()
                 },
                 onPauseTapped = {
+                    isPressed.value = true
                     videoRecording?.pause()
                     recordingStatus.value = RecordingStatus.Paused
                 },
                 onResumeTapped = {
+                    isPressed.value = true
                     videoRecording?.resume()
                     recordingStatus.value = RecordingStatus.InProgress
                 },
                 onStopTapped = {
+                    isPressed.value = true
                     videoRecording?.stop()
                     recordingStarted.value = false
                     recordingStatus.value = RecordingStatus.Idle
                 },
                 onFlipTapped = {
+                    isPressed.value = true
                     if(videoRecording == null ) {
                         cameraSelector.value = when (cameraSelector.value) {
                             CameraSelector.DEFAULT_BACK_CAMERA -> CameraSelector.DEFAULT_FRONT_CAMERA
@@ -377,10 +396,12 @@ fun CameraCompose( navController: NavController? = null   ) {
                     }
                 },
                 onCaptureTapped = {
+                    isPressed.value = true
                     isVideoRecording.value = false
                     takePicture()
                 }  ,
                 onPhotoPreviewTapped = { it ->
+                    isPressed.value = true
                     when(it){
                         is Int -> { }
                         else -> {

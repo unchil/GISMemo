@@ -40,6 +40,9 @@ class Repository{
     val selectedWeather:MutableStateFlow<MEMO_WEATHER_TBL?> = MutableStateFlow(null)
 
 
+    val isUsableHaptic: MutableStateFlow<Boolean>
+            = MutableStateFlow(true)
+
 
 
     val currentIsDrawing: MutableStateFlow<Boolean>
@@ -72,7 +75,9 @@ class Repository{
         currentSnapShot.value = listOf()
     }
 
-
+    fun updateIsUsableHaptic(value:Boolean){
+        isUsableHaptic.value = value
+    }
 
 
     fun updateCurrentIsDrawing(isDrawing:Boolean){
@@ -340,7 +345,9 @@ class Repository{
         }
     }
 
-
+    suspend fun deleteAllMemo(){
+        database.memoDao.trancate()
+    }
 
 
     val _markerMemoList:MutableStateFlow<List<MEMO_TBL>>  = MutableStateFlow(listOf())

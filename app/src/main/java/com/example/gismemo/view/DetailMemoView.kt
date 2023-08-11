@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.MEMO_TBL
@@ -49,29 +50,36 @@ import java.io.FileOutputStream
 @Composable
 fun DetailMemoView(navController: NavController, id:Long){
 
-
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
-        }
-    }
-
-    val coroutineScope = rememberCoroutineScope()
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         DetailMemoViewModel (repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+
+
+
+
+    //--------------
     LaunchedEffect(key1 = viewModel, ){
         viewModel.onEvent(DetailMemoViewModel.Event.SetMemo(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetWeather(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetTags(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetFiles(id = id))
     }
-
+    //--------------
 
 
 
@@ -257,7 +265,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                     ) {
                         androidx.compose.material3.IconButton(
                             onClick = {
-                                isPressed.value = true
+                               // isPressed.value = true
+                                hapticProcessing()
                             val mapType = MapType.values().first { mapType ->
                                 mapType.name == it.name
                             }
@@ -282,7 +291,8 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                 androidx.compose.material3.IconButton(
                     onClick = {
-                        isPressed.value = true
+                        // isPressed.value = true
+                        hapticProcessing()
                         isVisibleMenu.value = !isVisibleMenu.value
                     }
                 ) {
@@ -298,7 +308,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                     ) {
                         androidx.compose.material3.IconButton(
                             onClick = {
-                                isPressed.value = true
+                                // isPressed.value = true
+                                hapticProcessing()
                             when(it){
                                 SettingMenu.SECRET -> {
                                     isLock = !isLock
@@ -402,7 +413,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                         ) {
                             androidx.compose.material3.TextButton(
                                 onClick = {
-                                    isPressed.value = true
+                                    // isPressed.value = true
+                                    hapticProcessing()
                                     tagInfoDataList.clear()
                                     selectedTagArray.value = arrayListOf()
                                     viewModel.onEvent(DetailMemoViewModel.Event.UpdateTagList(id,  arrayListOf()))
@@ -414,7 +426,8 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                             androidx.compose.material3.TextButton(
                                 onClick = {
-                                    isPressed.value = true
+                                    // isPressed.value = true
+                                    hapticProcessing()
                                     isTagDialog = false
                                 }
                             ) {

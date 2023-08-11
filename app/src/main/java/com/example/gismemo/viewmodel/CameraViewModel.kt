@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 
 class CameraViewModel  ( val repository: Repository) : ViewModel(){
 
+
+
     var _currentPhoto: StateFlow<List<Uri>>
             = repository.currentPhoto
 

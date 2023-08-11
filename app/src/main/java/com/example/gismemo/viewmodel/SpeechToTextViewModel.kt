@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 
 class SpeechToTextViewModel (  val repository: Repository ) : ViewModel(){
 
+
+
     val _currentAudioText: StateFlow<List<Pair<String, List<Uri>>>>
             = repository.currentAudioText
 

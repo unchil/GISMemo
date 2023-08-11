@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.gismemo.LocalUsableHaptic
+import com.example.gismemo.data.RepositoryProvider
+import com.example.gismemo.db.LocalLuckMemoDB
+import com.example.gismemo.db.LuckMemoDB
 import com.example.gismemo.db.UnixTimeToString
 import com.example.gismemo.db.yyyyMMddHHmm
 import com.example.gismemo.shared.utils.SnackBarChannelType
@@ -137,14 +142,21 @@ fun RadioButtonGroupView(
     content: @Composable (( ) -> Unit)? = null
 ){
 
+
+
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
+
+
 
     val (selectedOption, onOptionSelected) = mutableStateOf(state.value.second[state.value.first.value])
 
@@ -167,7 +179,7 @@ fun RadioButtonGroupView(
                     .selectable(
                         selected = (it == selectedOption),
                         onClick = {
-                            isPressed.value = true
+                            hapticProcessing()
                             onOptionSelected( it )
                             state.value.first.value= index
                         },
@@ -213,12 +225,15 @@ fun AssistChipGroupView(
     val itemModifier = Modifier.wrapContentSize()
 
 
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
 
@@ -252,7 +267,7 @@ fun AssistChipGroupView(
                         AssistChip(
                             modifier = itemModifier,
                             onClick = {
-                                isPressed.value = true
+                                hapticProcessing()
                                 it.isSet.value = !it.isSet.value
 
                                 if (getState != null) {
@@ -314,12 +329,15 @@ fun SearchView(
 ){
 
 
+    val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
 
@@ -476,7 +494,7 @@ fun SearchView(
                     IconButton(
                         modifier = Modifier,
                         onClick = {
-                            isPressed.value = true
+                            hapticProcessing()
                             onSearch(query_title.value)
                         },
                         content = {
@@ -495,7 +513,7 @@ fun SearchView(
                         IconButton(
                             modifier = Modifier,
                             onClick = {
-                                isPressed.value = true
+                                hapticProcessing()
                                 startLauncherRecognizerIntent.launch(recognizerIntent())
                             },
                             content = {
@@ -511,7 +529,7 @@ fun SearchView(
                         IconButton(
                             modifier = Modifier,
                             onClick = {
-                                isPressed.value = true
+                                hapticProcessing()
                                 initStateValue()
                                 onMessage?.let {
                                     it()
@@ -586,7 +604,7 @@ fun SearchView(
             androidx.compose.material.IconButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
-                    isPressed.value = true
+                    hapticProcessing()
                     isTagBox = !isTagBox
                           },
                 content = {
@@ -631,7 +649,7 @@ fun SearchView(
             androidx.compose.material.IconButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
-                    isPressed.value = true
+                    hapticProcessing()
                     isDateBox.value = !isDateBox.value
                           },
                 content = {

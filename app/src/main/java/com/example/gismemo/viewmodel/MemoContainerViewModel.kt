@@ -12,6 +12,7 @@ class MemoContainerViewModel (
 ) : ViewModel() {
 
 
+
     val _memo: StateFlow<MEMO_TBL?>
             = repository.selectedMemo
 

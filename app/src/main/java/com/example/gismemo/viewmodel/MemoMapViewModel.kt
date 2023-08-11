@@ -8,11 +8,13 @@ import com.example.gismemo.data.Repository
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.db.entity.MEMO_TBL
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MemoMapViewModel (
     val repository: Repository
 ) : ViewModel() {
+
 
     val currentLocationFlow: MutableStateFlow<CURRENTLOCATION_TBL?>
         = repository._currentLocation

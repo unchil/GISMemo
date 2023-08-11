@@ -69,6 +69,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.size.Size
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
@@ -228,25 +229,27 @@ fun WriteMemoView(navController: NavController ){
 
 
 
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
-        }
-    }
-
-
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val coroutineScope = rememberCoroutineScope()
 
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         WriteMemoViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
+    }
+
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
     }
 
 
@@ -385,7 +388,8 @@ fun WriteMemoView(navController: NavController ){
 
 
     val onMapLongClickHandler: (LatLng) -> Unit = {
-        isPressed.value = true
+        //isPressed.value = true
+        hapticProcessing()
         markerState.position = it
        // cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
         viewModel.onEvent(WriteMemoViewModel.Event.SetCurrentLocation(it))
@@ -527,7 +531,8 @@ fun WriteMemoView(navController: NavController ){
                             color = Color.Yellow,
                             width = 20F,
                             onClick = { polyline ->
-                                isPressed.value = true
+                                //isPressed.value = true
+                                hapticProcessing()
                                 polylineList.remove(polyline.points)
                                 polylineListR.remove(polyline.points)
                             }
@@ -577,7 +582,8 @@ fun WriteMemoView(navController: NavController ){
 
                             androidx.compose.material3.IconButton(
                                 onClick = {
-                                    isPressed.value = true
+                                    //isPressed.value = true
+                                    hapticProcessing()
                                 when(it){
                                     SaveMenu.CLEAR -> {
                                         channel.trySend(snackbarChannelList.first {
@@ -613,7 +619,8 @@ fun WriteMemoView(navController: NavController ){
                     androidx.compose.material3.IconButton(
 
                         onClick = {
-                            isPressed.value = true
+                            //isPressed.value = true
+                            hapticProcessing()
                             context.getDeviceLocation {it?.let {
                                 viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
                                 cameraPositionState.position = defaultCameraPosition
@@ -644,7 +651,8 @@ fun WriteMemoView(navController: NavController ){
                         ) {
                             androidx.compose.material3.IconButton(
                                 onClick = {
-                                    isPressed.value = true
+                                    //isPressed.value = true
+                                    hapticProcessing()
                                 when(it){
                                     CreateMenu.SNAPSHOT -> {
                                         isSnapShot = true
@@ -683,7 +691,8 @@ fun WriteMemoView(navController: NavController ){
 
                             androidx.compose.material3.IconButton(
                                 onClick = {
-                                    isPressed.value = true
+                                    //isPressed.value = true
+                                    hapticProcessing()
                                 when(it){
 
                                     DrawingMenu.DrawEraser -> {
@@ -721,7 +730,8 @@ fun WriteMemoView(navController: NavController ){
 
                     androidx.compose.material3.IconButton(
                         onClick = {
-                            isPressed.value = true
+                            //isPressed.value = true
+                            hapticProcessing()
                             isVisibleMenu.value = !isVisibleMenu.value
                         }
                     ) {
@@ -738,7 +748,8 @@ fun WriteMemoView(navController: NavController ){
                             androidx.compose.material3.IconButton(
 
                                 onClick = {
-                                    isPressed.value = true
+                                    //isPressed.value = true
+                                    hapticProcessing()
                                 when(it){
                                     SettingMenu.SECRET -> {
                                         isLock = !isLock
@@ -818,7 +829,8 @@ fun WriteMemoView(navController: NavController ){
                             androidx.compose.material3.IconButton(
 
                                 onClick = {
-                                    isPressed.value = true
+                                    //isPressed.value = true
+                                    hapticProcessing()
                                 val mapType = MapType.values().first { mapType ->
                                     mapType.name == it.name
                                 }
@@ -869,7 +881,8 @@ fun WriteMemoView(navController: NavController ){
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = {
-                                        isPressed.value = true
+                                        //isPressed.value = true
+                                        hapticProcessing()
                                         tagInfoDataList.clear()
                                         selectedTagArray.value = arrayListOf()
                                         viewModel.onEvent(
@@ -891,7 +904,8 @@ fun WriteMemoView(navController: NavController ){
                                 IconButton(
                                     modifier = Modifier,
                                     onClick = {
-                                        isPressed.value = true
+                                        //isPressed.value = true
+                                        hapticProcessing()
                                         isTagDialog = false
                                               },
                                     content = {
@@ -915,8 +929,7 @@ fun WriteMemoView(navController: NavController ){
                 if(isAlertDialog.value){
                     ConfirmDialog(
                         isAlertDialog = isAlertDialog,
-                        onEvent = saveHandler,
-                        isPressed =    isPressed )
+                        onEvent = saveHandler )
                 }
 
 
@@ -936,8 +949,21 @@ fun WriteMemoView(navController: NavController ){
 fun ConfirmDialog(
     isAlertDialog: MutableState<Boolean> ,
     onEvent: (title:String) -> Unit,
-    isPressed : MutableState<Boolean>,
 ){
+
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
 
     val titleTimeStamp = SimpleDateFormat(
         "yyyy-MM-dd HH:mm",
@@ -1003,7 +1029,8 @@ fun ConfirmDialog(
                                     modifier = Modifier,
 
                                     onClick = {
-                                        isPressed.value = true
+                                       // isPressed.value = true
+                                        hapticProcessing()
                                         titleText.value  = ""
                                         startLauncherRecognizerIntent.launch(recognizerIntent())
                                     },
@@ -1020,7 +1047,8 @@ fun ConfirmDialog(
 
                                 IconButton(
                                     onClick = {
-                                        isPressed.value = true
+                                        // isPressed.value = true
+                                        hapticProcessing()
                                     titleText.value = ""
                                 }) {
                                     Icon(
@@ -1048,7 +1076,8 @@ fun ConfirmDialog(
                     androidx.compose.material3.TextButton(
 
                         onClick = {
-                            isPressed.value = true
+                            // isPressed.value = true
+                            hapticProcessing()
                             isAlertDialog.value = false
                         }
                     ) {
@@ -1061,7 +1090,8 @@ fun ConfirmDialog(
                     androidx.compose.material3.TextButton(
 
                         onClick = {
-                            isPressed.value = true
+                            // isPressed.value = true
+                            hapticProcessing()
                             isAlertDialog.value = false
                             onEvent(titleText.value)
                         }
@@ -1090,15 +1120,6 @@ fun MemoDataContainer(
     channel:Channel<Int>? = null){
 
 
-    val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value) {
-        if (isPressed.value) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
-        }
-    }
-
 
     val context = LocalContext.current
     val scrollStateV = rememberScrollState()
@@ -1109,6 +1130,17 @@ fun MemoDataContainer(
         MemoContainerViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
 
     val currentTabView = remember {
         mutableStateOf(WriteMemoDataType.SNAPSHOT)
@@ -1136,7 +1168,8 @@ fun MemoDataContainer(
                 selected = currentTabView.value ==  it,
                 selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
-                    isPressed.value = true
+                 //   isPressed.value = true
+                    hapticProcessing()
                     currentTabView.value = it
                     currentTabIndex.value = index
                 },
@@ -1203,6 +1236,20 @@ fun MemoDataContainer(
 @Composable
 fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
 
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+
     val pagerState =   rememberPagerState()
 
     val defaultData:Pair<String, Int> = when(item){
@@ -1241,6 +1288,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                         IconButton(
                             modifier = Modifier.align(Alignment.CenterEnd),
                             onClick = {
+                           //     isPressed.value = true
+                                hapticProcessing()
                                     it(pagerState.currentPage)
                                     channel?.let {channel ->
                                         channel.trySend(snackbarChannelList.first {snackBarChannelData ->

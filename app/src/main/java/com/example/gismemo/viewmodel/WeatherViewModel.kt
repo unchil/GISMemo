@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 class WeatherViewModel(val repository: Repository) : ViewModel() {
 
 
-
     val _currentWeatheStaterFlow: MutableStateFlow<CURRENTWEATHER_TBL?>
         = repository._currentWeather
 

@@ -24,7 +24,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.shared.composables.*
@@ -43,6 +46,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 
 
@@ -71,8 +75,28 @@ val recognizerIntent =  {
 
 @Composable
 fun AudioTextView(data: Pair<String, List<Uri>>){
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+
+
+
     var speechInput =  rememberSaveable { data.first }
     val recordingUri: List<Uri>  = rememberSaveable { data.second }
+
+
+
+
 
     Column(modifier = Modifier.fillMaxSize().padding( 20.dp),
         horizontalAlignment= Alignment.CenterHorizontally
@@ -86,7 +110,11 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
 
             singleLine = false,
             trailingIcon = {
-                IconButton(onClick = { speechInput = "" }) {
+                IconButton(
+                    onClick = {
+                        hapticProcessing()
+                    speechInput = ""
+                }) {
                     Icon(
                         imageVector = Icons.Rounded.HighlightOff,
                         contentDescription = "Clear"
@@ -119,6 +147,18 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SpeechRecognizerCompose(navController: NavController   ) {
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
 
 
     val permissions =  remember { listOf(Manifest.permission.RECORD_AUDIO) }
@@ -238,7 +278,12 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
                         .fillMaxWidth(),
                     singleLine = false,
                     trailingIcon = {
-                        IconButton(onClick = { audioTextData.first.value  = "" }) {
+                        IconButton(
+                            onClick = {
+                                hapticProcessing()
+                                audioTextData.first.value  = ""
+                            }
+                        ) {
                             Icon(
                                 imageVector = Icons.Rounded.HighlightOff,
                                 contentDescription = "Clear"
@@ -257,7 +302,10 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
 
                     IconButton(
                         modifier = Modifier.scale(1.5f),
-                        onClick = { startLauncherRecognizerIntent.launch(recognizerIntent) },
+                        onClick = {
+                            hapticProcessing()
+                            startLauncherRecognizerIntent.launch(recognizerIntent)
+                                  },
                         content = {
                             Icon(
                                 modifier = Modifier,
