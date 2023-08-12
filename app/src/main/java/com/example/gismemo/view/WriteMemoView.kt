@@ -1120,14 +1120,12 @@ fun MemoDataContainer(
     channel:Channel<Int>? = null){
 
 
-
-    val context = LocalContext.current
-    val scrollStateV = rememberScrollState()
-    val scrollStateH = rememberScrollState()
-
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
-        MemoContainerViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
+        MemoContainerViewModel(
+            repository = RepositoryProvider.getRepository().apply { database = db } ,
+            user = if (onEvent == null ) MemoDataContainerUser.DetailMemoView else MemoDataContainerUser.WriteMemoView
+        )
     }
 
     val isUsableHaptic = LocalUsableHaptic.current
@@ -1195,10 +1193,10 @@ fun MemoDataContainer(
 
     val memoData:MutableState<MemoData?> = mutableStateOf(
         when (currentTabView.value){
-            WriteMemoDataType.PHOTO ->  MemoData.Photo(dataList = viewModel._phothoList.collectAsState().value.toMutableList())
-            WriteMemoDataType.AUDIOTEXT -> MemoData.AudioText(dataList = viewModel._audioTextList.collectAsState().value.toMutableList())
-            WriteMemoDataType.VIDEO ->  MemoData.Video(dataList = viewModel._videoList.collectAsState().value.toMutableList())
-            WriteMemoDataType.SNAPSHOT ->  MemoData.SnapShot(dataList = viewModel._snapShotList.collectAsState().value.toMutableList())
+            WriteMemoDataType.PHOTO ->  MemoData.Photo(dataList = viewModel.phothoList.collectAsState().value.toMutableList())
+            WriteMemoDataType.AUDIOTEXT -> MemoData.AudioText(dataList = viewModel.audioTextList.collectAsState().value.toMutableList())
+            WriteMemoDataType.VIDEO ->  MemoData.Video(dataList = viewModel.videoList.collectAsState().value.toMutableList())
+            WriteMemoDataType.SNAPSHOT ->  MemoData.SnapShot(dataList = viewModel.snapShotList.collectAsState().value.toMutableList())
         }
 
     )

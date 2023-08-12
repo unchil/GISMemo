@@ -69,7 +69,9 @@ fun BiometricCheckType.getTitle():Pair<String,String> {
 
 }
 
-
+enum class MemoDataContainerUser {
+    DetailMemoView, WriteMemoView
+}
 enum class WriteMemoDataType {
     PHOTO,AUDIOTEXT,VIDEO,SNAPSHOT
 }

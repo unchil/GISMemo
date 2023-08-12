@@ -108,7 +108,7 @@ class Repository{
         currentPolylineList.value = polylineList
     }
 
-
+//------
     val currentAudioText: MutableStateFlow<List<Pair<String, List<Uri>>>>
             = MutableStateFlow( listOf())
 
@@ -120,6 +120,25 @@ class Repository{
 
     val currentSnapShot: MutableStateFlow<List<Uri>>
             = MutableStateFlow( listOf())
+
+    val detailAudioText: MutableStateFlow<List<Pair<String, List<Uri>>>>
+            = MutableStateFlow( listOf())
+
+    val detailPhoto:  MutableStateFlow<List<Uri>>
+            = MutableStateFlow( listOf())
+
+    val detailVideo: MutableStateFlow<List<Uri>>
+            = MutableStateFlow( listOf())
+
+    val detailSnapShot: MutableStateFlow<List<Uri>>
+            = MutableStateFlow( listOf())
+
+
+
+//------
+
+
+
 
 
 
@@ -403,6 +422,7 @@ class Repository{
         }
     }
 
+    /*
     suspend fun setFiles(id:Long){
 
 
@@ -441,6 +461,47 @@ class Repository{
 
 
     }
+
+     */
+    suspend fun setFiles(id:Long){
+
+
+        database.memoFileDao.select_Flow(id).collectLatest {
+            val currentSnapShotList = it.filter { it.type ==  WriteMemoDataType.SNAPSHOT.name}.map { it.filePath.toUri() }.sorted()
+            detailSnapShot.emit( currentSnapShotList )
+
+            val currentPhotoList = it.filter { it.type ==  WriteMemoDataType.PHOTO.name}.map { it.filePath.toUri() }.sorted()
+            detailPhoto.emit(  currentPhotoList )
+
+            val currentVideoList = it.filter { it.type ==  WriteMemoDataType.VIDEO.name}.map { it.filePath.toUri() }.sorted()
+            detailVideo.emit(  currentVideoList  )
+
+            database.memoTextDao.select_Flow(id).collectLatest {memoTextTblList ->
+
+                val audiTextList = mutableListOf<Pair<String,List<Uri>>>()
+                val audioTextFileList = it.filter { it.type ==  WriteMemoDataType.AUDIOTEXT.name}
+
+                memoTextTblList.forEach {commentList ->
+                    audiTextList.add(
+                        Pair(
+                            commentList.comment,
+                            audioTextFileList.filter {
+                                it.index == commentList.index
+                            }.map {
+                                it.filePath.toUri()
+                            }.sorted()
+                        )
+                    )
+                }
+
+                detailAudioText.emit( audiTextList  )
+            }
+
+        }
+
+
+    }
+
 
 
     suspend fun updateTagList(id:Long, selectTagList: ArrayList< Int>){
