@@ -47,14 +47,15 @@ import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.ListViewModel
+import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 data class TagInfoData(
-    var icon : ImageVector ,
+    var icon : ImageVector,
     var name: String,
-    var isSet:MutableState<Boolean>  = mutableStateOf(false)
+    var isSet:Boolean = false
 )
 
 val tagInfoDataList: List<TagInfoData> = listOf(
@@ -90,9 +91,11 @@ val tagInfoDataList: List<TagInfoData> = listOf(
 
 fun  List<TagInfoData>.clear(){
     this.forEach {
-        it.isSet.value = false
+        it.isSet = false
     }
 }
+
+
 
 
 enum class SearchOption {
@@ -138,7 +141,8 @@ val searchQueryDataList: List<SearchQueryData> = listOf(
 @Composable
 fun RadioButtonGroupView(
     isVisible:MutableState<Boolean> = mutableStateOf(true),
-    state:MutableState<RadioGroupState>,
+    state:MutableState<Int>,
+    items:List<String>,
     content: @Composable (( ) -> Unit)? = null
 ){
 
@@ -158,7 +162,7 @@ fun RadioButtonGroupView(
 
 
 
-    val (selectedOption, onOptionSelected) = mutableStateOf(state.value.second[state.value.first.value])
+    val (selectedOption, onOptionSelected) = mutableStateOf(items[state.value])
 
     Row(
         modifier = Modifier
@@ -173,7 +177,7 @@ fun RadioButtonGroupView(
         }
 
 
-        state.value.second.forEachIndexed { index, it ->
+        items.forEachIndexed { index, it ->
             Row(
                 modifier = Modifier
                     .selectable(
@@ -181,7 +185,7 @@ fun RadioButtonGroupView(
                         onClick = {
                             hapticProcessing()
                             onOptionSelected( it )
-                            state.value.first.value= index
+                           state.value = index
                         },
                         role = Role.RadioButton
                     ),
@@ -215,13 +219,15 @@ fun AssistChipGroupView(
     tagInfoDataList.clear()
     if(setState.value.isNotEmpty()){
         setState.value.forEach {
-            tagInfoDataList[it].isSet.value = true
+            //tagInfoDataList[it].isSet.value = true
+            tagInfoDataList[it].isSet = true
         }
     }
 
     val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
-    val lazyGridState = rememberLazyGridState()
-    val tagList = rememberSaveable {   tagInfoDataList }
+
+
+
     val itemModifier = Modifier.wrapContentSize()
 
 
@@ -261,20 +267,23 @@ fun AssistChipGroupView(
 
 
 
-                itemsIndexed(tagList) { index, it ->
+                itemsIndexed(tagInfoDataList) { index, it ->
 
 
                         AssistChip(
                             modifier = itemModifier,
                             onClick = {
                                 hapticProcessing()
-                                it.isSet.value = !it.isSet.value
+                          //      it.isSet.value = !it.isSet.value
+                                it.isSet = !it.isSet
 
                                 if (getState != null) {
                                     val selectedTagArray = arrayListOf<Int>()
                                     tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                        if (tagInfoData.isSet.value) {
-                                            selectedTagArray.add(index)
+                                        if (tagInfoData.isSet) {
+                                            if (tagInfoData.isSet) {
+                                                selectedTagArray.add(index)
+                                            }
                                         }
                                     }
                                     tagInfoDataList.clear()
@@ -293,7 +302,7 @@ fun AssistChipGroupView(
                             },
                             leadingIcon = {
                                 val trailingIcon =
-                                    if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
+                                    if (it.isSet) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
                                 Icon(
                                     imageVector = trailingIcon,
                                     contentDescription = "",
@@ -348,14 +357,18 @@ fun SearchView(
     val dateRangePickerState = rememberDateRangePickerState()
 
     val secretOption =  listOf("Secret", "None", "All")
-    val secretRadioGroupState = rememberSaveable{
-        mutableStateOf( RadioGroupState(mutableStateOf( secretOption.lastIndex) , secretOption))
+    val markerOption =  listOf("Marker", "None", "All")
+
+
+    val secretRadioGroupState = rememberSaveable {
+        mutableStateOf(secretOption.lastIndex )
     }
 
-    val markerOption =  listOf("Marker", "None", "All")
     val markerRadioGroupState = rememberSaveable{
-         mutableStateOf( RadioGroupState(mutableStateOf( markerOption.lastIndex) , markerOption))
+        mutableStateOf(markerOption.lastIndex )
     }
+
+
 
     var isTagBox by rememberSaveable{  mutableStateOf(true)}
     val isDateBox = rememberSaveable{  mutableStateOf(true)}
@@ -364,7 +377,6 @@ fun SearchView(
 
     val query_title = rememberSaveable { mutableStateOf("") }
 
-    val recognizerIntent = remember { recognizerIntent }
 
     val startLauncherRecognizerIntent = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -376,15 +388,15 @@ fun SearchView(
         }
     }
 
-    val aa =  mutableStateOf(secretOption.lastIndex)
+
 
     val initStateValue = {
         query_title.value = ""
         dateRangePickerState.setSelection(null, null)
 
-        aa.value =secretOption.lastIndex
-        secretRadioGroupState.value = RadioGroupState(mutableStateOf( secretOption.lastIndex) , secretOption)
-        markerRadioGroupState.value = RadioGroupState(mutableStateOf( markerOption.lastIndex) , markerOption)
+
+        secretRadioGroupState.value =  secretOption.lastIndex
+        markerRadioGroupState.value = markerOption.lastIndex
 
 
         selectedTagArray.value = arrayListOf()
@@ -415,21 +427,21 @@ fun SearchView(
             }
         }
 
-        if(secretRadioGroupState.value.first.value < secretRadioGroupState.value.second.lastIndex){
+        if( secretRadioGroupState.value  <  secretOption.lastIndex){
             queryDataList.add(
                 QueryData(SearchOption.SECRET,
                     SearchQueryDataValue.radioGroupOption(
-                        index = secretRadioGroupState.value.first.value
+                        index = secretRadioGroupState.value
                     )
                 )
             )
         }
 
-        if(markerRadioGroupState.value.first.value < markerRadioGroupState.value.second.lastIndex){
+        if(markerRadioGroupState.value < markerOption.lastIndex){
             queryDataList.add(
                 QueryData(SearchOption.MARKER,
                     SearchQueryDataValue.radioGroupOption(
-                        index = markerRadioGroupState.value.first.value
+                        index = markerRadioGroupState.value
                     )
                 )
             )
@@ -559,7 +571,8 @@ fun SearchView(
 
 
             RadioButtonGroupView(
-                state = secretRadioGroupState
+                state = secretRadioGroupState,
+                items = secretOption
             ) {
                 Row(modifier = Modifier) {
                     Icon(
@@ -580,7 +593,8 @@ fun SearchView(
             )
 
             RadioButtonGroupView(
-                state = markerRadioGroupState
+                state = markerRadioGroupState,
+                items = markerOption
             ) {
                 Row(modifier = Modifier) {
                     Icon(
@@ -634,6 +648,8 @@ fun SearchView(
                     selectedTagArray.value = it
                 }
             )
+
+
 
 
 
@@ -696,12 +712,6 @@ fun SearchView(
 }
 
 
-
-
-
-typealias SearchQueryDataState =  Pair< List<SearchQueryData>, MutableState<SearchOption>>
-typealias RadioGroupState = Pair<MutableState<Int>, List<String>>
-typealias DateRangePickerDialogState = Pair<Long, Long>
 
 typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
 

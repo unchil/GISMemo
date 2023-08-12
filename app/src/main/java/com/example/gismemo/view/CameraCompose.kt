@@ -127,13 +127,17 @@ sealed class RecordingStatus {
 
 fun CameraCompose( navController: NavController? = null   ) {
 
+
+
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
-    val isPressed = remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic) {
-        if (isPressed.value &&  isUsableHaptic ) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
         }
     }
 
@@ -337,7 +341,7 @@ fun CameraCompose( navController: NavController? = null   ) {
                     showFlashIcon = currentCameraInfo.value?.hasFlashUnit() ?: false,
                     torchState = torchState.value,
                     onFlashTapped = {
-                        isPressed.value = true
+                        hapticProcessing()
                         torchState.value = when (torchState.value) {
                             TorchState.OFF -> TorchState.ON
                             else -> TorchState.OFF
@@ -367,27 +371,27 @@ fun CameraCompose( navController: NavController? = null   ) {
                 recordingStatus = recordingStatus.value,
                 showFlipIcon = isDualCamera.value,
                 onRecordTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     takeVideo()
                 },
                 onPauseTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     videoRecording?.pause()
                     recordingStatus.value = RecordingStatus.Paused
                 },
                 onResumeTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     videoRecording?.resume()
                     recordingStatus.value = RecordingStatus.InProgress
                 },
                 onStopTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     videoRecording?.stop()
                     recordingStarted.value = false
                     recordingStatus.value = RecordingStatus.Idle
                 },
                 onFlipTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     if(videoRecording == null ) {
                         cameraSelector.value = when (cameraSelector.value) {
                             CameraSelector.DEFAULT_BACK_CAMERA -> CameraSelector.DEFAULT_FRONT_CAMERA
@@ -396,12 +400,12 @@ fun CameraCompose( navController: NavController? = null   ) {
                     }
                 },
                 onCaptureTapped = {
-                    isPressed.value = true
+                    hapticProcessing()
                     isVideoRecording.value = false
                     takePicture()
                 }  ,
                 onPhotoPreviewTapped = { it ->
-                    isPressed.value = true
+                    hapticProcessing()
                     when(it){
                         is Int -> { }
                         else -> {

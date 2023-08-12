@@ -214,6 +214,7 @@ fun IntroView(
                         modifier = Modifier.fillMaxWidth(drawerSheetWidthValue),
                         drawerShape = ShapeDefaults.ExtraSmall
                     ) {
+
                         SearchView(
                             isSearchRefreshing = isSearchRefreshing,
                             sheetControl = {
@@ -228,8 +229,9 @@ fun IntroView(
                             channel.trySend(snackbarChannelList.first {
                                 it.channelType == SnackBarChannelType.SEARCH_CLEAR
                             }.channel)
-
                         }
+
+
                     }
                 }
 
@@ -260,6 +262,7 @@ fun IntroView(
                     sheetContent = {
                         if (isPortrait) {
                             Box(modifier = Modifier.fillMaxSize()) {
+
                                 SearchView(
                                     isSearchRefreshing = isSearchRefreshing,
                                     onEvent = viewModel.eventHandler
@@ -268,6 +271,8 @@ fun IntroView(
                                         it.channelType == SnackBarChannelType.SEARCH_CLEAR
                                     }.channel)
                                 }
+
+
                             }
                         }
                     },

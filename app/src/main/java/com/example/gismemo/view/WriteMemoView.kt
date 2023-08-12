@@ -43,6 +43,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -294,10 +295,12 @@ fun WriteMemoView(navController: NavController ){
 
 
 // Not recompose rememberSaveable 에 mutableStatelist 는
-    var polylineList  =   mutableStateListOf<DrawingPolyline>( )
-    val polylineListR:MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
 
+    var polylineList: SnapshotStateList<List<LatLng>>
+
+    val polylineListR:MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
     val snapShotList:MutableList<Uri> = rememberSaveable { mutableListOf() }
+
 
     val configuration = LocalConfiguration.current
 
