@@ -17,6 +17,9 @@ interface MemoTagDao {
     @Query("SELECT * FROM MEMO_TAG_TBL A WHERE A.id = :id AND A.'index' != 10000 ")
     fun select_Flow(id:Long): Flow<List<MEMO_TAG_TBL>>
 
+    @Query("SELECT * FROM MEMO_TAG_TBL A WHERE A.id = :id AND A.'index' != 10000 ")
+    fun select(id:Long): List<MEMO_TAG_TBL>
+
     @Query("DELETE FROM MEMO_TAG_TBL WHERE id = :id")
     suspend fun delete(id:Long)
 

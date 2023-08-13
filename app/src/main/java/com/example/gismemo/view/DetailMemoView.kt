@@ -54,6 +54,15 @@ fun DetailMemoView(navController: NavController, id:Long){
     val viewModel = remember {
         DetailMemoViewModel (repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
+    val memoID by  rememberSaveable { mutableStateOf(id) }
+    //--------------
+    LaunchedEffect(key1 = memoID ){
+        viewModel.onEvent(DetailMemoViewModel.Event.SetMemo(id = id))
+        viewModel.onEvent(DetailMemoViewModel.Event.SetWeather(id = id))
+        viewModel.onEvent(DetailMemoViewModel.Event.SetTags(id = id))
+        viewModel.onEvent(DetailMemoViewModel.Event.SetFiles(id = id))
+    }
+    //--------------
 
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -67,15 +76,7 @@ fun DetailMemoView(navController: NavController, id:Long){
         }
     }
 
-    val memoID by  rememberSaveable { mutableStateOf(id) }
-    //--------------
-    LaunchedEffect(key1 = memoID ){
-        viewModel.onEvent(DetailMemoViewModel.Event.SetMemo(id = id))
-        viewModel.onEvent(DetailMemoViewModel.Event.SetWeather(id = id))
-        viewModel.onEvent(DetailMemoViewModel.Event.SetTags(id = id))
-        viewModel.onEvent(DetailMemoViewModel.Event.SetFiles(id = id))
-    }
-    //--------------
+
 
     var mapProperties by remember {  mutableStateOf(
         MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
@@ -83,54 +84,37 @@ fun DetailMemoView(navController: NavController, id:Long){
     val uiSettings by remember {  mutableStateOf(
         MapUiSettings(zoomControlsEnabled = false ) ) }
 
-    var isExpanded by remember { mutableStateOf(false) }
-
     val sheetState = SheetState(
         skipPartiallyExpanded = false,
         initialValue = SheetValue.Hidden,
         skipHiddenState = false)
 
-
     val scaffoldState =  rememberBottomSheetScaffoldState( bottomSheetState = sheetState )
 
     var isTagDialog by  rememberSaveable { mutableStateOf(false) }
-
-    var isLock by rememberSaveable { mutableStateOf(false) }
-    var isMark by rememberSaveable { mutableStateOf(false) }
-    var snippets by rememberSaveable { mutableStateOf("") }
+    val isVisibleMenu = rememberSaveable { mutableStateOf(false)   }
 
 
-    val isVisibleMenu = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    val selectedTagArray =  viewModel._tagArrayList.collectAsState()
-
-    val weatherData = viewModel._weather.collectAsState()
+    val memo =  viewModel.memo.collectAsState()
+    val selectedTagArray =  viewModel.tagArrayList.collectAsState()
+    val weatherData = viewModel.weather.collectAsState()
 
 
-    val memo =  viewModel._memo.collectAsState().value
 
-    LaunchedEffect(key1 = memo){
-        memo?.let {
-            isLock = it.isSecret
-            isMark = it.isPin
-            snippets = it.snippets
-        }
-    }
 
-    val memoPosition:LatLng
-            =  if(memo == null)  {
-        LatLng(0.0, 0.0)
-    }else {
-        LatLng(memo.latitude.toDouble(),memo.longitude.toDouble())
-    }
 
-    val markerState = MarkerState( position = memoPosition   )
+    val isLock =  mutableStateOf(memo.value?.isSecret ?: false)
+    val isMark =  mutableStateOf(memo.value?.isPin ?: false)
+    val snippets  = mutableStateOf(memo.value?.snippets ?: "")
+    val selectedTags  =  mutableStateOf(selectedTagArray.value)
+    val memoPosition =   mutableStateOf(
+        LatLng(memo.value?.latitude?.toDouble() ?: 0.0 ,memo.value?.longitude?.toDouble() ?: 0.0))
 
-    val defaultCameraPosition = CameraPosition.fromLatLngZoom(memoPosition, 16f)
+    val markerState = MarkerState( position = memoPosition.value   )
 
-    var cameraPositionState = CameraPositionState(position = defaultCameraPosition)
+    val defaultCameraPosition = CameraPosition.fromLatLngZoom(memoPosition.value, 16f)
+
+    val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
 
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -144,10 +128,10 @@ fun DetailMemoView(navController: NavController, id:Long){
             //----------
             val message = when(channelData.channelType){
                 SnackBarChannelType.LOCK_CHANGE -> {
-                    channelData.message +  if (isLock) " [ 설정 ] "  else " [ 해지 ] "
+                    channelData.message +  if (isLock.value) " [ 설정 ] "  else " [ 해지 ] "
                 }
                 SnackBarChannelType.MARKER_CHANGE -> {
-                    channelData.message + if (isMark) " [ 설정 ] "   else " [ 해지 ] "
+                    channelData.message + if (isMark.value) " [ 설정 ] "   else " [ 해지 ] "
                 }
                 else -> { channelData.message}
             }
@@ -215,7 +199,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                     )
             }
 
-            memo?.let {
+            memo.value?.let {
                 Box(
                     modifier = Modifier
                         .width(400.dp)
@@ -238,7 +222,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                         Text(it.title)
                         Text(it.desc)
 
-                        Text(text = snippets)
+                        Text(text = snippets.value)
 
 
                     }
@@ -311,18 +295,18 @@ fun DetailMemoView(navController: NavController, id:Long){
                                 hapticProcessing()
                             when(it){
                                 SettingMenu.SECRET -> {
-                                    isLock = !isLock
-                                    memo?.let {
-                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsSecret(id = it.id , isSecret = isLock))
+                                    isLock.value = !isLock.value
+                                    memo.value?.let {
+                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsSecret(id = it.id , isSecret = isLock.value))
                                     }
                                     channel.trySend(snackbarChannelList.first {
                                         it.channelType == SnackBarChannelType.LOCK_CHANGE
                                     }.channel)
                                 }
                                 SettingMenu.MARKER -> {
-                                    isMark = !isMark
-                                    memo?.let {
-                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsMark(id = it.id , isMark = isMark))
+                                    isMark.value = !isMark.value
+                                    memo.value?.let {
+                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsMark(id = it.id , isMark = isMark.value))
                                     }
                                     channel.trySend(snackbarChannelList.first {
                                         it.channelType == SnackBarChannelType.MARKER_CHANGE
@@ -336,10 +320,10 @@ fun DetailMemoView(navController: NavController, id:Long){
                         }) {
                             val icon = when(it){
                                 SettingMenu.SECRET -> {
-                                    if (isLock)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
+                                    if (isLock.value)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
                                 }
                                 SettingMenu.MARKER -> {
-                                    if (isMark)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
+                                    if (isMark.value)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
                                 }
                                 else -> {
                                     it.getDesc().first
@@ -393,7 +377,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                if( isTagDialog) {
                    AssistChipGroupViewNew(
                        isVisible = isTagDialog,
-                       setState = selectedTagArray.value,
+                       setState = selectedTags.value,
                    ) {
 
                        Column(
@@ -413,7 +397,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                                    onClick = {
                                        isTagDialog = false
                                        hapticProcessing()
-                                       snippets = ""
+                                       snippets.value = ""
+                                       selectedTags.value.clear()
                                        viewModel.onEvent(
                                            DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
                                        )
@@ -428,17 +413,17 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                                        isTagDialog = false
                                        hapticProcessing()
-                                       snippets = ""
-                                       val selectedTags = arrayListOf<Int>()
+                                       snippets.value = ""
+                                        selectedTags.value.clear()
                                        tagInfoDataListNew.forEachIndexed { index, tagInfoData ->
                                            if (tagInfoData.isSet.value) {
-                                               snippets = "${snippets} #${tagInfoData.name}"
-                                               selectedTags.add(index)
+                                               snippets.value = "${snippets.value} #${tagInfoData.name}"
+                                               selectedTags.value.add(index)
                                            }
                                        }
 
                                        viewModel.onEvent(
-                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags )
+                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags.value )
                                        )
                                    }
                                ) {

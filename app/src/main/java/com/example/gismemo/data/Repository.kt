@@ -396,24 +396,20 @@ class Repository{
 
 
 
-    suspend fun setMemo(id:Long){
-        database.memoDao.select_Flow(id).filter {
-            it.id == id }.take(1).collectLatest {
-            selectedMemo.emit(it)
+     fun setMemo(id:Long){
+        CoroutineScope(Dispatchers.IO).launch {
+            selectedMemo.value = database.memoDao.select(id)
         }
     }
 
 
-    suspend fun setTags(id:Long){
-        database.memoTagDao.select_Flow(id).collectLatest {
-
-            val tagArrayList  = arrayListOf<Int>()
-            it.forEach {
+     fun setTags(id:Long){
+        CoroutineScope(Dispatchers.IO).launch {
+            val tagArrayList = arrayListOf<Int>()
+            database.memoTagDao.select(id).forEach {
                 tagArrayList.add(it.index)
             }
-           selectedTagList.value = tagArrayList
-
-          //  selectedTagList.update { tagArrayList }
+            selectedTagList.value = tagArrayList
         }
     }
 

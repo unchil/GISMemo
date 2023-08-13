@@ -12,14 +12,14 @@ import kotlinx.coroutines.launch
 
 class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
 
-    val _memo:MutableStateFlow<MEMO_TBL?>
+    val memo:StateFlow<MEMO_TBL?>
             = repository.selectedMemo
 
-    val _weather:StateFlow<MEMO_WEATHER_TBL?>
+    val weather:StateFlow<MEMO_WEATHER_TBL?>
             = repository.selectedWeather
 
 
-    val _tagArrayList: StateFlow< ArrayList<Int>>
+    val tagArrayList: StateFlow< ArrayList<Int>>
             = repository.selectedTagList
 
 

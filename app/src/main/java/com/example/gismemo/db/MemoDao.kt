@@ -62,6 +62,9 @@ interface MemoDao {
     @Query("SELECT * FROM MEMO_TBL WHERE id = :id  LIMIT 1")
     fun select_Flow(id:Long): Flow<MEMO_TBL>
 
+    @Query("SELECT * FROM MEMO_TBL WHERE id = :id  LIMIT 1")
+    fun select(id:Long): MEMO_TBL
+
     @Query("DELETE FROM MEMO_TBL WHERE id = :id")
     suspend fun delete(id:Long)
 
