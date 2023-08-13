@@ -104,7 +104,7 @@ fun DetailMemoView(navController: NavController, id:Long){
         mutableStateOf(false)
     }
 
-    val selectedTagArray =  mutableStateOf(viewModel._tagArrayList.collectAsState().value)
+    val selectedTagArray =  viewModel._tagArrayList.collectAsState()
 
     val weatherData = viewModel._weather.collectAsState()
 
@@ -385,58 +385,66 @@ fun DetailMemoView(navController: NavController, id:Long){
                     .fillMaxWidth(0.9f),
                 contentAlignment = Alignment.Center
             ){
-                AssistChipGroupView(
-                    isVisible = isTagDialog,
-                    setState = selectedTagArray,
-                    getState = { selectedTagList ->
-                        memo?.let {
-                            viewModel.onEvent(DetailMemoViewModel.Event.UpdateTagList(id, selectedTagList))
-                        }
-                    }
-                ) {
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Center)
-                    ) {
-
-                        Divider()
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            androidx.compose.material3.TextButton(
-                                onClick = {
-
-                                    hapticProcessing()
-                                    tagInfoDataList.clear()
-                                    selectedTagArray.value = arrayListOf()
-                                    viewModel.onEvent(DetailMemoViewModel.Event.UpdateTagList(id,  arrayListOf()))
-                                }
-                            ) {
-                                androidx.compose.material.Text(text = "Clear")
-                            }
 
 
-                            androidx.compose.material3.TextButton(
-                                onClick = {
-                                    hapticProcessing()
-                                    isTagDialog = false
 
-                                }
-                            ) {
-                                androidx.compose.material.Text(text = "Confirm")
-                            }
-                        }
+               if( isTagDialog) {
+                   AssistChipGroupViewNew(
+                       isVisible = isTagDialog,
+                       setState = selectedTagArray.value,
+                   ) {
+
+                       Column(
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .align(Alignment.Center)
+                       ) {
+
+                           Divider()
+
+                           Row(
+                               modifier = Modifier
+                                   .fillMaxWidth(),
+                               horizontalArrangement = Arrangement.Center
+                           ) {
+                               androidx.compose.material3.TextButton(
+                                   onClick = {
+                                       isTagDialog = false
+                                       hapticProcessing()
+
+                                       viewModel.onEvent(
+                                           DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
+                                       )
+                                   }
+                               ) {
+                                   androidx.compose.material.Text(text = "Clear")
+                               }
 
 
-                    }
+                               androidx.compose.material3.TextButton(
+                                   onClick = {
+                                       isTagDialog = false
+                                       hapticProcessing()
+                                       val selectedTags = arrayListOf<Int>()
+                                       tagInfoDataListNew.forEachIndexed { index, tagInfoData ->
+                                           if (tagInfoData.isSet.value) {
+                                               selectedTags.add(index)
+                                           }
+                                       }
+
+                                       viewModel.onEvent(
+                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags )
+                                       )
+                                   }
+                               ) {
+                                   androidx.compose.material.Text(text = "Confirm")
+                               }
+                           }
 
 
-                }
+                       }
+                   }
+               }
 
             }
 

@@ -2,6 +2,7 @@ package com.example.gismemo.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,12 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toUri
+import coil.size.Size
 import com.example.gismemo.LocalUsableHaptic
+import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.LuckMemoDB
 import com.example.gismemo.db.UnixTimeToString
 import com.example.gismemo.db.yyyyMMddHHmm
+import com.example.gismemo.shared.composables.LocalPermissionsManager
+import com.example.gismemo.shared.composables.PermissionsManager
 import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
@@ -57,6 +63,8 @@ data class TagInfoData(
     var name: String,
     var isSet:Boolean = false
 )
+
+
 
 val tagInfoDataList: List<TagInfoData> = listOf(
     TagInfoData(Icons.Outlined.ShoppingCart, "마트"),
@@ -92,6 +100,50 @@ val tagInfoDataList: List<TagInfoData> = listOf(
 fun  List<TagInfoData>.clear(){
     this.forEach {
         it.isSet = false
+    }
+}
+
+data class TagInfoDataNew(
+    var icon : ImageVector,
+    var name: String,
+    var isSet:MutableState<Boolean> = mutableStateOf(false)
+)
+
+
+val tagInfoDataListNew: List<TagInfoDataNew> = listOf(
+    TagInfoDataNew(Icons.Outlined.ShoppingCart, "마트"),
+    TagInfoDataNew(Icons.Outlined.AccountBalance, "박물관"),
+    TagInfoDataNew(Icons.Outlined.Store, "가게"),
+    TagInfoDataNew(Icons.Outlined.Theaters, "극장"),
+    TagInfoDataNew(Icons.Outlined.FlightTakeoff, "이륙"),
+    TagInfoDataNew(Icons.Outlined.FlightLand, "착륙"),
+    TagInfoDataNew(Icons.Outlined.Hotel, "호텔"),
+    TagInfoDataNew(Icons.Outlined.School, "학교"),
+    TagInfoDataNew(Icons.Outlined.Hiking, "하이킹"),
+    TagInfoDataNew(Icons.Outlined.DownhillSkiing, "스키"),
+    TagInfoDataNew(Icons.Outlined.Kayaking, "카약"),
+    TagInfoDataNew(Icons.Outlined.Skateboarding, "스케이트보딩"),
+    TagInfoDataNew(Icons.Outlined.Snowboarding, "스노우보딩"),
+    TagInfoDataNew(Icons.Outlined.ScubaDiving, "스쿠버다이빙"),
+    TagInfoDataNew(Icons.Outlined.RollerSkating, "롤러스케이팅"),
+    TagInfoDataNew(Icons.Outlined.Photo, "포토스팟"),
+    TagInfoDataNew(Icons.Outlined.Restaurant, "음식점"),
+    TagInfoDataNew(Icons.Outlined.Park, "공원"),
+    TagInfoDataNew(Icons.Outlined.LocalCafe, "카페"),
+    TagInfoDataNew(Icons.Outlined.LocalTaxi, "택시"),
+    TagInfoDataNew(Icons.Outlined.Forest, "숲"),
+    TagInfoDataNew(Icons.Outlined.EvStation, "전기차 충전"),
+    TagInfoDataNew(Icons.Outlined.FitnessCenter, "피트니스"),
+    TagInfoDataNew(Icons.Outlined.House, "집"),
+    TagInfoDataNew(Icons.Outlined.Apartment, "아파트"),
+    TagInfoDataNew(Icons.Outlined.Cabin, "캐빈")
+).sortedBy {
+    it.name
+}
+
+fun  List<TagInfoDataNew>.clearNew(){
+    this.forEach {
+        it.isSet.value = false
     }
 }
 
@@ -206,127 +258,6 @@ fun RadioButtonGroupView(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AssistChipGroupView(
-    modifier: Modifier = Modifier,
-    isVisible:Boolean =true,
-    setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
-    getState:((ArrayList<Int>)->Unit)? = null,
-    content: @Composable (( ) -> Unit)? = null
-){
-
-    tagInfoDataList.clear()
-    if(setState.value.isNotEmpty()){
-        setState.value.forEach {
-            //tagInfoDataList[it].isSet.value = true
-            tagInfoDataList[it].isSet = true
-        }
-    }
-
-    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
-
-
-
-    val itemModifier = Modifier.wrapContentSize()
-
-
-    val isUsableHaptic = LocalUsableHaptic.current
-    val hapticFeedback = LocalHapticFeedback.current
-    val coroutineScope = rememberCoroutineScope()
-
-    fun hapticProcessing(){
-        if(isUsableHaptic){
-            coroutineScope.launch {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            }
-        }
-    }
-
-
-    AnimatedVisibility(visible = isVisible) {
-
-
-        Column (
-            modifier = Modifier
-                .then(modifier)
-        ){
-
-
-            LazyHorizontalStaggeredGrid(
-                rows =  StaggeredGridCells.Fixed(4),
-                modifier  = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxWidth()
-                    .height(200.dp),
-                state = lazyStaggeredGridState,
-                contentPadding =  PaddingValues(10.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalItemSpacing = 6.dp,
-                userScrollEnabled = true,
-            ){
-
-
-
-                itemsIndexed(tagInfoDataList) { index, it ->
-
-
-                        AssistChip(
-                            modifier = itemModifier,
-                            onClick = {
-                                hapticProcessing()
-                          //      it.isSet.value = !it.isSet.value
-                                it.isSet = !it.isSet
-
-                                if (getState != null) {
-                                    val selectedTagArray = arrayListOf<Int>()
-                                    tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                        if (tagInfoData.isSet) {
-                                            if (tagInfoData.isSet) {
-                                                selectedTagArray.add(index)
-                                            }
-                                        }
-                                    }
-                                    tagInfoDataList.clear()
-                                    getState(selectedTagArray)
-                                }
-                            },
-                            label = {
-                                Row {
-                                    Icon(
-                                        imageVector = it.icon,
-                                        contentDescription = "",
-                                        modifier = Modifier.size(AssistChipDefaults.IconSize)
-                                    )
-                                    Text(text = it.name)
-                                }
-                            },
-                            leadingIcon = {
-                                val trailingIcon =
-                                    if (it.isSet) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
-                                Icon(
-                                    imageVector = trailingIcon,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
-                                )
-                            },
-                        )
-
-
-
-                } // itemsIndexed
-
-            }
-
-            content?.let {
-                it()
-            }
-
-        }
-
-    }
-
-}
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -646,9 +577,7 @@ fun SearchView(
 
 
 
-
-
-            Divider(
+        Divider(
                 Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
@@ -708,4 +637,255 @@ fun SearchView(
 
 
 typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AssistChipGroupView(
+    modifier: Modifier = Modifier,
+    isVisible:Boolean =true,
+    setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
+    getState:((ArrayList<Int>)->Unit)? = null,
+    content: @Composable (( ) -> Unit)? = null
+){
+
+    tagInfoDataList.clear()
+    if(setState.value.isNotEmpty()){
+        setState.value.forEach {
+            //tagInfoDataList[it].isSet.value = true
+            tagInfoDataList[it].isSet = true
+        }
+    }
+
+    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
+
+
+
+    val itemModifier = Modifier.wrapContentSize()
+
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+
+    AnimatedVisibility(visible = isVisible) {
+
+
+        Column (
+            modifier = Modifier
+                .then(modifier)
+        ){
+
+
+            LazyHorizontalStaggeredGrid(
+                rows =  StaggeredGridCells.Fixed(4),
+                modifier  = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .height(200.dp),
+                state = lazyStaggeredGridState,
+                contentPadding =  PaddingValues(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalItemSpacing = 6.dp,
+                userScrollEnabled = true,
+            ){
+
+
+
+                itemsIndexed(tagInfoDataList) { index, it ->
+
+
+                    AssistChip(
+                        modifier = itemModifier,
+                        onClick = {
+                            hapticProcessing()
+                            //      it.isSet.value = !it.isSet.value
+                            it.isSet = !it.isSet
+
+                            if (getState != null) {
+                                val selectedTagArray = arrayListOf<Int>()
+                                tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                                    if (tagInfoData.isSet) {
+                                        if (tagInfoData.isSet) {
+                                            selectedTagArray.add(index)
+                                        }
+                                    }
+                                }
+                                tagInfoDataList.clear()
+                                getState(selectedTagArray)
+                            }
+                        },
+                        label = {
+                            Row {
+                                Icon(
+                                    imageVector = it.icon,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+                                )
+                                Text(text = it.name)
+                            }
+                        },
+                        leadingIcon = {
+                            val trailingIcon =
+                                if (it.isSet) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
+                            Icon(
+                                imageVector = trailingIcon,
+                                contentDescription = "",
+                                modifier = Modifier.size(AssistChipDefaults.IconSize)
+                            )
+                        },
+                    )
+
+
+
+                } // itemsIndexed
+
+            }
+
+            content?.let {
+                it()
+            }
+
+        }
+
+    }
+
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AssistChipGroupViewNew(
+    modifier: Modifier = Modifier,
+    setState:ArrayList<Int> = arrayListOf(),
+    isVisible:Boolean =true,
+    content: @Composable (( ) -> Unit)? = null
+){
+
+
+
+        tagInfoDataListNew.clearNew()
+        setState.forEach {
+            tagInfoDataListNew[it].isSet.value = true
+        }
+
+
+
+    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
+
+    val itemModifier = Modifier.wrapContentSize()
+
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+    AnimatedVisibility(visible = isVisible) {
+
+        Column (
+            modifier = Modifier
+                .then(modifier)
+        ){
+
+            LazyHorizontalStaggeredGrid(
+                rows =  StaggeredGridCells.Fixed(4),
+                modifier  = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .height(200.dp),
+                state = lazyStaggeredGridState,
+                contentPadding =  PaddingValues(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalItemSpacing = 6.dp,
+                userScrollEnabled = true,
+            ){
+
+                itemsIndexed(tagInfoDataListNew) { index, it ->
+
+                    AssistChip(
+                        modifier = itemModifier,
+                        onClick = {
+                            hapticProcessing()
+                            it.isSet.value = !it.isSet.value
+
+                        },
+                        label = {
+                            Row {
+                                Icon(
+                                    imageVector = it.icon,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+                                )
+                                Text(text = it.name)
+                            }
+                        },
+                        leadingIcon = {
+                            val icon =
+                                if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = "",
+                                modifier = Modifier.size(AssistChipDefaults.IconSize)
+                            )
+                        },
+                    )
+                } // itemsIndexed
+
+            }
+
+            content?.let {
+                it()
+            }
+
+        }
+
+    }
+
+}
+
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun PrevSearchView(
+    modifier: Modifier = Modifier,
+){
+
+    val permissionsManager = PermissionsManager()
+    CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
+
+    var isSet by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+        GISMemoTheme {
+            Surface(
+                modifier = Modifier.background(color = Color.White)
+            ) {
+
+                AssistChipGroupViewNew(setState = arrayListOf(0,1,2,3)  )
+
+            }
+        }
+
+
+    }
+
+}
 
