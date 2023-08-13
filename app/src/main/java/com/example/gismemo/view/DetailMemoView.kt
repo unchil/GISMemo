@@ -428,6 +428,7 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                                        isTagDialog = false
                                        hapticProcessing()
+                                       snippets = ""
                                        val selectedTags = arrayListOf<Int>()
                                        tagInfoDataListNew.forEachIndexed { index, tagInfoData ->
                                            if (tagInfoData.isSet.value) {
