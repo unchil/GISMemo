@@ -21,10 +21,7 @@ import com.example.gismemo.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 //class Repository( val context: Context, val database:LuckMemoDB ){
@@ -400,9 +397,9 @@ class Repository{
 
 
     suspend fun setMemo(id:Long){
-        database.memoDao.select_Flow(id).collectLatest {
+        database.memoDao.select_Flow(id).filter {
+            it.id == id }.take(1).collectLatest {
             selectedMemo.emit(it)
-          //  selectedMemo.update { it }
         }
     }
 
