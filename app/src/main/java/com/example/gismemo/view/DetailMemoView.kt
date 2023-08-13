@@ -55,7 +55,6 @@ fun DetailMemoView(navController: NavController, id:Long){
         DetailMemoViewModel (repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
-
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -68,35 +67,15 @@ fun DetailMemoView(navController: NavController, id:Long){
         }
     }
 
-
-
-
-
+    val memoID by  rememberSaveable { mutableStateOf(id) }
     //--------------
-    LaunchedEffect(key1 = viewModel, ){
+    LaunchedEffect(key1 = memoID ){
         viewModel.onEvent(DetailMemoViewModel.Event.SetMemo(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetWeather(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetTags(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetFiles(id = id))
     }
     //--------------
-
-
-
-    val memo =  viewModel._memo.collectAsState().value
-
-    val memoPosition:LatLng
-       =  if(memo == null)  {
-            LatLng(0.0, 0.0)
-            }else {
-                LatLng(memo.latitude.toDouble(),memo.longitude.toDouble())
-            }
-
-    val markerState = MarkerState( position = memoPosition   )
-
-    val defaultCameraPosition = CameraPosition.fromLatLngZoom(memoPosition, 16f)
-
-    var cameraPositionState = CameraPositionState(position = defaultCameraPosition)
 
     var mapProperties by remember {  mutableStateOf(
         MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
@@ -120,13 +99,7 @@ fun DetailMemoView(navController: NavController, id:Long){
     var isMark by rememberSaveable { mutableStateOf(false) }
 
 
-    LaunchedEffect(key1 = memo){
-        memo?.let {
-            isLock = it.isSecret
-            isMark = it.isPin
-        }
 
-    }
     val isVisibleMenu = rememberSaveable {
         mutableStateOf(false)
     }
@@ -134,6 +107,30 @@ fun DetailMemoView(navController: NavController, id:Long){
     val selectedTagArray =  mutableStateOf(viewModel._tagArrayList.collectAsState().value)
 
     val weatherData = viewModel._weather.collectAsState()
+
+
+    val memo =  viewModel._memo.collectAsState().value
+
+    LaunchedEffect(key1 = memo){
+        memo?.let {
+            isLock = it.isSecret
+            isMark = it.isPin
+        }
+    }
+
+    val memoPosition:LatLng
+            =  if(memo == null)  {
+        LatLng(0.0, 0.0)
+    }else {
+        LatLng(memo.latitude.toDouble(),memo.longitude.toDouble())
+    }
+
+    val markerState = MarkerState( position = memoPosition   )
+
+    val defaultCameraPosition = CameraPosition.fromLatLngZoom(memoPosition, 16f)
+
+    var cameraPositionState = CameraPositionState(position = defaultCameraPosition)
+
 
     val snackbarHostState = remember { SnackbarHostState() }
     val channel = remember { Channel<Int>(Channel.CONFLATED) }
@@ -413,7 +410,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                         ) {
                             androidx.compose.material3.TextButton(
                                 onClick = {
-                                    // isPressed.value = true
+
                                     hapticProcessing()
                                     tagInfoDataList.clear()
                                     selectedTagArray.value = arrayListOf()
@@ -426,9 +423,9 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                             androidx.compose.material3.TextButton(
                                 onClick = {
-                                    // isPressed.value = true
                                     hapticProcessing()
                                     isTagDialog = false
+
                                 }
                             ) {
                                 androidx.compose.material.Text(text = "Confirm")

@@ -12,8 +12,6 @@ import kotlinx.coroutines.launch
 
 class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
 
-
-
     val _memo:MutableStateFlow<MEMO_TBL?>
             = repository.selectedMemo
 

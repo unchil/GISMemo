@@ -20,9 +20,11 @@ import com.example.gismemo.model.toCURRENTWEATHER_TBL
 import com.example.gismemo.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 //class Repository( val context: Context, val database:LuckMemoDB ){
@@ -37,6 +39,7 @@ class Repository{
 
 
     val selectedMemo:MutableStateFlow<MEMO_TBL?> = MutableStateFlow(null)
+
     val selectedWeather:MutableStateFlow<MEMO_WEATHER_TBL?> = MutableStateFlow(null)
 
 
@@ -395,9 +398,11 @@ class Repository{
         }
 
 
+
     suspend fun setMemo(id:Long){
         database.memoDao.select_Flow(id).collectLatest {
             selectedMemo.emit(it)
+          //  selectedMemo.update { it }
         }
     }
 
@@ -409,8 +414,9 @@ class Repository{
             it.forEach {
                 tagArrayList.add(it.index)
             }
-            selectedTagList.value = tagArrayList
+           selectedTagList.value = tagArrayList
 
+          //  selectedTagList.update { tagArrayList }
         }
     }
 
@@ -418,7 +424,8 @@ class Repository{
 
     suspend fun setWeather(id:Long){
         database.memoWeatherDao.select_Flow(id).collectLatest {
-            selectedWeather.emit(it)
+           selectedWeather.emit(it)
+          //  selectedWeather.update { it }
         }
     }
 
@@ -494,7 +501,8 @@ class Repository{
                     )
                 }
 
-                detailAudioText.emit( audiTextList  )
+               detailAudioText.emit( audiTextList  )
+         //       detailAudioText.update { audiTextList }
             }
 
         }
