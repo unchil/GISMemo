@@ -385,7 +385,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                     .clip(ShapeDefaults.ExtraSmall)
                     .background(color = Color.White)
                     .align(Alignment.Center)
-                    .fillMaxWidth(0.7f),
+                    .fillMaxWidth(0.9f),
                 contentAlignment = Alignment.Center
             ){
                 AssistChipGroupView(
@@ -431,7 +431,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                                     isTagDialog = false
                                 }
                             ) {
-                                androidx.compose.material.Text(text = "Close")
+                                androidx.compose.material.Text(text = "Confirm")
                             }
                         }
 
