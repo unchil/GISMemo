@@ -18,6 +18,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -77,9 +78,6 @@ fun IntroView(
     navController: NavHostController
 ) {
 
-
-
-
     val configuration = LocalConfiguration.current
     val db = LocalLuckMemoDB.current
     val coroutineScope = rememberCoroutineScope()
@@ -134,6 +132,12 @@ fun IntroView(
             sheetPeekHeightValue = 140.dp
             drawerSheetWidthValue = 0f
             ListBottomPadingValue = 130.dp
+
+            if (drawerState.isOpen) {
+                coroutineScope.launch {
+                    drawerState.close()
+                }
+            }
 
         }
         else -> {
@@ -205,6 +209,41 @@ fun IntroView(
     }
 
 
+
+
+
+
+    val searchView: (@Composable () -> Unit) = {
+
+        val sheetControl: (() -> Unit)? =  if (isPortrait) {
+            null
+        } else {
+            {
+                if (drawerState.isOpen) {
+                    coroutineScope.launch {
+                        drawerState.close()
+                    }
+                }
+            }
+        }
+
+
+        SearchView(
+            isSearchRefreshing = isSearchRefreshing,
+            sheetControl = sheetControl,
+            onEvent = viewModel.eventHandler
+        ) {
+            channel.trySend(snackbarChannelList.first {
+                it.channelType == SnackBarChannelType.SEARCH_CLEAR
+            }.channel)
+        }
+
+
+
+    }
+
+
+
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -214,24 +253,7 @@ fun IntroView(
                         modifier = Modifier.fillMaxWidth(drawerSheetWidthValue),
                         drawerShape = ShapeDefaults.ExtraSmall
                     ) {
-
-                        SearchView(
-                            isSearchRefreshing = isSearchRefreshing,
-                            sheetControl = {
-                                if (drawerState.isOpen) {
-                                    coroutineScope.launch {
-                                        drawerState.close()
-                                    }
-                                }
-                            },
-                            onEvent = viewModel.eventHandler
-                        ) {
-                            channel.trySend(snackbarChannelList.first {
-                                it.channelType == SnackBarChannelType.SEARCH_CLEAR
-                            }.channel)
-                        }
-
-
+                        searchView()
                     }
                 }
 
@@ -262,17 +284,7 @@ fun IntroView(
                     sheetContent = {
                         if (isPortrait) {
                             Box(modifier = Modifier.fillMaxSize()) {
-
-                                SearchView(
-                                    isSearchRefreshing = isSearchRefreshing,
-                                    onEvent = viewModel.eventHandler
-                                ) {
-                                    channel.trySend(snackbarChannelList.first {
-                                        it.channelType == SnackBarChannelType.SEARCH_CLEAR
-                                    }.channel)
-                                }
-
-
+                                searchView()
                             }
                         }
                     },

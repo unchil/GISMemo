@@ -255,7 +255,8 @@ fun AssistChipGroupView(
 
             LazyHorizontalStaggeredGrid(
                 rows =  StaggeredGridCells.Fixed(4),
-                modifier  = Modifier.padding(horizontal = 10.dp)
+                modifier  = Modifier
+                    .padding(horizontal = 10.dp)
                     .fillMaxWidth()
                     .height(200.dp),
                 state = lazyStaggeredGridState,
@@ -374,7 +375,6 @@ fun SearchView(
     val isDateBox = rememberSaveable{  mutableStateOf(true)}
 
     val selectedTagArray:MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
-
     val query_title = rememberSaveable { mutableStateOf("") }
 
 
@@ -388,17 +388,11 @@ fun SearchView(
         }
     }
 
-
-
     val initStateValue = {
         query_title.value = ""
         dateRangePickerState.setSelection(null, null)
-
-
         secretRadioGroupState.value =  secretOption.lastIndex
         markerRadioGroupState.value = markerOption.lastIndex
-
-
         selectedTagArray.value = arrayListOf()
     }
 
@@ -478,7 +472,8 @@ fun SearchView(
 
     Column(
         modifier = Modifier
-            .fillMaxSize().verticalScroll(scrollState)
+            .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(color = Color.White),
         verticalArrangement = Arrangement.Top
     ) {
@@ -710,7 +705,6 @@ fun SearchView(
         }
 
 }
-
 
 
 typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
