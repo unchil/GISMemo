@@ -61,7 +61,7 @@ import kotlinx.coroutines.launch
 data class TagInfoData(
     var icon : ImageVector,
     var name: String,
-    var isSet:Boolean = false
+    var isSet:MutableState<Boolean> = mutableStateOf(false)
 )
 
 
@@ -99,7 +99,7 @@ val tagInfoDataList: List<TagInfoData> = listOf(
 
 fun  List<TagInfoData>.clear(){
     this.forEach {
-        it.isSet = false
+        it.isSet.value = false
     }
 }
 
@@ -570,9 +570,6 @@ fun SearchView(
             AssistChipGroupView(
                 isVisible = isTagBox,
                 setState = selectedTagArray,
-                getState = {
-                    selectedTagArray.value = it
-                }
             )
 
 
@@ -645,20 +642,17 @@ fun AssistChipGroupView(
     modifier: Modifier = Modifier,
     isVisible:Boolean =true,
     setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
-    getState:((ArrayList<Int>)->Unit)? = null,
     content: @Composable (( ) -> Unit)? = null
 ){
 
     tagInfoDataList.clear()
-    if(setState.value.isNotEmpty()){
-        setState.value.forEach {
-            //tagInfoDataList[it].isSet.value = true
-            tagInfoDataList[it].isSet = true
-        }
+
+    setState.value.forEach {
+        tagInfoDataList[it].isSet.value = true
     }
 
-    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
+    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
 
     val itemModifier = Modifier.wrapContentSize()
@@ -708,21 +702,15 @@ fun AssistChipGroupView(
                         modifier = itemModifier,
                         onClick = {
                             hapticProcessing()
-                            //      it.isSet.value = !it.isSet.value
-                            it.isSet = !it.isSet
 
-                            if (getState != null) {
-                                val selectedTagArray = arrayListOf<Int>()
-                                tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                    if (tagInfoData.isSet) {
-                                        if (tagInfoData.isSet) {
-                                            selectedTagArray.add(index)
-                                        }
-                                    }
-                                }
-                                tagInfoDataList.clear()
-                                getState(selectedTagArray)
+                            it.isSet.value = !it.isSet.value
+
+                            if (it.isSet.value) {
+                                setState.value.add(index)
+                            } else {
+                                setState.value.remove(index)
                             }
+
                         },
                         label = {
                             Row {
@@ -736,7 +724,7 @@ fun AssistChipGroupView(
                         },
                         leadingIcon = {
                             val trailingIcon =
-                                if (it.isSet) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
+                                if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
                             Icon(
                                 imageVector = trailingIcon,
                                 contentDescription = "",

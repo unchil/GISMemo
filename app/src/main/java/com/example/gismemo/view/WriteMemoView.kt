@@ -263,7 +263,7 @@ fun WriteMemoView(navController: NavController ){
     val markerState = MarkerState( position = currentLocation.toLatLng() )
 
     val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation.toLatLng(), 16f)
-    var cameraPositionState = CameraPositionState(position = defaultCameraPosition)
+    val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
     var mapProperties by remember {  mutableStateOf( MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
     val uiSettings by remember {  mutableStateOf(  MapUiSettings(  zoomControlsEnabled = false) ) }
 
@@ -289,14 +289,14 @@ fun WriteMemoView(navController: NavController ){
 
     var isDrawing by rememberSaveable { mutableStateOf(false) }
 
-    val selectedTagArray: MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
+    val selectedTagArray :MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
     var isLock by rememberSaveable { mutableStateOf(false) }
     var isMark by rememberSaveable { mutableStateOf(false) }
 
 
 // Not recompose rememberSaveable 에 mutableStatelist 는
 
-    var polylineList: SnapshotStateList<List<LatLng>>
+    val polylineList: SnapshotStateList<List<LatLng>>
 
     val polylineListR:MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
     val snapShotList:MutableList<Uri> = rememberSaveable { mutableListOf() }
@@ -863,6 +863,7 @@ fun WriteMemoView(navController: NavController ){
 
 
                     if(isTagDialog ) {
+                        /*
                         AssistChipGroupViewNew(
                             isVisible = isTagDialog,
                             setState = selectedTagArray.value,
@@ -930,6 +931,78 @@ fun WriteMemoView(navController: NavController ){
                                 }
                             }
                         }
+
+                         */
+
+
+                        AssistChipGroupView(
+                            isVisible = isTagDialog,
+                            setState = selectedTagArray,
+                        ) {
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.Center)
+                            ) {
+
+                                Divider()
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+
+
+                                    IconButton(
+                                        modifier = Modifier,
+                                        onClick = {
+                                            isTagDialog = false
+                                            hapticProcessing()
+
+                                            selectedTagArray.value.clear()
+
+                                        },
+                                        content = {
+                                            Icon(
+                                                modifier = Modifier,
+                                                imageVector = Icons.Outlined.Replay,
+                                                contentDescription = "Clear"
+                                            )
+                                        }
+                                    )
+
+
+                                    IconButton(
+                                        modifier = Modifier,
+                                        onClick = {
+                                            hapticProcessing()
+                                            isTagDialog = false
+
+                                            selectedTagArray.value.clear()
+
+                                            tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                                                if (tagInfoData.isSet.value) {
+                                                    selectedTagArray.value.add(index)
+                                                }
+                                            }
+
+
+                                        },
+                                        content = {
+                                            Icon(
+                                                modifier = Modifier,
+                                                imageVector = Icons.Outlined.PublishedWithChanges,
+                                                contentDescription = "Save"
+                                            )
+                                        }
+                                    )
+
+                                }
+                            }
+                        }
+
 
                     }
 

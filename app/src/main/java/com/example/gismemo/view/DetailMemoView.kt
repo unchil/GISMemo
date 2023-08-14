@@ -375,6 +375,8 @@ fun DetailMemoView(navController: NavController, id:Long){
 
 
                if( isTagDialog) {
+
+                   /*
                    AssistChipGroupViewNew(
                        isVisible = isTagDialog,
                        setState = selectedTags.value,
@@ -434,6 +436,73 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                        }
                    }
+
+                    */
+
+
+
+                   AssistChipGroupView(
+                       isVisible = isTagDialog,
+                       setState = selectedTags,
+                   ) {
+
+                       Column(
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .align(Alignment.Center)
+                       ) {
+
+                           Divider()
+
+                           Row(
+                               modifier = Modifier
+                                   .fillMaxWidth(),
+                               horizontalArrangement = Arrangement.Center
+                           ) {
+                               androidx.compose.material3.TextButton(
+                                   onClick = {
+                                       isTagDialog = false
+                                       hapticProcessing()
+                                       snippets.value = ""
+                                       selectedTags.value.clear()
+                                       viewModel.onEvent(
+                                           DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
+                                       )
+                                   }
+                               ) {
+                                   androidx.compose.material.Text(text = "Clear")
+                               }
+
+
+                               androidx.compose.material3.TextButton(
+                                   onClick = {
+
+                                       isTagDialog = false
+                                       hapticProcessing()
+                                       snippets.value = ""
+                                       selectedTags.value.clear()
+                                       tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                                           if (tagInfoData.isSet.value) {
+                                               snippets.value = "${snippets.value} #${tagInfoData.name}"
+                                               selectedTags.value.add(index)
+                                           }
+                                       }
+
+                                       viewModel.onEvent(
+                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags.value )
+                                       )
+                                   }
+                               ) {
+                                   androidx.compose.material.Text(text = "Confirm")
+                               }
+                           }
+
+
+                       }
+                   }
+
+
+
                }
 
             }
