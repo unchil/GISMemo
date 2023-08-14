@@ -480,7 +480,6 @@ fun WriteMemoView(navController: NavController ){
                             color = Color.Yellow,
                             width = 20F,
                             onClick = { polyline ->
-                                //isPressed.value = true
                                 hapticProcessing()
                                 polylineList.remove(polyline.points)
                                 polylineListR.remove(polyline.points)
@@ -948,7 +947,6 @@ fun ConfirmDialog(
 
                                 IconButton(
                                     modifier = Modifier,
-
                                     onClick = {
                                         hapticProcessing()
                                         titleText.value  = ""
@@ -967,7 +965,6 @@ fun ConfirmDialog(
 
                                 IconButton(
                                     onClick = {
-                                        // isPressed.value = true
                                         hapticProcessing()
                                     titleText.value = ""
                                 }) {
@@ -996,7 +993,6 @@ fun ConfirmDialog(
                     TextButton(
 
                         onClick = {
-                            // isPressed.value = true
                             hapticProcessing()
                             isAlertDialog.value = false
                         }
@@ -1010,7 +1006,6 @@ fun ConfirmDialog(
                     TextButton(
 
                         onClick = {
-                            // isPressed.value = true
                             hapticProcessing()
                             isAlertDialog.value = false
                             onEvent(titleText.value)
@@ -1086,7 +1081,6 @@ fun MemoDataContainer(
                 selected = currentTabView.value ==  it,
                 selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
-                 //   isPressed.value = true
                     hapticProcessing()
                     currentTabView.value = it
                     currentTabIndex.value = index
