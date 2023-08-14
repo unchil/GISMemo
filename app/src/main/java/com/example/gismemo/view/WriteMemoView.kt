@@ -1,23 +1,17 @@
 package com.example.gismemo.view
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.net.Uri
-import android.os.Build
 import android.speech.RecognizerIntent
 import android.view.MotionEvent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,22 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-//import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.HighlightOff
 import androidx.compose.material3.*
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -53,12 +38,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -71,7 +54,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.size.Size
 import com.example.gismemo.LocalUsableHaptic
-import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
@@ -85,11 +67,7 @@ import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.utils.getDeviceLocation
 import com.example.gismemo.viewmodel.MemoContainerViewModel
-import com.example.gismemo.viewmodel.WeatherViewModel
 import com.example.gismemo.viewmodel.WriteMemoViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -97,11 +75,9 @@ import com.google.maps.android.compose.widgets.ScaleBar
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import okhttp3.internal.toImmutableList
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 enum class DrawingMenu {
@@ -226,25 +202,16 @@ fun CreateMenu.getDesc():Pair<ImageVector, String?>{
 @Composable
 fun WriteMemoView(navController: NavController ){
 
-
-
-
-
-
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
-
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         WriteMemoViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
-
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-
     fun hapticProcessing(){
         if(isUsableHaptic){
             coroutineScope.launch {
@@ -253,21 +220,15 @@ fun WriteMemoView(navController: NavController ){
         }
     }
 
-
-
     val currentLocation =
         viewModel.currentLocationStateFlow.collectAsState().value
             ?: CURRENTLOCATION_TBL(0L,0f,0f,0f)
 
-
     val markerState = MarkerState( position = currentLocation.toLatLng() )
-
     val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation.toLatLng(), 16f)
     val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
     var mapProperties by remember {  mutableStateOf( MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
     val uiSettings by remember {  mutableStateOf(  MapUiSettings(  zoomControlsEnabled = false) ) }
-
-
 
     val sheetState = SheetState(
         skipPartiallyExpanded = false,
@@ -275,20 +236,12 @@ fun WriteMemoView(navController: NavController ){
         skipHiddenState = false)
 
     val scaffoldState =  rememberBottomSheetScaffoldState( bottomSheetState = sheetState )
-
-
-
     var isTagDialog by  rememberSaveable { mutableStateOf(false) }
     val isAlertDialog =  rememberSaveable { mutableStateOf(false) }
-
     var isSnapShot by remember { mutableStateOf(false) }
     var isMapClear by  remember { mutableStateOf(false) }
-
     val currentPolyline  =   mutableStateListOf<LatLng>( )
-
-
     var isDrawing by rememberSaveable { mutableStateOf(false) }
-
     val selectedTagArray :MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
     var isLock by rememberSaveable { mutableStateOf(false) }
     var isMark by rememberSaveable { mutableStateOf(false) }
@@ -297,12 +250,8 @@ fun WriteMemoView(navController: NavController ){
 // Not recompose rememberSaveable 에 mutableStatelist 는
 
     val polylineList: SnapshotStateList<List<LatLng>>
-
     val polylineListR:MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
     val snapShotList:MutableList<Uri> = rememberSaveable { mutableListOf() }
-
-
-    val configuration = LocalConfiguration.current
 
     val alignmentSaveMenuList: Alignment
     val alignmentMyLocation: Alignment
@@ -311,12 +260,11 @@ fun WriteMemoView(navController: NavController ){
     val alignmentDrawingMenuList: Alignment
     val alignmentMapTypeMenuList: Alignment
 
-
+    val configuration = LocalConfiguration.current
     when (configuration.orientation) {
 
         Configuration.ORIENTATION_PORTRAIT -> {
             polylineList = polylineListR.toMutableStateList()
-
             alignmentSaveMenuList = Alignment.TopCenter
             alignmentMyLocation = Alignment.TopEnd
             alignmentCreateMenuList = Alignment.CenterStart
@@ -327,7 +275,6 @@ fun WriteMemoView(navController: NavController ){
         }
         else -> {
             polylineList = polylineListR.toMutableStateList()
-
             alignmentSaveMenuList = Alignment.TopCenter
             alignmentMyLocation = Alignment.TopEnd
             alignmentCreateMenuList = Alignment.TopStart
@@ -391,7 +338,6 @@ fun WriteMemoView(navController: NavController ){
 
 
     val onMapLongClickHandler: (LatLng) -> Unit = {
-        //isPressed.value = true
         hapticProcessing()
         markerState.position = it
        // cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
@@ -583,9 +529,8 @@ fun WriteMemoView(navController: NavController ){
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
 
-                            androidx.compose.material3.IconButton(
+                            IconButton(
                                 onClick = {
-                                    //isPressed.value = true
                                     hapticProcessing()
                                 when(it){
                                     SaveMenu.CLEAR -> {
@@ -619,19 +564,14 @@ fun WriteMemoView(navController: NavController ){
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
-                    androidx.compose.material3.IconButton(
-
+                    IconButton(
                         onClick = {
-                            //isPressed.value = true
                             hapticProcessing()
                             context.getDeviceLocation {it?.let {
                                 viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
                                 cameraPositionState.position = defaultCameraPosition
                                 markerState.position = currentLocation.toLatLng()
-
                             }}
-
-
                         }
                     ) {
                         Icon(
@@ -652,9 +592,8 @@ fun WriteMemoView(navController: NavController ){
                     CreateMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(
+                            IconButton(
                                 onClick = {
-                                    //isPressed.value = true
                                     hapticProcessing()
                                 when(it){
                                     CreateMenu.SNAPSHOT -> {
@@ -692,9 +631,8 @@ fun WriteMemoView(navController: NavController ){
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
 
-                            androidx.compose.material3.IconButton(
+                            IconButton(
                                 onClick = {
-                                    //isPressed.value = true
                                     hapticProcessing()
                                 when(it){
 
@@ -731,9 +669,8 @@ fun WriteMemoView(navController: NavController ){
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
-                    androidx.compose.material3.IconButton(
+                    IconButton(
                         onClick = {
-                            //isPressed.value = true
                             hapticProcessing()
                             isVisibleMenu.value = !isVisibleMenu.value
                         }
@@ -748,10 +685,9 @@ fun WriteMemoView(navController: NavController ){
                     SettingMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(
+                            IconButton(
 
                                 onClick = {
-                                    //isPressed.value = true
                                     hapticProcessing()
                                 when(it){
                                     SettingMenu.SECRET -> {
@@ -766,7 +702,6 @@ fun WriteMemoView(navController: NavController ){
                                         isTagDialog = !isTagDialog
 
                                     }
-                                    else -> {}
                                 }
                             }) {
                                 val icon = when(it){
@@ -790,11 +725,8 @@ fun WriteMemoView(navController: NavController ){
                         }
                     }
 
-
-                    androidx.compose.material3.IconButton(
-
+                    IconButton(
                         onClick = {
-
                             coroutineScope.launch {
                                 if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
                                     || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded){
@@ -802,7 +734,6 @@ fun WriteMemoView(navController: NavController ){
                                 }else {
                                     scaffoldState.bottomSheetState.hide()
                                 }
-
                             }
                         },
 
@@ -810,9 +741,8 @@ fun WriteMemoView(navController: NavController ){
                         Icon(
                             modifier = Modifier,
                             imageVector = Icons.Outlined.FolderOpen,
-                            contentDescription = "Data Container",
-
-                            )
+                            contentDescription = "Data Container"
+                        )
                     }
 
 
@@ -829,10 +759,8 @@ fun WriteMemoView(navController: NavController ){
                     MapTypeMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
                         ) {
-                            androidx.compose.material3.IconButton(
-
+                            IconButton(
                                 onClick = {
-                                    //isPressed.value = true
                                     hapticProcessing()
                                 val mapType = MapType.values().first { mapType ->
                                     mapType.name == it.name
@@ -860,80 +788,7 @@ fun WriteMemoView(navController: NavController ){
                 ){
 
 
-
-
                     if(isTagDialog ) {
-                        /*
-                        AssistChipGroupViewNew(
-                            isVisible = isTagDialog,
-                            setState = selectedTagArray.value,
-                        ) {
-
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.Center)
-                            ) {
-
-                                Divider()
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-
-
-                                    IconButton(
-                                        modifier = Modifier,
-                                        onClick = {
-                                            isTagDialog = false
-                                            hapticProcessing()
-
-                                            selectedTagArray.value.clear()
-
-                                        },
-                                        content = {
-                                            Icon(
-                                                modifier = Modifier,
-                                                imageVector = Icons.Outlined.Replay,
-                                                contentDescription = "Clear"
-                                            )
-                                        }
-                                    )
-
-
-                                    IconButton(
-                                        modifier = Modifier,
-                                        onClick = {
-                                            hapticProcessing()
-                                            isTagDialog = false
-
-                                            selectedTagArray.value.clear()
-
-                                            tagInfoDataListNew.forEachIndexed { index, tagInfoData ->
-                                                if (tagInfoData.isSet.value) {
-                                                    selectedTagArray.value.add(index)
-                                                }
-                                            }
-
-
-                                        },
-                                        content = {
-                                            Icon(
-                                                modifier = Modifier,
-                                                imageVector = Icons.Outlined.PublishedWithChanges,
-                                                contentDescription = "Save"
-                                            )
-                                        }
-                                    )
-
-                                }
-                            }
-                        }
-
-                         */
-
 
                         AssistChipGroupView(
                             isVisible = isTagDialog,
@@ -949,20 +804,16 @@ fun WriteMemoView(navController: NavController ){
                                 Divider()
 
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-
 
                                     IconButton(
                                         modifier = Modifier,
                                         onClick = {
                                             isTagDialog = false
                                             hapticProcessing()
-
                                             selectedTagArray.value.clear()
-
                                         },
                                         content = {
                                             Icon(
@@ -979,16 +830,12 @@ fun WriteMemoView(navController: NavController ){
                                         onClick = {
                                             hapticProcessing()
                                             isTagDialog = false
-
                                             selectedTagArray.value.clear()
-
                                             tagInfoDataList.forEachIndexed { index, tagInfoData ->
                                                 if (tagInfoData.isSet.value) {
                                                     selectedTagArray.value.add(index)
                                                 }
                                             }
-
-
                                         },
                                         content = {
                                             Icon(
@@ -1002,16 +849,8 @@ fun WriteMemoView(navController: NavController ){
                                 }
                             }
                         }
-
-
                     }
-
-
                 }
-
-
-
-
 
                 if(isAlertDialog.value){
                     ConfirmDialog(
@@ -1019,14 +858,9 @@ fun WriteMemoView(navController: NavController ){
                         onEvent = saveHandler )
                 }
 
-
             }// Box
 
-
-
         }// BottomSheetScaffold
-
-
 
 }
 
@@ -1112,7 +946,7 @@ fun ConfirmDialog(
                         trailingIcon = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
 
-                                androidx.compose.material3.IconButton(
+                                IconButton(
                                     modifier = Modifier,
 
                                     onClick = {
@@ -1160,7 +994,7 @@ fun ConfirmDialog(
                     horizontalArrangement = Arrangement.End,  ){
 
 
-                    androidx.compose.material3.TextButton(
+                    TextButton(
 
                         onClick = {
                             // isPressed.value = true
@@ -1174,7 +1008,7 @@ fun ConfirmDialog(
                     }
 
 
-                    androidx.compose.material3.TextButton(
+                    TextButton(
 
                         onClick = {
                             // isPressed.value = true
@@ -1373,7 +1207,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                         IconButton(
                             modifier = Modifier.align(Alignment.CenterEnd),
                             onClick = {
-                           //     isPressed.value = true
                                 hapticProcessing()
                                     it(pagerState.currentPage)
                                     channel?.let {channel ->
