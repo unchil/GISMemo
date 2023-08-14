@@ -7,9 +7,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -18,7 +15,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -62,7 +58,6 @@ import com.example.gismemo.viewmodel.ListViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -99,7 +94,7 @@ fun IntroView(
     )
 
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing.value,
@@ -119,19 +114,19 @@ fun IntroView(
 
     var gridWidth by remember { mutableStateOf(1f) }
 
-    val upButtonPadingValue: Dp
+    val upButtonPaddingValue: Dp
     val sheetPeekHeightValue: Dp
     val drawerSheetWidthValue: Float
-    val ListBottomPadingValue:Dp
+    val listBottomPaddingValue:Dp
 
     when (configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             isPortrait = true
             gridWidth = 1f
-            upButtonPadingValue = 160.dp
+            upButtonPaddingValue = 160.dp
             sheetPeekHeightValue = 140.dp
             drawerSheetWidthValue = 0f
-            ListBottomPadingValue = 130.dp
+            listBottomPaddingValue = 130.dp
 
             if (drawerState.isOpen) {
                 coroutineScope.launch {
@@ -143,10 +138,10 @@ fun IntroView(
         else -> {
             isPortrait = false
             gridWidth = 0.8f
-            upButtonPadingValue = 10.dp
+            upButtonPaddingValue = 10.dp
             sheetPeekHeightValue = 0.dp
             drawerSheetWidthValue = 0.5f
-            ListBottomPadingValue = 10.dp
+            listBottomPaddingValue = 10.dp
         }
     }
 
@@ -167,7 +162,7 @@ fun IntroView(
             }
             //----------
 
-            val result = snackbarHostState.showSnackbar(
+            val result = snackBarHostState.showSnackbar(
                 message = message,
                 actionLabel = channelData.actionLabel,
                 withDismissAction = channelData.withDismissAction,
@@ -209,25 +204,12 @@ fun IntroView(
     }
 
 
-
-
-
-
     val searchView: (@Composable () -> Unit) = {
-
         val sheetControl: (() -> Unit)? =  if (isPortrait) {
             null
         } else {
-            {
-                if (drawerState.isOpen) {
-                    coroutineScope.launch {
-                        drawerState.close()
-                    }
-                }
-            }
+            { if (drawerState.isOpen) { coroutineScope.launch {  drawerState.close() }  } }
         }
-
-
         SearchView(
             isSearchRefreshing = isSearchRefreshing,
             sheetControl = sheetControl,
@@ -237,141 +219,123 @@ fun IntroView(
                 it.channelType == SnackBarChannelType.SEARCH_CLEAR
             }.channel)
         }
-
-
-
     }
 
 
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-
-                if (!isPortrait) {
-                    ModalDrawerSheet(
-                        modifier = Modifier.fillMaxWidth(drawerSheetWidthValue),
-                        drawerShape = ShapeDefaults.ExtraSmall
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            if (!isPortrait) {
+                ModalDrawerSheet(
+                    modifier = Modifier.fillMaxWidth(drawerSheetWidthValue),
+                    drawerShape = ShapeDefaults.ExtraSmall
+                ) {
+                    searchView()
+                }
+            }
+        },
+        content = {
+            BottomSheetScaffold(
+                modifier = Modifier.fillMaxSize().statusBarsPadding(),
+                scaffoldState = scaffoldState,
+                snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
+                sheetPeekHeight = sheetPeekHeightValue,
+                sheetDragHandle = {
+                    Box(
+                        modifier = Modifier.height(40.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        searchView()
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = "search",
+                        )
+                    }
+                },
+                sheetContent = {
+                    if (isPortrait) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            searchView()
+                        }
                     }
                 }
+            ) { innerPadding ->
 
-            },
-            content = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
 
-                BottomSheetScaffold(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding(),
-
-                    scaffoldState = scaffoldState,
-                    snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                    sheetPeekHeight = sheetPeekHeightValue,
-                    sheetDragHandle = {
-                        Box(
-                            modifier = Modifier.height(40.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(1f),
-                                imageVector = Icons.Outlined.Search,
-                                contentDescription = "search",
-                            )
-                        }
-
-                    },
-                    sheetContent = {
-                        if (isPortrait) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                searchView()
-                            }
-                        }
-                    },
-
-                    ) { innerPadding ->
-
-                    Column(
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
+                        horizontalArrangement = Arrangement.spacedBy(0.dp),
+                        verticalAlignment = Alignment.CenterVertically
+
                     ) {
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(0.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        if (!isPortrait) {
+                            Box(modifier = Modifier.fillMaxWidth(0.4f)) {
+                                WeatherContent()
+                            }
+                        }
 
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pullRefresh(state = pullRefreshState)
                         ) {
 
-                            if (!isPortrait) {
-                                Box(modifier = Modifier.fillMaxWidth(0.4f)) {
-                                    WeatherContent()
-                                }
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .pullRefresh(state = pullRefreshState)
+                            LazyColumn(
+                                modifier = Modifier.padding(bottom = listBottomPaddingValue),
+                                state = lazyListState,
+                                userScrollEnabled = true,
+                                verticalArrangement = Arrangement.spacedBy(2.dp),
+                                contentPadding = PaddingValues(
+                                    horizontal = 6.dp,
+                                    vertical = 10.dp
+                                )
                             ) {
 
-                                LazyColumn(
-                                    modifier = Modifier.padding(bottom = ListBottomPadingValue),
-                                    state = lazyListState,
-                                    userScrollEnabled = true,
-                                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 6.dp,
-                                        vertical = 10.dp
-                                    )
-                                ) {
-
-                                    if (isPortrait) {
-                                        stickyHeader { WeatherContent() }
-                                    }
-
-                                    items(memoListStream.itemCount) {
-                                        memoListStream[it]?.let { memo ->
-                                            MemoSwipeView(
-                                                item = memo,
-                                                channel = channel,
-                                                event = viewModel::onEvent,
-                                                navController = navController
-                                            )
-                                        }
-                                    }
-
+                                if (isPortrait) {
+                                    stickyHeader { WeatherContent() }
                                 }
 
-                                PullRefreshIndicator(
-                                    refreshing = isRefreshing.value,
-                                    state = pullRefreshState,
-                                    modifier = Modifier.align(Alignment.TopCenter)
-                                )
-
-                                SearchingProgressIndicator(isVisibility = isSearchRefreshing.value)
-
-                                UpButton(
-                                    modifier = Modifier
-                                        .padding(end = 10.dp, bottom = upButtonPadingValue)
-                                        .align(Alignment.BottomEnd),
-                                    listState = lazyListState
-                                )
+                                items(memoListStream.itemCount) {
+                                    memoListStream[it]?.let { memo ->
+                                        MemoSwipeView(
+                                            item = memo,
+                                            channel = channel,
+                                            event = viewModel::onEvent,
+                                            navController = navController
+                                        )
+                                    }
+                                }
 
                             }
 
+                            PullRefreshIndicator(
+                                refreshing = isRefreshing.value,
+                                state = pullRefreshState,
+                                modifier = Modifier.align(Alignment.TopCenter)
+                            )
+
+                            SearchingProgressIndicator(isVisibility = isSearchRefreshing.value)
+
+                            UpButton(
+                                modifier = Modifier
+                                    .padding(end = 10.dp, bottom = upButtonPaddingValue)
+                                    .align(Alignment.BottomEnd),
+                                listState = lazyListState
+                            )
+
                         }
-
-
                     }
-
-
                 }
-
-
             }
-        )
+        } // content
+    )
 
 
 }
