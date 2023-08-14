@@ -950,7 +950,6 @@ fun ConfirmDialog(
                                     modifier = Modifier,
 
                                     onClick = {
-                                       // isPressed.value = true
                                         hapticProcessing()
                                         titleText.value  = ""
                                         startLauncherRecognizerIntent.launch(recognizerIntent())
