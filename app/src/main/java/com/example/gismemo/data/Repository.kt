@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.example.gismemo.BuildConfig
-import com.example.gismemo.R
 import com.example.gismemo.api.OpenWeatherInterface
 import com.example.gismemo.api.RetrofitAdapter
 import com.example.gismemo.db.CURRENTWEATHER_TBL
@@ -20,11 +19,11 @@ import com.example.gismemo.model.toCURRENTWEATHER_TBL
 import com.example.gismemo.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-//class Repository( val context: Context, val database:LuckMemoDB ){
 class Repository{
 
 
@@ -34,7 +33,6 @@ class Repository{
     val currentSelectedTab:MutableStateFlow<WriteMemoDataType?>
         = MutableStateFlow(null)
 
-
     val selectedMemo:MutableStateFlow<MEMO_TBL?> = MutableStateFlow(null)
 
     val selectedWeather:MutableStateFlow<MEMO_WEATHER_TBL?> = MutableStateFlow(null)
@@ -42,8 +40,6 @@ class Repository{
 
     val isUsableHaptic: MutableStateFlow<Boolean>
             = MutableStateFlow(true)
-
-
 
     val currentIsDrawing: MutableStateFlow<Boolean>
             = MutableStateFlow(false)
@@ -137,36 +133,11 @@ class Repository{
 
 //------
 
-
-
-
-
-
     val OPENWEATHER_URL = "https://api.openweathermap.org/data/2.5/"
-
 
     val _currentLocation:MutableStateFlow<CURRENTLOCATION_TBL?>  = MutableStateFlow(null)
 
-
-    suspend fun getCurrentLocation(){
-        database.currentLocationDao.select_Flow().collectLatest {
-            _currentLocation.emit(it)
-        }
-    }
-
-
     val _currentWeather:MutableStateFlow<CURRENTWEATHER_TBL?>  = MutableStateFlow(null)
-
-
-
-
-    suspend fun setCurrentWeather() {
-        database.currentWeatherDao.select_Flow().collectLatest {
-            _currentWeather.emit(it)
-        }
-    }
-
-
 
     suspend fun deleteMemoItem( type:WriteMemoDataType,  index:Int) {
         when(type){
@@ -417,52 +388,10 @@ class Repository{
 
     suspend fun setWeather(id:Long){
         database.memoWeatherDao.select_Flow(id).collectLatest {
-           selectedWeather.emit(it)
-          //  selectedWeather.update { it }
+           selectedWeather.value = it
         }
     }
 
-    /*
-    suspend fun setFiles(id:Long){
-
-
-        database.memoFileDao.select_Flow(id).collectLatest {
-            val currentSnapShotList = it.filter { it.type ==  WriteMemoDataType.SNAPSHOT.name}.map { it.filePath.toUri() }.sorted()
-            currentSnapShot.emit( currentSnapShotList )
-
-            val currentPhotoList = it.filter { it.type ==  WriteMemoDataType.PHOTO.name}.map { it.filePath.toUri() }.sorted()
-            currentPhoto.emit(  currentPhotoList )
-
-            val currentVideoList = it.filter { it.type ==  WriteMemoDataType.VIDEO.name}.map { it.filePath.toUri() }.sorted()
-            currentVideo.emit(  currentVideoList  )
-
-            database.memoTextDao.select_Flow(id).collectLatest {memoTextTblList ->
-
-                val audiTextList = mutableListOf<Pair<String,List<Uri>>>()
-                val audioTextFileList = it.filter { it.type ==  WriteMemoDataType.AUDIOTEXT.name}
-
-                memoTextTblList.forEach {commentList ->
-                    audiTextList.add(
-                        Pair(
-                            commentList.comment,
-                            audioTextFileList.filter {
-                                it.index == commentList.index
-                            }.map {
-                                it.filePath.toUri()
-                            }.sorted()
-                        )
-                    )
-                }
-
-                currentAudioText.emit( audiTextList  )
-            }
-
-        }
-
-
-    }
-
-     */
     suspend fun setFiles(id:Long){
 
 
@@ -493,9 +422,7 @@ class Repository{
                         )
                     )
                 }
-
-               detailAudioText.emit( audiTextList  )
-         //       detailAudioText.update { audiTextList }
+                detailAudioText.value = audiTextList
             }
 
         }
