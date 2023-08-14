@@ -1,8 +1,6 @@
 package com.example.gismemo.view
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.net.Uri
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,10 +11,7 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.staggeredgrid.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,11 +19,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -36,35 +29,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.core.net.toUri
-import coil.size.Size
 import com.example.gismemo.LocalUsableHaptic
-import com.example.gismemo.R
-import com.example.gismemo.data.RepositoryProvider
-import com.example.gismemo.db.LocalLuckMemoDB
-import com.example.gismemo.db.LuckMemoDB
-import com.example.gismemo.db.UnixTimeToString
-import com.example.gismemo.db.yyyyMMddHHmm
 import com.example.gismemo.shared.composables.LocalPermissionsManager
 import com.example.gismemo.shared.composables.PermissionsManager
-import com.example.gismemo.shared.utils.SnackBarChannelType
-import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.ListViewModel
-import com.google.gson.annotations.SerializedName
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+
+typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
 
 data class TagInfoData(
     var icon : ImageVector,
     var name: String,
     var isSet:MutableState<Boolean> = mutableStateOf(false)
 )
-
-
 
 val tagInfoDataList: List<TagInfoData> = listOf(
     TagInfoData(Icons.Outlined.ShoppingCart, "마트"),
@@ -103,53 +81,6 @@ fun  List<TagInfoData>.clear(){
     }
 }
 
-data class TagInfoDataNew(
-    var icon : ImageVector,
-    var name: String,
-    var isSet:MutableState<Boolean> = mutableStateOf(false)
-)
-
-
-val tagInfoDataListNew: List<TagInfoDataNew> = listOf(
-    TagInfoDataNew(Icons.Outlined.ShoppingCart, "마트"),
-    TagInfoDataNew(Icons.Outlined.AccountBalance, "박물관"),
-    TagInfoDataNew(Icons.Outlined.Store, "가게"),
-    TagInfoDataNew(Icons.Outlined.Theaters, "극장"),
-    TagInfoDataNew(Icons.Outlined.FlightTakeoff, "이륙"),
-    TagInfoDataNew(Icons.Outlined.FlightLand, "착륙"),
-    TagInfoDataNew(Icons.Outlined.Hotel, "호텔"),
-    TagInfoDataNew(Icons.Outlined.School, "학교"),
-    TagInfoDataNew(Icons.Outlined.Hiking, "하이킹"),
-    TagInfoDataNew(Icons.Outlined.DownhillSkiing, "스키"),
-    TagInfoDataNew(Icons.Outlined.Kayaking, "카약"),
-    TagInfoDataNew(Icons.Outlined.Skateboarding, "스케이트보딩"),
-    TagInfoDataNew(Icons.Outlined.Snowboarding, "스노우보딩"),
-    TagInfoDataNew(Icons.Outlined.ScubaDiving, "스쿠버다이빙"),
-    TagInfoDataNew(Icons.Outlined.RollerSkating, "롤러스케이팅"),
-    TagInfoDataNew(Icons.Outlined.Photo, "포토스팟"),
-    TagInfoDataNew(Icons.Outlined.Restaurant, "음식점"),
-    TagInfoDataNew(Icons.Outlined.Park, "공원"),
-    TagInfoDataNew(Icons.Outlined.LocalCafe, "카페"),
-    TagInfoDataNew(Icons.Outlined.LocalTaxi, "택시"),
-    TagInfoDataNew(Icons.Outlined.Forest, "숲"),
-    TagInfoDataNew(Icons.Outlined.EvStation, "전기차 충전"),
-    TagInfoDataNew(Icons.Outlined.FitnessCenter, "피트니스"),
-    TagInfoDataNew(Icons.Outlined.House, "집"),
-    TagInfoDataNew(Icons.Outlined.Apartment, "아파트"),
-    TagInfoDataNew(Icons.Outlined.Cabin, "캐빈")
-).sortedBy {
-    it.name
-}
-
-fun  List<TagInfoDataNew>.clearNew(){
-    this.forEach {
-        it.isSet.value = false
-    }
-}
-
-
-
-
 enum class SearchOption {
     TITLE, SECRET, MARKER, TAG, DATE
 }
@@ -164,7 +95,6 @@ fun SearchOption.name():String{
     }
 }
 
-
 sealed class SearchQueryDataValue {
     data class radioGroupOption(val index:Int) : SearchQueryDataValue()
     data class tagOption(val indexList: ArrayList<Int>): SearchQueryDataValue()
@@ -172,38 +102,16 @@ sealed class SearchQueryDataValue {
     data class titleOption(val title: String): SearchQueryDataValue()
 }
 
-data class SearchQueryData (
-    var icon : ImageVector ,
-   var searchType: SearchOption,
-    var isSet:MutableState<Boolean>
-        = mutableStateOf(false) ,
-    var selectedValue:MutableState<SearchQueryDataValue?>
-        = mutableStateOf(null)
-
-)
-
-val searchQueryDataList: List<SearchQueryData> = listOf(
-    SearchQueryData(Icons.Outlined.Lock, SearchOption.SECRET),
-    SearchQueryData(Icons.Outlined.LocationOn, SearchOption.MARKER),
-    SearchQueryData(Icons.Outlined.Class, SearchOption.TAG),
-    SearchQueryData(Icons.Outlined.CalendarMonth, SearchOption.DATE)
-)
-
-
 @Composable
 fun RadioButtonGroupView(
-    isVisible:MutableState<Boolean> = mutableStateOf(true),
     state:MutableState<Int>,
     items:List<String>,
     content: @Composable (( ) -> Unit)? = null
 ){
 
-
-
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-
     fun hapticProcessing(){
         if(isUsableHaptic){
             coroutineScope.launch {
@@ -211,8 +119,6 @@ fun RadioButtonGroupView(
             }
         }
     }
-
-
 
     val (selectedOption, onOptionSelected) = mutableStateOf(items[state.value])
 
@@ -227,7 +133,6 @@ fun RadioButtonGroupView(
         content?.let {
             it()
         }
-
 
         items.forEachIndexed { index, it ->
             Row(
@@ -260,7 +165,7 @@ fun RadioButtonGroupView(
 
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchView(
     isSearchRefreshing:MutableState<Boolean> = mutableStateOf( false),
@@ -633,7 +538,7 @@ fun SearchView(
 }
 
 
-typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
+
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -646,22 +551,15 @@ fun AssistChipGroupView(
 ){
 
     tagInfoDataList.clear()
-
     setState.value.forEach {
         tagInfoDataList[it].isSet.value = true
     }
 
-
     val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
-
-
     val itemModifier = Modifier.wrapContentSize()
-
-
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-
     fun hapticProcessing(){
         if(isUsableHaptic){
             coroutineScope.launch {
@@ -670,47 +568,26 @@ fun AssistChipGroupView(
         }
     }
 
-
     AnimatedVisibility(visible = isVisible) {
-
-
         Column (
-            modifier = Modifier
-                .then(modifier)
+            modifier = Modifier.then(modifier)
         ){
-
-
             LazyHorizontalStaggeredGrid(
                 rows =  StaggeredGridCells.Fixed(4),
-                modifier  = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxWidth()
-                    .height(200.dp),
+                modifier  = Modifier.padding(horizontal = 10.dp).fillMaxWidth().height(200.dp),
                 state = lazyStaggeredGridState,
                 contentPadding =  PaddingValues(10.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalItemSpacing = 6.dp,
                 userScrollEnabled = true,
             ){
-
-
-
                 itemsIndexed(tagInfoDataList) { index, it ->
-
-
                     AssistChip(
                         modifier = itemModifier,
                         onClick = {
                             hapticProcessing()
-
                             it.isSet.value = !it.isSet.value
-
-                            if (it.isSet.value) {
-                                setState.value.add(index)
-                            } else {
-                                setState.value.remove(index)
-                            }
-
+                            if (it.isSet.value)  setState.value.add(index) else   setState.value.remove(index)
                         },
                         label = {
                             Row {
@@ -723,132 +600,25 @@ fun AssistChipGroupView(
                             }
                         },
                         leadingIcon = {
-                            val trailingIcon =
-                                if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
                             Icon(
-                                imageVector = trailingIcon,
-                                contentDescription = "",
-                                modifier = Modifier.size(AssistChipDefaults.IconSize)
-                            )
-                        },
-                    )
-
-
-
-                } // itemsIndexed
-
-            }
-
-            content?.let {
-                it()
-            }
-
-        }
-
-    }
-
-}
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AssistChipGroupViewNew(
-    modifier: Modifier = Modifier,
-    setState:ArrayList<Int> = arrayListOf(),
-    isVisible:Boolean =true,
-    content: @Composable (( ) -> Unit)? = null
-){
-
-
-
-        tagInfoDataListNew.clearNew()
-        setState.forEach {
-            tagInfoDataListNew[it].isSet.value = true
-        }
-
-
-
-    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
-
-    val itemModifier = Modifier.wrapContentSize()
-
-    val isUsableHaptic = LocalUsableHaptic.current
-    val hapticFeedback = LocalHapticFeedback.current
-    val coroutineScope = rememberCoroutineScope()
-
-    fun hapticProcessing(){
-        if(isUsableHaptic){
-            coroutineScope.launch {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            }
-        }
-    }
-
-    AnimatedVisibility(visible = isVisible) {
-
-        Column (
-            modifier = Modifier
-                .then(modifier)
-        ){
-
-            LazyHorizontalStaggeredGrid(
-                rows =  StaggeredGridCells.Fixed(4),
-                modifier  = Modifier
-                    .padding(horizontal = 10.dp)
-                    .fillMaxWidth()
-                    .height(200.dp),
-                state = lazyStaggeredGridState,
-                contentPadding =  PaddingValues(10.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalItemSpacing = 6.dp,
-                userScrollEnabled = true,
-            ){
-
-                itemsIndexed(tagInfoDataListNew) { index, it ->
-
-                    AssistChip(
-                        modifier = itemModifier,
-                        onClick = {
-                            hapticProcessing()
-                            it.isSet.value = !it.isSet.value
-
-                        },
-                        label = {
-                            Row {
-                                Icon(
-                                    imageVector = it.icon,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
-                                )
-                                Text(text = it.name)
-                            }
-                        },
-                        leadingIcon = {
-                            val icon =
-                                if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank
-                            Icon(
-                                imageVector = icon,
+                                imageVector =   if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
                                 contentDescription = "",
                                 modifier = Modifier.size(AssistChipDefaults.IconSize)
                             )
                         },
                     )
                 } // itemsIndexed
-
             }
-
             content?.let {
                 it()
             }
-
         }
-
     }
-
 }
 
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+
+
 @Preview
 @Composable
 private fun PrevSearchView(
@@ -858,16 +628,13 @@ private fun PrevSearchView(
     val permissionsManager = PermissionsManager()
     CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
 
-    var isSet by rememberSaveable {
-        mutableStateOf(false)
-    }
 
         GISMemoTheme {
             Surface(
                 modifier = Modifier.background(color = Color.White)
             ) {
 
-                AssistChipGroupViewNew(setState = arrayListOf(0,1,2,3)  )
+                AssistChipGroupView(  )
 
             }
         }
