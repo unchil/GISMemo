@@ -1,7 +1,5 @@
 package com.example.gismemo.view
 
-import android.content.res.Configuration
-import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,27 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
-import com.example.gismemo.db.entity.MEMO_TBL
 import com.example.gismemo.db.entity.toCURRENTWEATHER_TBL
-import com.example.gismemo.db.entity.toLatLng
-import com.example.gismemo.shared.utils.FileManager
 import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
-import com.example.gismemo.viewmodel.CameraViewModel
 import com.example.gismemo.viewmodel.DetailMemoViewModel
-import com.example.gismemo.viewmodel.WriteMemoViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -44,7 +32,6 @@ import com.google.maps.android.compose.widgets.ScaleBar
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,14 +81,9 @@ fun DetailMemoView(navController: NavController, id:Long){
     var isTagDialog by  rememberSaveable { mutableStateOf(false) }
     val isVisibleMenu = rememberSaveable { mutableStateOf(false)   }
 
-
     val memo =  viewModel.memo.collectAsState()
     val selectedTagArray =  viewModel.tagArrayList.collectAsState()
     val weatherData = viewModel.weather.collectAsState()
-
-
-
-
 
     val isLock =  mutableStateOf(memo.value?.isSecret ?: false)
     val isMark =  mutableStateOf(memo.value?.isPin ?: false)
@@ -119,26 +101,16 @@ fun DetailMemoView(navController: NavController, id:Long){
 
     val snackbarHostState = remember { SnackbarHostState() }
     val channel = remember { Channel<Int>(Channel.CONFLATED) }
+
     LaunchedEffect(channel) {
+
         channel.receiveAsFlow().collect { index ->
             val channelData = snackbarChannelList.first {
                 it.channel == index
             }
 
-            //----------
-            val message = when(channelData.channelType){
-                SnackBarChannelType.LOCK_CHANGE -> {
-                    channelData.message +  if (isLock.value) " [ 설정 ] "  else " [ 해지 ] "
-                }
-                SnackBarChannelType.MARKER_CHANGE -> {
-                    channelData.message + if (isMark.value) " [ 설정 ] "   else " [ 해지 ] "
-                }
-                else -> { channelData.message}
-            }
-            //----------
-
             val result = snackbarHostState.showSnackbar(
-                message = message,
+                message = channelData.message,
                 actionLabel = channelData.actionLabel,
                 withDismissAction = channelData.withDismissAction,
                 duration = channelData.duration
@@ -246,7 +218,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                 MapTypeMenuList.forEach {
                     AnimatedVisibility(visible = isVisibleMenu.value,
                     ) {
-                        androidx.compose.material3.IconButton(
+                        IconButton(
                             onClick = {
                                // isPressed.value = true
                                 hapticProcessing()
@@ -272,7 +244,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                     .clip(RoundedCornerShape(6.dp))
                     .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
-                androidx.compose.material3.IconButton(
+                IconButton(
                     onClick = {
                         // isPressed.value = true
                         hapticProcessing()
@@ -289,7 +261,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                 SettingMenuList.forEach {
                     AnimatedVisibility(visible = isVisibleMenu.value,
                     ) {
-                        androidx.compose.material3.IconButton(
+                        IconButton(
                             onClick = {
                                 // isPressed.value = true
                                 hapticProcessing()
@@ -339,7 +311,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                     }
                 }
 
-                androidx.compose.material3.IconButton(
+                IconButton(
                     onClick = {
                         coroutineScope.launch {
                             if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
@@ -373,73 +345,7 @@ fun DetailMemoView(navController: NavController, id:Long){
             ){
 
 
-
                if( isTagDialog) {
-
-                   /*
-                   AssistChipGroupViewNew(
-                       isVisible = isTagDialog,
-                       setState = selectedTags.value,
-                   ) {
-
-                       Column(
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .align(Alignment.Center)
-                       ) {
-
-                           Divider()
-
-                           Row(
-                               modifier = Modifier
-                                   .fillMaxWidth(),
-                               horizontalArrangement = Arrangement.Center
-                           ) {
-                               androidx.compose.material3.TextButton(
-                                   onClick = {
-                                       isTagDialog = false
-                                       hapticProcessing()
-                                       snippets.value = ""
-                                       selectedTags.value.clear()
-                                       viewModel.onEvent(
-                                           DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
-                                       )
-                                   }
-                               ) {
-                                   androidx.compose.material.Text(text = "Clear")
-                               }
-
-
-                               androidx.compose.material3.TextButton(
-                                   onClick = {
-
-                                       isTagDialog = false
-                                       hapticProcessing()
-                                       snippets.value = ""
-                                        selectedTags.value.clear()
-                                       tagInfoDataListNew.forEachIndexed { index, tagInfoData ->
-                                           if (tagInfoData.isSet.value) {
-                                               snippets.value = "${snippets.value} #${tagInfoData.name}"
-                                               selectedTags.value.add(index)
-                                           }
-                                       }
-
-                                       viewModel.onEvent(
-                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags.value )
-                                       )
-                                   }
-                               ) {
-                                   androidx.compose.material.Text(text = "Confirm")
-                               }
-                           }
-
-
-                       }
-                   }
-
-                    */
-
-
 
                    AssistChipGroupView(
                        isVisible = isTagDialog,
@@ -459,7 +365,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                                    .fillMaxWidth(),
                                horizontalArrangement = Arrangement.Center
                            ) {
-                               androidx.compose.material3.TextButton(
+                               TextButton(
                                    onClick = {
                                        isTagDialog = false
                                        hapticProcessing()
@@ -474,7 +380,7 @@ fun DetailMemoView(navController: NavController, id:Long){
                                }
 
 
-                               androidx.compose.material3.TextButton(
+                               TextButton(
                                    onClick = {
 
                                        isTagDialog = false
