@@ -5,8 +5,10 @@ import androidx.compose.material3.SnackbarDuration
 enum class SnackBarChannelType {
     AUTHENTICATION_FAILED,
     ITEM_DELETE,
-    MARKER_CHANGE,
-    LOCK_CHANGE,
+    MARKER_CHANGE_SET,
+    MARKER_CHANGE_FREE,
+    LOCK_CHANGE_SET,
+    LOCK_CHANGE_FREE,
     SNAPSHOT_RESULT,
     SEARCH_CLEAR,
     SEARCH_RESULT,
@@ -37,18 +39,6 @@ val snackbarChannelList = listOf(
     ),
 
 
-
-
-    SnackBarChannelData(
-        channelType = SnackBarChannelType.ITEM_DELETE,
-        channel = 9,
-        message = "삭제 하였습니다. ",
-        duration = SnackbarDuration.Short,
-        actionLabel = null,
-        withDismissAction = true,
-    ),
-
-
     SnackBarChannelData(
         channelType = SnackBarChannelType.ITEM_DELETE,
         channel = 9,
@@ -69,11 +59,10 @@ val snackbarChannelList = listOf(
     ),
 
 
-
     SnackBarChannelData(
-        channelType = SnackBarChannelType.MARKER_CHANGE,
-        channel = 7,
-        message = "메모의 마커 설정 값이 변경 되었습니다 ",
+        channelType = SnackBarChannelType.MARKER_CHANGE_SET,
+        channel = 70,
+        message = "메모를 마커로 설정 하였습니다. ",
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -82,9 +71,29 @@ val snackbarChannelList = listOf(
 
 
     SnackBarChannelData(
-        channelType = SnackBarChannelType.LOCK_CHANGE,
+        channelType = SnackBarChannelType.MARKER_CHANGE_FREE,
+        channel = 7,
+        message = "메모의 마커 설정을 해지 하였습니다.",
+        duration = SnackbarDuration.Short,
+        actionLabel = null,
+        withDismissAction = true,
+    ),
+
+
+    SnackBarChannelData(
+        channelType = SnackBarChannelType.LOCK_CHANGE_SET,
+        channel = 60,
+        message = "메모를 비밀로 설정 하였습니다.",
+        duration = SnackbarDuration.Short,
+        actionLabel = null,
+        withDismissAction = true,
+    ),
+
+
+    SnackBarChannelData(
+        channelType = SnackBarChannelType.LOCK_CHANGE_FREE,
         channel = 6,
-        message = "메모의 보안 설정 값이 변경 되었습니다 ",
+        message = "메모의 보안 설정을 해지 하였습니다.",
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,

@@ -220,7 +220,6 @@ fun DetailMemoView(navController: NavController, id:Long){
                     ) {
                         IconButton(
                             onClick = {
-                               // isPressed.value = true
                                 hapticProcessing()
                             val mapType = MapType.values().first { mapType ->
                                 mapType.name == it.name
@@ -246,7 +245,6 @@ fun DetailMemoView(navController: NavController, id:Long){
 
                 IconButton(
                     onClick = {
-                        // isPressed.value = true
                         hapticProcessing()
                         isVisibleMenu.value = !isVisibleMenu.value
                     }
@@ -263,7 +261,6 @@ fun DetailMemoView(navController: NavController, id:Long){
                     ) {
                         IconButton(
                             onClick = {
-                                // isPressed.value = true
                                 hapticProcessing()
                             when(it){
                                 SettingMenu.SECRET -> {
@@ -271,18 +268,26 @@ fun DetailMemoView(navController: NavController, id:Long){
                                     memo.value?.let {
                                         viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsSecret(id = it.id , isSecret = isLock.value))
                                     }
+
+                                    val snackBarChannelType = if(isLock.value)SnackBarChannelType.LOCK_CHANGE_SET else SnackBarChannelType.LOCK_CHANGE_FREE
+
                                     channel.trySend(snackbarChannelList.first {
-                                        it.channelType == SnackBarChannelType.LOCK_CHANGE
+                                        it.channelType == snackBarChannelType
                                     }.channel)
                                 }
+
                                 SettingMenu.MARKER -> {
                                     isMark.value = !isMark.value
                                     memo.value?.let {
                                         viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsMark(id = it.id , isMark = isMark.value))
                                     }
+
+                                    val snackBarChannelType = if(isMark.value)SnackBarChannelType.MARKER_CHANGE_SET else SnackBarChannelType.MARKER_CHANGE_FREE
+
                                     channel.trySend(snackbarChannelList.first {
-                                        it.channelType == SnackBarChannelType.MARKER_CHANGE
+                                        it.channelType == snackBarChannelType
                                     }.channel)
+
                                 }
                                 SettingMenu.TAG -> {
                                     isTagDialog = !isTagDialog
