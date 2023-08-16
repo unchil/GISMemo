@@ -8,11 +8,7 @@ import androidx.navigation.NavController
 import com.example.gismemo.data.Repository
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.model.WriteMemoDataType
-import com.example.gismemo.view.DrawingPolyline
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -27,29 +23,17 @@ class WriteMemoViewModel (
             = repository._currentLocation
 
 
-
-    private val _state = MutableStateFlow(State())
-    val state: StateFlow<State> = _state
-
-    private val _effect = MutableSharedFlow<Effect>(replay = 0)
-    val effect: SharedFlow<Effect> = _effect
-
-
         fun onEvent(event: Event){
             when(event){
-                is  Event.Error -> onError()
+
                 is Event.SetSnapShot -> {
                     setSnapShot(event.snapShotList)
                 }
-                is Event.SetSelectedTab -> {
-                    setSelectedTab(event.selectedTab)
-                }
+
                 is Event.ToRoute -> {
                     toRoute(event.navController, event.route)
                 }
-                is Event.SetSheetContent -> {
-                    setSheetContent(event.selectedContent)
-                }
+
                 Event.InitMemo -> {
                     initMemo()
                 }
@@ -58,7 +42,6 @@ class WriteMemoViewModel (
                         id = event.id,
                         isLock = event.isLock,
                         isMark = event.isMark,
-                       // selectTagList = event.selectTagList,
                         selectedTagArrayList = event.selectedTagArrayList,
                         title = event.title,
                         location = event.location
@@ -70,16 +53,11 @@ class WriteMemoViewModel (
                 is Event.SetDeviceLocation -> {
                     setDeviceLocation(event.location)
                 }
-                is Event.DeleteSnapShot -> {
-                    deleteSnapshot(index = event.index)
-                }
+
                 is Event.SetCurrentLocation -> {
                     setCurrentLocation(event.latlng)
                 }
 
-                is Event.UpdatePolylineList -> {
-                    updatePolyLinelist(event.polylineList)
-                }
                 is Event.UpdateIsLock -> {
                     updateIsLock(event.isLock)
                 }
@@ -87,12 +65,6 @@ class WriteMemoViewModel (
                     updateIsMarker(event.isMarker)
                 }
 
-                is Event.UpdateSelectedTags -> {
-                    updateSelectedTags(event.selectedTags)
-                }
-                Event.ClearCurrentValue -> {
-                    clearCurrentValue()
-                }
                 is Event.UpdateIsDrawing -> {
                     updateIsDrawing(event.isDrawing)
                 }
@@ -114,19 +86,6 @@ class WriteMemoViewModel (
         repository.updateCurrentIsEraser(isEraser)
     }
 
-
-    private fun clearCurrentValue(){
-        repository.clearCurrentValue()
-    }
-
-    private fun updateSelectedTags(tags: ArrayList<Int>) {
-        repository.updateCurrentTags(tags)
-    }
-
-
-    private fun updatePolyLinelist(polylineList: List<DrawingPolyline>) {
-        repository.updateCurrentPolylineList(polylineList)
-    }
 
 
     private fun updateIsLock(isLock:Boolean) {
@@ -155,11 +114,7 @@ class WriteMemoViewModel (
         }
     }
 
-    private fun deleteSnapshot(  index:Int) {
-        viewModelScope.launch {
-            _effect.emit(Effect.DeleteSnapshot(index))
-        }
-    }
+
 
     private fun setDeviceLocation(location:Location){
         viewModelScope.launch {
@@ -190,13 +145,11 @@ class WriteMemoViewModel (
         id:Long,
         isLock:Boolean,
         isMark:Boolean,
-   //     selectTagList:List<Pair<Long,Int>>,
         selectedTagArrayList: ArrayList<Int>,
         title:String,
         location: CURRENTLOCATION_TBL ){
 
         viewModelScope.launch {
-          //  repository.insertMemo(id, isLock,isMark,selectTagList,title,location)
             repository.insertMemo(id, isLock,isMark,selectedTagArrayList,title,location)
         }
     }
@@ -208,11 +161,6 @@ class WriteMemoViewModel (
     }
 
 
-    private fun setSheetContent(selectedContent: WriteMemoSheetContent){
-        viewModelScope.launch {
-            _effect.emit(Effect.SetSheetContent(selectedContent))
-        }
-    }
 
     private fun setSelectedTab(selectedTab: WriteMemoDataType){
         viewModelScope.launch {
@@ -226,55 +174,21 @@ class WriteMemoViewModel (
         viewModelScope.launch {
             repository.currentSnapShot.emit(snapShotList)
             setSelectedTab(WriteMemoDataType.SNAPSHOT)
-            setSheetContent(WriteMemoSheetContent.DATACONTAINER)
         }
     }
 
-
-    private fun onError() {
-        viewModelScope.launch {
-
-        }
-    }
-
-    enum class WriteMemoSheetContent {
-        CAMERA, TAGSELECT, DATACONTAINER, SPEECHTOTEXT, NOACTION
-    }
-
-
-
-    data class State (
-        val tags : List<String> =  listOf(""),
-        val isMarking : Boolean = false,
-        val isSecret: Boolean = false,
-        val audioIsEmpty:Boolean = false,
-        val videoIsEmpty:Boolean = false,
-        val snapShotIsEmpty:Boolean = false,
-        val photoIsEmpty:Boolean = false
-
-    )
 
         sealed class Event {
             data class SetSnapShot(val snapShotList: List<Uri>): Event()
-            data class SetSelectedTab(val selectedTab:WriteMemoDataType): Event()
-
-            data class SetSheetContent(val selectedContent:WriteMemoSheetContent): Event()
-
             data class ToRoute(val navController: NavController, val route:String) :Event()
 
             data class DeleteMemoItem(val type:WriteMemoDataType, val index:Int): Event()
-            data class DeleteSnapShot( val index:Int): Event()
-
 
             data class UpdateIsDrawing(val isDrawing:Boolean):Event()
             data class UpdateIsEraser(val isEraser:Boolean): Event()
 
             data class UpdateIsLock(val isLock:Boolean):Event()
             data class UpdateIsMarker(val isMarker:Boolean): Event()
-            data class UpdateSelectedTags(val selectedTags: ArrayList<Int>):Event()
-            data class UpdatePolylineList(val polylineList: List<DrawingPolyline>):Event()
-
-            object  ClearCurrentValue:Event()
 
             data class  UploadMemo(val id:Long,
                                    val isLock:Boolean,
@@ -290,15 +204,6 @@ class WriteMemoViewModel (
 
             data class  SetDeviceLocation(val location: Location): Event()
             data class SetCurrentLocation(val latlng:LatLng): Event()
-
-            data class Error(val throwable: Throwable?) : Event()
-        }
-
-
-        sealed class Effect {
-            data class SetSheetContent(val selectedContent:WriteMemoSheetContent): Effect()
-
-            data class DeleteSnapshot(val index:Int):Effect()
 
         }
 
