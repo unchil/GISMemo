@@ -370,7 +370,10 @@ fun DetailMemoView(navController: NavController, id:Long){
                                    .fillMaxWidth(),
                                horizontalArrangement = Arrangement.Center
                            ) {
-                               TextButton(
+
+
+                               IconButton(
+                                   modifier = Modifier,
                                    onClick = {
                                        isTagDialog = false
                                        hapticProcessing()
@@ -379,15 +382,19 @@ fun DetailMemoView(navController: NavController, id:Long){
                                        viewModel.onEvent(
                                            DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
                                        )
+                                   },
+                                   content = {
+                                       Icon(
+                                           modifier = Modifier,
+                                           imageVector = Icons.Outlined.Replay,
+                                           contentDescription = "Clear"
+                                       )
                                    }
-                               ) {
-                                   androidx.compose.material.Text(text = "Clear")
-                               }
+                               )
 
-
-                               TextButton(
+                               IconButton(
+                                   modifier = Modifier,
                                    onClick = {
-
                                        isTagDialog = false
                                        hapticProcessing()
                                        snippets.value = ""
@@ -402,10 +409,17 @@ fun DetailMemoView(navController: NavController, id:Long){
                                        viewModel.onEvent(
                                            DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags.value )
                                        )
+                                   },
+                                   content = {
+                                       Icon(
+                                           modifier = Modifier,
+                                           imageVector = Icons.Outlined.PublishedWithChanges,
+                                           contentDescription = "Save"
+                                       )
                                    }
-                               ) {
-                                   androidx.compose.material.Text(text = "Confirm")
-                               }
+                               )
+
+
                            }
 
 
