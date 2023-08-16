@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    //    KakaoSdk.init(this, "dfb918015eb4cc70b5db5d2e875dc58a")
+    //    KakaoSdk.init(this, BuildConfig.KAKAO_KEY_KEY)
 
         setContent {
 
