@@ -1,7 +1,7 @@
 # GISMemo
 
 
-#### Kotlin Compose RoomDatabase Flow Paging3 Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
+#### Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
 
 ## Description
 
@@ -53,7 +53,7 @@ dependencies {
 |**Write**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/portrait_write.jpg)|```This screen is for writing notes. It provides functions such as screenshots of pictures drawn on maps, texts using voice recognition, photos, and videos, and it is possible to set security, markers, and hashtags.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/landscape_write.jpg)|                                                             
 |**Markers**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/portrait_map.jpg)|```The location of the memo with the marker set is displayed.If you touch the information window of the marker, a brief screen of the memo is displayed, and if you touch the screen, you move to the detailed view screen.``` ![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/landscape_map.jpg)| 
 |**Search**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/portrait_search.jpg)|```Memos can be searched by title, creation date, hashtag, security, and marker conditions.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/landscape_search.jpg)|   
-|**Detail**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/portrait_detail.jpg)|```Can check the detailed information of the written memo.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/landscape_detail.jpg)|   
+|**Detail**|![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/portrait_detail.jpg)|```This is the screen that appears when you tap an item in the list or tap an item in the entire map. Can check the detailed information of the written memo.```![Alt text](https://github.com/unchil/GISMemo/blob/main/docu/resource/landscape_detail.jpg)|   
 
 
 ##  License
