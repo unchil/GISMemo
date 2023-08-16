@@ -1,11 +1,9 @@
 package com.example.gismemo.viewmodel
 
 import android.net.Uri
-import androidx.camera.video.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gismemo.data.Repository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow

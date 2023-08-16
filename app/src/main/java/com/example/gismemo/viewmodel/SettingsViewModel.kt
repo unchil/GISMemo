@@ -3,7 +3,6 @@ package com.example.gismemo.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gismemo.data.Repository
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SettingsViewModel ( val repository: Repository) : ViewModel() {

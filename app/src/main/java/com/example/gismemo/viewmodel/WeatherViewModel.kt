@@ -6,19 +6,12 @@ import com.example.gismemo.data.Repository
 import com.example.gismemo.db.CURRENTWEATHER_TBL
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class WeatherViewModel(val repository: Repository) : ViewModel() {
 
 
     val _currentWeatheStaterFlow: MutableStateFlow<CURRENTWEATHER_TBL?>
         = repository._currentWeather
-
-    val currentLocationStateFlow:StateFlow<CURRENTLOCATION_TBL?>
-        = repository._currentLocation
-
-
-
 
      suspend fun searchWeather(location: Location) {
 

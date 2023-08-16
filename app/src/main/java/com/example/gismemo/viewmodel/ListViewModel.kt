@@ -6,10 +6,7 @@ import androidx.navigation.NavController
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.gismemo.data.Repository
-import com.example.gismemo.db.entity.MEMO_FILE_TBL
-import com.example.gismemo.db.entity.MEMO_TAG_TBL
 import com.example.gismemo.db.entity.MEMO_TBL
-import com.example.gismemo.db.entity.MEMO_TEXT_TBL
 import com.example.gismemo.view.QueryData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -108,7 +105,6 @@ class ListViewModel(val repository:Repository, ) : ViewModel() {
         data class  SetMemo(val id: Long): Event()
         data class  SetFiles(val id: Long): Event()
 
-//mutableListOf<QueryData>()
         data class Search(val queryDataList:MutableList<QueryData>) : Event()
 
     }

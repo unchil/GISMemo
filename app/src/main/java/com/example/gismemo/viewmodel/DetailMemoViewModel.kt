@@ -6,7 +6,6 @@ import androidx.navigation.NavController
 import com.example.gismemo.data.Repository
 import com.example.gismemo.db.entity.MEMO_TBL
 import com.example.gismemo.db.entity.MEMO_WEATHER_TBL
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -44,7 +43,7 @@ class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
         }
 
     }
-  //  private fun updateTagList(id:Long, selectTagList:  List<Pair<Long, Int>>){
+
     private fun updateTagList(id:Long, selectTagList:  ArrayList<Int>){
         viewModelScope.launch {
             repository.updateTagList(id, selectTagList)
@@ -99,7 +98,7 @@ class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
         data class  SetFiles(val id: Long): Event()
         data class UpdateIsSecret(val id: Long, val isSecret:Boolean): Event()
         data class UpdateIsMark(val id: Long, val isMark:Boolean): Event()
-   //     data class UpdateTagList(val id:Long, val   selectTagList:List<Pair<Long,Int>>): Event()
+
    data class UpdateTagList(val id:Long, val   selectTagList:ArrayList<Int>): Event()
         data class ToRoute(val navController: NavController, val route:String) :Event()
     }

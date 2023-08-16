@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gismemo.data.Repository
-import com.example.gismemo.model.WriteMemoDataType
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 

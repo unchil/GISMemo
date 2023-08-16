@@ -28,37 +28,6 @@ class WriteMemoViewModel (
 
 
 
-    /*
-
-    val currentTagArrayList: StateFlow< ArrayList<Int>>
-            = repository.selectedTagList
-
-    val currentSnapShot: StateFlow<List<Uri>>
-            = repository.currentSnapShot
-
-
-
-    val currentIsDrawing: StateFlow<Boolean>
-            = repository.currentIsDrawing
-
-    val currentIsEraser: StateFlow<Boolean>
-            = repository.currentIsEraser
-
-
-    val currentIsLock: StateFlow<Boolean>
-            = repository.currentIsLock
-
-    val currentIsMarker: StateFlow<Boolean>
-            = repository.currentIsMarker
-
-    val currentPolylineList: StateFlow<List<DrawingPolyline>>
-            = repository.currentPolylineList
-
-
-
-     */
-
-
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> = _state
 
@@ -75,12 +44,6 @@ class WriteMemoViewModel (
                 is Event.SetSelectedTab -> {
                     setSelectedTab(event.selectedTab)
                 }
-                /*
-                is Event.SetSelectedMainTab -> {
-                    setSelectedMainTab(event.selectedMainTab)
-                }
-
-                 */
                 is Event.ToRoute -> {
                     toRoute(event.navController, event.route)
                 }
@@ -257,14 +220,7 @@ class WriteMemoViewModel (
         }
     }
 
-    /*
-    private fun setSelectedMainTab(selectedTab: MainTabType){
-        viewModelScope.launch {
-            repository.updateSelectedMainTab(selectedTab)
-        }
-    }
 
-     */
 
     private fun setSnapShot(snapShotList:  List<Uri>){
         viewModelScope.launch {
@@ -302,8 +258,6 @@ class WriteMemoViewModel (
             data class SetSnapShot(val snapShotList: List<Uri>): Event()
             data class SetSelectedTab(val selectedTab:WriteMemoDataType): Event()
 
-         //   data class SetSelectedMainTab(val selectedMainTab:MainTabType): Event()
-
             data class SetSheetContent(val selectedContent:WriteMemoSheetContent): Event()
 
             data class ToRoute(val navController: NavController, val route:String) :Event()
@@ -322,12 +276,9 @@ class WriteMemoViewModel (
 
             object  ClearCurrentValue:Event()
 
-
-            //object UploadMemo: Event()
             data class  UploadMemo(val id:Long,
                                    val isLock:Boolean,
                                    val isMark:Boolean,
-                              //     var selectTagList:List<Pair<Long,Int>>  ,
                                    var selectedTagArrayList: ArrayList<Int>,
                                    var title:String,
                                    var location:CURRENTLOCATION_TBL
@@ -347,10 +298,6 @@ class WriteMemoViewModel (
         sealed class Effect {
             data class SetSheetContent(val selectedContent:WriteMemoSheetContent): Effect()
 
-
-             data class SetSelectedTab(val selectedTab:WriteMemoDataType): Effect()
-
-            object NoAction:Effect()
             data class DeleteSnapshot(val index:Int):Effect()
 
         }
