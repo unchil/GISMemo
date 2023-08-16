@@ -4,24 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.hardware.biometrics.BiometricManager
 import android.location.Location
-import android.os.Build
 import android.util.Log
-import android.view.MotionEvent
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -29,62 +20,44 @@ import androidx.compose.material3.SheetValue.Hidden
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.size.Size
-import com.example.gismemo.R
+import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
+import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.MEMO_TBL
 import com.example.gismemo.db.entity.toLatLng
 import com.example.gismemo.model.BiometricCheckType
-import com.example.gismemo.model.getTitle
 import com.example.gismemo.navigation.GisMemoDestinations
-
 import com.example.gismemo.shared.composables.*
-import com.example.gismemo.shared.launchIntent_ShareMemo
-import com.example.gismemo.shared.utils.FileManager
-import com.example.gismemo.shared.utils.SnackBarChannelType
-import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.utils.getDeviceLocation
-import com.example.gismemo.viewmodel.ListViewModel
 import com.example.gismemo.viewmodel.MemoMapViewModel
-import com.example.gismemo.viewmodel.WriteMemoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.widgets.ScaleBar
 import kotlinx.coroutines.launch
-import java.io.FileOutputStream
-
-import android.hardware.biometrics.BiometricPrompt
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.core.content.ContextCompat
-import com.example.gismemo.LocalUsableHaptic
-import com.example.gismemo.db.LocalLuckMemoDB
 
 
 private const val TAG = "GoogleMap"
@@ -320,7 +293,7 @@ Button(
 @Preview
 @Composable
 fun PrevViewMap(){
-    val coroutineScope = rememberCoroutineScope()
+
      val permissionsManager = PermissionsManager()
     val permissions = listOf(
         Manifest.permission.INTERNET,
@@ -379,17 +352,6 @@ fun MemoMapView(navController: NavController){
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
 
-/*
-
-    val isPressed =   mutableStateOf(false)
-    LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic) {
-        if (isPressed.value &&  isUsableHaptic ) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            isPressed.value = false
-        }
-    }
-
- */
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -455,8 +417,6 @@ fun MemoMapView(navController: NavController){
     }
 
 
-    var isExpanded by remember { mutableStateOf(false) }
-
     val sheetState = SheetState(skipPartiallyExpanded = false, initialValue = Hidden)
 
     val scaffoldState =  rememberBottomSheetScaffoldState( bottomSheetState = sheetState )
@@ -465,8 +425,6 @@ fun MemoMapView(navController: NavController){
         markerState.position = it
         cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
     }
-
-
 
 
     val configuration = LocalConfiguration.current
@@ -479,14 +437,6 @@ fun MemoMapView(navController: NavController){
         }
     }
 
-
-    val markerClick: (Marker) -> Boolean = {
-        Log.d(TAG, "${it.title} was clicked")
-        cameraPositionState.projection?.let { projection ->
-            Log.d(TAG, "The current projection is: $projection")
-        }
-        false
-    }
 
 
     val isMemoCardView = remember{ mutableStateOf(false) }
@@ -550,13 +500,11 @@ fun MemoMapView(navController: NavController){
                                 //  icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE),
                                 draggable = true,
                                 onInfoWindowClick = {
-                                 //   isPressed.value = true
                                     hapticProcessing()
                                     isMemoCardView.value = false
                                 },
                                 onInfoWindowClose = {},
                                 onInfoWindowLongClick = { marker ->
-                                    //   isPressed.value = true
                                     hapticProcessing()
                                     isMemoCardView.value = true
                                     isCurrentMemo.value = it.id
@@ -603,9 +551,8 @@ fun MemoMapView(navController: NavController){
                             .background(color = Color.LightGray.copy(alpha = 0.7f))
                     ) {
 
-                        androidx.compose.material3.IconButton(
+                        IconButton(
                             onClick = {
-                                //   isPressed.value = true
                                 hapticProcessing()
                                 cameraPositionState.position = defaultCameraPosition
                                 if (currentLocation != null) {
@@ -629,7 +576,6 @@ fun MemoMapView(navController: NavController){
 
                     ScaleBar(
                         modifier = Modifier
-                            //      .padding(start = 10.dp)
                             .align(Alignment.TopStart),
                         cameraPositionState = cameraPositionState
                     )
@@ -637,15 +583,13 @@ fun MemoMapView(navController: NavController){
                     Row(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            //        .padding(start = 10.dp).padding(top = 10.dp)
                             .clip(RoundedCornerShape(6.dp))
                             .background(color = Color.LightGray.copy(alpha = 0.7f))
 
                     ) {
 
-                        androidx.compose.material3.IconButton(
+                        IconButton(
                             onClick = {
-                                //   isPressed.value = true
                                 hapticProcessing()
                                 isVisibleMenu.value = !isVisibleMenu.value
                             }
@@ -662,8 +606,7 @@ fun MemoMapView(navController: NavController){
                             AnimatedVisibility(
                                 visible = isVisibleMenu.value,
                             ) {
-                                androidx.compose.material3.IconButton(onClick = {
-                                    //   isPressed.value = true
+                               IconButton(onClick = {
                                     hapticProcessing()
                                     val mapType = MapType.values().first { mapType ->
                                         mapType.name == it.name
