@@ -1,7 +1,7 @@
 # GISMemo
 
 
-#### Kotlin Compose RoomDatabase Flow Paging3 Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
+#### Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
 
 ## Description
 
