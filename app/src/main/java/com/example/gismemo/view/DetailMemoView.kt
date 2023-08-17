@@ -117,11 +117,13 @@ fun DetailMemoView(navController: NavController, id:Long){
             )
             when (result) {
                 SnackbarResult.ActionPerformed -> {
+                    hapticProcessing()
                     when(channelData.channelType) {
                         else -> {}
                     }
                 }
                 SnackbarResult.Dismissed -> {
+                    hapticProcessing()
                 }
             }
         }

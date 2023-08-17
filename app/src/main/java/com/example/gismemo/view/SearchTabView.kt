@@ -306,6 +306,15 @@ fun SearchView(
 
     val scrollState = rememberScrollState()
 
+    /*
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+     */
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -480,12 +489,10 @@ fun SearchView(
 
 
         Divider(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
             )
-
-
 
 
             androidx.compose.material.IconButton(
@@ -516,7 +523,8 @@ fun SearchView(
 
                 DateRangePicker(
                     state = dateRangePickerState,
-                    modifier = Modifier.height(420.dp),
+                    modifier = Modifier
+                        .height(420.dp),
                     title = { Text("") },
                     headline = {
                         Text(
@@ -574,7 +582,10 @@ fun AssistChipGroupView(
         ){
             LazyHorizontalStaggeredGrid(
                 rows =  StaggeredGridCells.Fixed(4),
-                modifier  = Modifier.padding(horizontal = 10.dp).fillMaxWidth().height(200.dp),
+                modifier  = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .height(200.dp),
                 state = lazyStaggeredGridState,
                 contentPadding =  PaddingValues(10.dp),
                 verticalArrangement = Arrangement.Center,

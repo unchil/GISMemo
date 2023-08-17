@@ -145,6 +145,18 @@ fun IntroView(
         }
     }
 
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+
     LaunchedEffect(channel) {
         channel.receiveAsFlow().collect { index ->
             val channelData = snackbarChannelList.first {
@@ -170,6 +182,7 @@ fun IntroView(
             )
             when (result) {
                 SnackbarResult.ActionPerformed -> {
+                    hapticProcessing()
                     //----------
                     when (channelData.channelType) {
 
@@ -178,7 +191,7 @@ fun IntroView(
                     //----------
                 }
                 SnackbarResult.Dismissed -> {
-
+                    hapticProcessing()
                 }
             }
         }

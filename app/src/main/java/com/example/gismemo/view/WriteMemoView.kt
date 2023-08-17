@@ -293,44 +293,39 @@ fun WriteMemoView(navController: NavController ){
                 it.channel == index
             }
 
-            //----------
-            val message = when(channelData.channelType){
-                else -> { channelData.message}
-            }
-            //----------
 
             val result = snackbarHostState.showSnackbar(
-                message = message,
+                message = channelData.message,
                 actionLabel = channelData.actionLabel,
                 withDismissAction = channelData.withDismissAction,
                 duration = channelData.duration
             )
             when (result) {
                 SnackbarResult.ActionPerformed -> {
-
+                    hapticProcessing()
                     when(channelData.channelType) {
                         SnackBarChannelType.MEMO_CLEAR_REQUEST -> {
+
                             viewModel.onEvent( WriteMemoViewModel.Event.InitMemo  )
-
-
                             snapShotList.clear()
                             isLock = false
                             isMark = false
                             isMapClear = true
                             selectedTagArray.value = arrayListOf()
 
-
                             channel.trySend(snackbarChannelList.first {
                                 it.channelType == SnackBarChannelType.MEMO_CLEAR_RESULT
                             }.channel)
                         }
-                        else -> {}
+                        else -> {
+
+                        }
                     }
 
 
                 }
                 SnackbarResult.Dismissed -> {
-
+                    hapticProcessing()
                 }
             }
         }
@@ -531,19 +526,19 @@ fun WriteMemoView(navController: NavController ){
                             IconButton(
                                 onClick = {
                                     hapticProcessing()
-                                when(it){
-                                    SaveMenu.CLEAR -> {
-                                        channel.trySend(snackbarChannelList.first {
-                                            it.channelType == SnackBarChannelType.MEMO_CLEAR_REQUEST
-                                        }.channel)
-                                    }
-                                    SaveMenu.SAVE -> {
-                                        if(snapShotList.isEmpty()) {  isSnapShot = true   }
-                                        isAlertDialog.value = true
-
-                                    }
+                                    when(it){
+                                        SaveMenu.CLEAR -> {
+                                            channel.trySend(snackbarChannelList.first {
+                                                it.channelType == SnackBarChannelType.MEMO_CLEAR_REQUEST
+                                            }.channel)
+                                        }
+                                        SaveMenu.SAVE -> {
+                                            if(snapShotList.isEmpty()) {  isSnapShot = true   }
+                                            isAlertDialog.value = true
+                                        }
+                                     }
                                 }
-                            }) {
+                            ) {
                                 Icon(
                                     imageVector = it.getDesc().first,
                                     contentDescription = it.name,
