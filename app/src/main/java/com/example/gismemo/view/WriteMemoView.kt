@@ -1067,7 +1067,6 @@ fun MemoDataContainer(
         backgroundColor = MaterialTheme.colors.background,
         modifier = Modifier  ) {
 
-
         WriteMemoDataTypeList.forEachIndexed { index, it ->
             BottomNavigationItem(
                 icon = {
@@ -1105,6 +1104,7 @@ fun MemoDataContainer(
             }
     }
 
+
     val memoData:MutableState<MemoData?> = mutableStateOf(
         when (currentTabView.value){
             WriteMemoDataType.PHOTO ->  MemoData.Photo(dataList = viewModel.phothoList.collectAsState().value.toMutableList())
@@ -1112,34 +1112,26 @@ fun MemoDataContainer(
             WriteMemoDataType.VIDEO ->  MemoData.Video(dataList = viewModel.videoList.collectAsState().value.toMutableList())
             WriteMemoDataType.SNAPSHOT ->  MemoData.SnapShot(dataList = viewModel.snapShotList.collectAsState().value.toMutableList())
         }
-
     )
 
-
     val onDelete:((page:Int) -> Unit)  =   { page ->
-
-            if (currentTabView.value ==  WriteMemoDataType.SNAPSHOT ) {
-                deleteHandle?.let {
-                    it (page)
-                }
+        if (currentTabView.value ==  WriteMemoDataType.SNAPSHOT ) {
+            deleteHandle?.let {
+                it (page)
             }
-
-            onEvent?.let {
-                it(WriteMemoViewModel.Event.DeleteMemoItem(currentTabView.value, page))
-            }
-
+        }
+        onEvent?.let {
+            it(WriteMemoViewModel.Event.DeleteMemoItem(currentTabView.value, page))
+        }
     }
 
 
-        Column(modifier = Modifier
-        ) {
-            memoData.value?.let {
-                PagerMemoDataView(item = it, onDelete = if(deleteHandle != null) onDelete else null, channel = channel)
-            }
+    Column(modifier = Modifier
+    ) {
+        memoData.value?.let {
+            PagerMemoDataView(item = it, onDelete = if(deleteHandle != null) onDelete else null, channel = channel)
         }
-
-
-
+    }
 
 }
 
@@ -1147,7 +1139,6 @@ fun MemoDataContainer(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
-
 
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -1161,7 +1152,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
         }
     }
 
-
     val pagerState =   rememberPagerState()
 
     val defaultData:Pair<String, Int> = when(item){
@@ -1171,119 +1161,110 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
         is MemoData.Video -> Pair(WriteMemoDataType.VIDEO.name, item.dataList.size)
     }
 
+    val scrollState = rememberScrollState()
 
-
-
-        Column(modifier = Modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(2.dp)) {
+            .padding(2.dp)
+    ) {
 
+        Box (
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment =Alignment.Center
+        ){
 
-            Box (
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment =Alignment.Center
-            ){
-
-                androidx.compose.material3.Text(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .background(color = Color.White)
-                        .padding(top = 10.dp),
-                    textAlign = TextAlign.Center,
-                    text = defaultData.first,
-                    style = MaterialTheme.typography.h6
-                )
-
-                onDelete?.let {
-
-                    if(defaultData.second > 0) {
-                        IconButton(
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                            onClick = {
-                                hapticProcessing()
-                                    it(pagerState.currentPage)
-                                    channel?.let {channel ->
-                                        channel.trySend(snackbarChannelList.first {snackBarChannelData ->
-                                            snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
-                                        }.channel)
-                                    }
-
-                            },
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Delete,
-                                    contentDescription = "Delete"
-                                )
-                            }
-                        )
-
-
-                    }
-
-
-
-                }
-
-            }
-
-
-            Row(
+            androidx.compose.material3.Text(
                 modifier = Modifier
-                    .background(color = Color.White)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
+                    .align(Alignment.Center)
+                    .background(color = Color.Transparent)
+                    .padding(top = 10.dp),
+                textAlign = TextAlign.Center,
+                text = defaultData.first,
+                style = MaterialTheme.typography.h6
+            )
 
-                repeat(defaultData.second) { iteration ->
-                    val color =  if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                    Box( modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(10.dp) )
+            onDelete?.let {
+                if(defaultData.second > 0) {
+                    IconButton(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        onClick = {
+                            hapticProcessing()
+                                it(pagerState.currentPage)
+                                channel?.let {channel ->
+                                    channel.trySend(snackbarChannelList.first {snackBarChannelData ->
+                                        snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
+                                    }.channel)
+                                }
+                        },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = "Delete"
+                            )
+                        }
+                    )
                 }
-
             }
 
-            if(defaultData.second > 0) {
+        }
 
-                // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = Color.White),
-                    pageCount = defaultData.second,
-                    state = pagerState,
-                ) { page ->
+        Row(
+            modifier = Modifier
+                .background(color = Color.White)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(defaultData.second) { iteration ->
+                val color =  if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                Box( modifier = Modifier
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(color)
+                    .size(10.dp) )
+            }
+        }
 
-                    when (item) {
-                        is MemoData.AudioText -> AudioTextView(data = item.dataList[page])
-                        is MemoData.Photo -> ImageViewer(
-                            data = (item.dataList[page]),
-                            size = Size.ORIGINAL,
-                            isZoomable = false
-                        )
-                        is MemoData.SnapShot -> ImageViewer(
-                            data = (item.dataList[page]),
-                            size = Size.ORIGINAL,
-                            isZoomable = false
-                        )
-                        is MemoData.Video -> ExoplayerCompose(
-                            uri = item.dataList[page],
-                            isVisibleAmplitudes = false
-                        )
-                    }
-                }
+        // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
+        val verticalModifier = if (defaultData.first != WriteMemoDataType.VIDEO.name ) Modifier.verticalScroll(state = scrollState) else Modifier
 
-            } else {
-                Box(modifier = Modifier
+        if(defaultData.second > 0) {
+            HorizontalPager(
+                modifier = Modifier.then(verticalModifier)
                     .fillMaxSize()
-                    .padding(10.dp)
-                    .background(color = Color.LightGray))
+                    .background(color = Color.White),
+                pageCount = defaultData.second,
+                state = pagerState,
+            ) { page ->
+
+                when (item) {
+                    is MemoData.AudioText -> AudioTextView(data = item.dataList[page])
+                    is MemoData.Photo -> ImageViewer(
+                        data = (item.dataList[page]),
+                        size = Size.ORIGINAL,
+                        isZoomable = false
+                    )
+                    is MemoData.SnapShot -> ImageViewer(
+                        data = (item.dataList[page]),
+                        size = Size.ORIGINAL,
+                        isZoomable = false
+                    )
+                    is MemoData.Video -> ExoplayerCompose(
+                        uri = item.dataList[page],
+                        isVisibleAmplitudes = false
+                    )
+                }
             }
 
+        } else {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+                .background(color = Color.LightGray))
+        }
 
-        } // Column
+
+    } // Column
 
 
 
