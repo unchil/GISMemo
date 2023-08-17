@@ -1221,11 +1221,11 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
         }
 
         // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
-        val verticalModifier = if (defaultData.first != WriteMemoDataType.VIDEO.name ) Modifier.verticalScroll(state = scrollState) else Modifier
+        //val verticalModifier =  remember { if (defaultData.first != WriteMemoDataType.VIDEO.name ) Modifier.verticalScroll(state = scrollState) else Modifier }
 
         if(defaultData.second > 0) {
             HorizontalPager(
-                modifier = Modifier.then(verticalModifier)
+                modifier = Modifier
                     .fillMaxSize()
                     .background(color = Color.White),
                 pageCount = defaultData.second,
