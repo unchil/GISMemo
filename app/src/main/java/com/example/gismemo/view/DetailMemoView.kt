@@ -1,5 +1,7 @@
 package com.example.gismemo.view
 
+import android.Manifest
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,9 +25,17 @@ import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.toCURRENTWEATHER_TBL
+import com.example.gismemo.shared.composables.CheckPermission
+import com.example.gismemo.shared.composables.PermissionRequiredCompose
+import com.example.gismemo.shared.composables.PermissionRequiredComposeFuncName
 import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.viewmodel.DetailMemoViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -33,17 +44,42 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("MissingPermission")
+@OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class,
+    ExperimentalPermissionsApi::class
+)
 @Composable
-fun DetailMemoView(navController: NavController, id:Long){
+fun DetailMemoView(navController: NavController, id:Long) {
+
+
+    val permissions = listOf(
+        Manifest.permission.INTERNET,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
+    CheckPermission(multiplePermissionsState = multiplePermissionsState)
+
+    var isGranted by mutableStateOf(true)
+    permissions.forEach { chkPermission ->
+        isGranted = isGranted
+                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+    }
+
+    PermissionRequiredCompose(
+        isGranted = isGranted,
+        multiplePermissions = permissions ,
+        viewType = PermissionRequiredComposeFuncName.MemoMap
+    ) {
 
     val db = LocalLuckMemoDB.current
+    val context = LocalContext.current
     val viewModel = remember {
-        DetailMemoViewModel (repository = RepositoryProvider.getRepository().apply { database = db }  )
+        DetailMemoViewModel(repository = RepositoryProvider.getRepository().apply { database = db })
     }
-    val memoID by  rememberSaveable { mutableStateOf(id) }
+    val memoID by rememberSaveable { mutableStateOf(id) }
     //--------------
-    LaunchedEffect(key1 = memoID ){
+    LaunchedEffect(key1 = memoID) {
         viewModel.onEvent(DetailMemoViewModel.Event.SetMemo(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetWeather(id = id))
         viewModel.onEvent(DetailMemoViewModel.Event.SetTags(id = id))
@@ -55,8 +91,8 @@ fun DetailMemoView(navController: NavController, id:Long){
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
-    fun hapticProcessing(){
-        if(isUsableHaptic){
+    fun hapticProcessing() {
+        if (isUsableHaptic) {
             coroutineScope.launch {
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
             }
@@ -64,37 +100,57 @@ fun DetailMemoView(navController: NavController, id:Long){
     }
 
 
+    var mapProperties by remember {
+        mutableStateOf(
+            MapProperties(mapType = MapType.NORMAL, isMyLocationEnabled = true)
+        )
+    }
 
-    var mapProperties by remember {  mutableStateOf(
-        MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
-
-    val uiSettings by remember {  mutableStateOf(
-        MapUiSettings(zoomControlsEnabled = false ) ) }
+    val uiSettings by remember {
+        mutableStateOf(
+            MapUiSettings(zoomControlsEnabled = false)
+        )
+    }
 
     val sheetState = SheetState(
         skipPartiallyExpanded = false,
         initialValue = SheetValue.Hidden,
-        skipHiddenState = false)
+        skipHiddenState = false
+    )
 
-    val scaffoldState =  rememberBottomSheetScaffoldState( bottomSheetState = sheetState )
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
 
-    var isTagDialog by  rememberSaveable { mutableStateOf(false) }
-    val isVisibleMenu = rememberSaveable { mutableStateOf(false)   }
+    var isTagDialog by rememberSaveable { mutableStateOf(false) }
+    val isVisibleMenu = rememberSaveable { mutableStateOf(false) }
 
-    val memo =  viewModel.memo.collectAsState()
-    val selectedTagArray =  viewModel.tagArrayList.collectAsState()
+    val memo = viewModel.memo.collectAsState()
+    val selectedTagArray = viewModel.tagArrayList.collectAsState()
     val weatherData = viewModel.weather.collectAsState()
 
-    val isLock =  mutableStateOf(memo.value?.isSecret ?: false)
-    val isMark =  mutableStateOf(memo.value?.isPin ?: false)
-    val snippets  = mutableStateOf(memo.value?.snippets ?: "")
-    val selectedTags  =  mutableStateOf(selectedTagArray.value)
-    val memoPosition =   mutableStateOf(
-        LatLng(memo.value?.latitude?.toDouble() ?: 0.0 ,memo.value?.longitude?.toDouble() ?: 0.0))
+    val isLock = mutableStateOf(memo.value?.isSecret ?: false)
+    val isMark = mutableStateOf(memo.value?.isPin ?: false)
+    val snippets = mutableStateOf(memo.value?.snippets ?: "")
+    val selectedTags = mutableStateOf(selectedTagArray.value)
 
-    val markerState = MarkerState( position = memoPosition.value   )
 
-    val defaultCameraPosition = CameraPosition.fromLatLngZoom(memoPosition.value, 16f)
+    val fusedLocationProviderClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+
+
+    val currentLocation =  mutableStateOf(
+            LatLng(
+                memo.value?.latitude?.toDouble() ?: 0.0,
+                memo.value?.longitude?.toDouble() ?: 0.0
+            )
+        )
+
+
+    var isGoCurrentLocation by remember { mutableStateOf(false) }
+
+    val markerState = MarkerState(position = currentLocation.value)
+
+    val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation.value, 16f)
 
     val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
 
@@ -118,13 +174,24 @@ fun DetailMemoView(navController: NavController, id:Long){
             when (result) {
                 SnackbarResult.ActionPerformed -> {
                     hapticProcessing()
-                    when(channelData.channelType) {
+                    when (channelData.channelType) {
                         else -> {}
                     }
                 }
                 SnackbarResult.Dismissed -> {
                     hapticProcessing()
                 }
+            }
+        }
+    }
+
+
+    val checkEnableLocationService: () -> Unit = {
+        fusedLocationProviderClient.lastLocation.addOnCompleteListener(context.mainExecutor) { task ->
+            if (!task.isSuccessful || task.result == null) {
+                channel.trySend(snackbarChannelList.first {
+                    it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
+                }.channel)
             }
         }
     }
@@ -149,28 +216,46 @@ fun DetailMemoView(navController: NavController, id:Long){
                 cameraPositionState = cameraPositionState,
                 properties = mapProperties,
                 uiSettings = uiSettings,
-                onMapLongClick = {}  ) {
+                onMapLongClick = {},
+                onMyLocationButtonClick = {
+                    checkEnableLocationService.invoke()
+                    return@GoogleMap false
 
+                }
+            ) {
+
+
+                MapEffect(key1 = isGoCurrentLocation) {
+                    if (isGoCurrentLocation) {
+                        it.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation.value, 16F))
+                        isGoCurrentLocation = false
+                    }
+                }
 
                 Marker(
                     state = markerState,
-                    title = "lat/lng:(${String.format("%.5f", markerState.position.latitude)},${String.format("%.5f", markerState.position.longitude)})",
+                    title = "lat/lng:(${
+                        String.format(
+                            "%.5f",
+                            markerState.position.latitude
+                        )
+                    },${String.format("%.5f", markerState.position.longitude)})",
                 )
 
             }
 
             weatherData.value?.let {
-                    WeatherView(
-                        modifier = Modifier
-                            .width(400.dp)
-                            .align(Alignment.TopCenter)
-                            .padding(20.dp)
-                            .background(
-                                color = Color.Yellow.copy(alpha = 0.4f),
-                                shape = RoundedCornerShape(6.dp)
-                            ) ,
-                        item =  it.toCURRENTWEATHER_TBL()
-                    )
+                WeatherView(
+                    modifier = Modifier
+                        .width(400.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(20.dp)
+                        .background(
+                            color = Color.Yellow.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(6.dp)
+                        ),
+                    item = it.toCURRENTWEATHER_TBL()
+                )
             }
 
             memo.value?.let {
@@ -207,27 +292,47 @@ fun DetailMemoView(navController: NavController, id:Long){
 
 
 
-            ScaleBar( modifier = Modifier.align(Alignment.TopStart),
-                cameraPositionState = cameraPositionState )
+            ScaleBar(
+                modifier = Modifier.align(Alignment.TopStart),
+                cameraPositionState = cameraPositionState
+            )
+
+
+            IconButton(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                onClick = {
+                    hapticProcessing()
+                    isGoCurrentLocation = true
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.scale(1f),
+                    imageVector = Icons.Outlined.ModeOfTravel,
+                    contentDescription = "ModeOfTravel",
+                )
+            }
 
 
 
-            Column(modifier = Modifier
-                .align(Alignment.TopEnd)
-                .clip(RoundedCornerShape(6.dp))
-                .background(color = Color.LightGray.copy(alpha = 0.7f)),
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(color = Color.LightGray.copy(alpha = 0.7f)),
             ) {
                 MapTypeMenuList.forEach {
-                    AnimatedVisibility(visible = isVisibleMenu.value,
+                    AnimatedVisibility(
+                        visible = isVisibleMenu.value,
                     ) {
                         IconButton(
                             onClick = {
                                 hapticProcessing()
-                            val mapType = MapType.values().first { mapType ->
-                                mapType.name == it.name
-                            }
-                            mapProperties = mapProperties.copy(mapType = mapType)
-                        }){
+                                val mapType = MapType.values().first { mapType ->
+                                    mapType.name == it.name
+                                }
+                                mapProperties = mapProperties.copy(mapType = mapType)
+                            }) {
 
                             Icon(
                                 imageVector = it.getDesc().first,
@@ -243,7 +348,8 @@ fun DetailMemoView(navController: NavController, id:Long){
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(color = Color.LightGray.copy(alpha = 0.7f))) {
+                    .background(color = Color.LightGray.copy(alpha = 0.7f))
+            ) {
 
                 IconButton(
                     onClick = {
@@ -259,50 +365,65 @@ fun DetailMemoView(navController: NavController, id:Long){
                 }
 
                 SettingMenuList.forEach {
-                    AnimatedVisibility(visible = isVisibleMenu.value,
+                    AnimatedVisibility(
+                        visible = isVisibleMenu.value,
                     ) {
                         IconButton(
                             onClick = {
                                 hapticProcessing()
-                            when(it){
-                                SettingMenu.SECRET -> {
-                                    isLock.value = !isLock.value
-                                    memo.value?.let {
-                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsSecret(id = it.id , isSecret = isLock.value))
+                                when (it) {
+                                    SettingMenu.SECRET -> {
+                                        isLock.value = !isLock.value
+                                        memo.value?.let {
+                                            viewModel.onEvent(
+                                                DetailMemoViewModel.Event.UpdateIsSecret(
+                                                    id = it.id,
+                                                    isSecret = isLock.value
+                                                )
+                                            )
+                                        }
+
+                                        val snackBarChannelType =
+                                            if (isLock.value) SnackBarChannelType.LOCK_CHANGE_SET else SnackBarChannelType.LOCK_CHANGE_FREE
+
+                                        channel.trySend(snackbarChannelList.first {
+                                            it.channelType == snackBarChannelType
+                                        }.channel)
                                     }
 
-                                    val snackBarChannelType = if(isLock.value)SnackBarChannelType.LOCK_CHANGE_SET else SnackBarChannelType.LOCK_CHANGE_FREE
+                                    SettingMenu.MARKER -> {
+                                        isMark.value = !isMark.value
+                                        memo.value?.let {
+                                            viewModel.onEvent(
+                                                DetailMemoViewModel.Event.UpdateIsMark(
+                                                    id = it.id,
+                                                    isMark = isMark.value
+                                                )
+                                            )
+                                        }
 
-                                    channel.trySend(snackbarChannelList.first {
-                                        it.channelType == snackBarChannelType
-                                    }.channel)
-                                }
+                                        val snackBarChannelType =
+                                            if (isMark.value) SnackBarChannelType.MARKER_CHANGE_SET else SnackBarChannelType.MARKER_CHANGE_FREE
 
-                                SettingMenu.MARKER -> {
-                                    isMark.value = !isMark.value
-                                    memo.value?.let {
-                                        viewModel.onEvent(DetailMemoViewModel.Event.UpdateIsMark(id = it.id , isMark = isMark.value))
+                                        channel.trySend(snackbarChannelList.first {
+                                            it.channelType == snackBarChannelType
+                                        }.channel)
+
+                                    }
+                                    SettingMenu.TAG -> {
+                                        isTagDialog = !isTagDialog
                                     }
 
-                                    val snackBarChannelType = if(isMark.value)SnackBarChannelType.MARKER_CHANGE_SET else SnackBarChannelType.MARKER_CHANGE_FREE
-
-                                    channel.trySend(snackbarChannelList.first {
-                                        it.channelType == snackBarChannelType
-                                    }.channel)
-
                                 }
-                                SettingMenu.TAG -> {
-                                    isTagDialog = !isTagDialog
-                                }
-
-                            }
-                        }) {
-                            val icon = when(it){
+                            }) {
+                            val icon = when (it) {
                                 SettingMenu.SECRET -> {
-                                    if (isLock.value)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
+                                    if (isLock.value) it.getDesc().first else it.getDesc().second
+                                        ?: it.getDesc().first
                                 }
                                 SettingMenu.MARKER -> {
-                                    if (isMark.value)  it.getDesc().first else it.getDesc().second?: it.getDesc().first
+                                    if (isMark.value) it.getDesc().first else it.getDesc().second
+                                        ?: it.getDesc().first
                                 }
                                 else -> {
                                     it.getDesc().first
@@ -321,10 +442,11 @@ fun DetailMemoView(navController: NavController, id:Long){
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
-                            if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
-                                || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded){
+                            if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
+                                || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded
+                            ) {
                                 scaffoldState.bottomSheetState.expand()
-                            }else {
+                            } else {
                                 scaffoldState.bottomSheetState.hide()
                             }
                         }
@@ -349,99 +471,101 @@ fun DetailMemoView(navController: NavController, id:Long){
                     .align(Alignment.Center)
                     .fillMaxWidth(0.9f),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
 
 
-               if( isTagDialog) {
+                if (isTagDialog) {
 
-                   AssistChipGroupView(
-                       isVisible = isTagDialog,
-                       setState = selectedTags,
-                   ) {
+                    AssistChipGroupView(
+                        isVisible = isTagDialog,
+                        setState = selectedTags,
+                    ) {
 
-                       Column(
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .align(Alignment.Center)
-                       ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)
+                        ) {
 
-                           Divider()
+                            Divider()
 
-                           Row(
-                               modifier = Modifier
-                                   .fillMaxWidth(),
-                               horizontalArrangement = Arrangement.Center
-                           ) {
-
-
-                               IconButton(
-                                   modifier = Modifier,
-                                   onClick = {
-                                       isTagDialog = false
-                                       hapticProcessing()
-                                       snippets.value = ""
-                                       selectedTags.value.clear()
-                                       viewModel.onEvent(
-                                           DetailMemoViewModel.Event.UpdateTagList( id, arrayListOf()   )
-                                       )
-                                   },
-                                   content = {
-                                       Icon(
-                                           modifier = Modifier,
-                                           imageVector = Icons.Outlined.Replay,
-                                           contentDescription = "Clear"
-                                       )
-                                   }
-                               )
-
-                               IconButton(
-                                   modifier = Modifier,
-                                   onClick = {
-                                       isTagDialog = false
-                                       hapticProcessing()
-                                       snippets.value = ""
-                                       selectedTags.value.clear()
-                                       tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                           if (tagInfoData.isSet.value) {
-                                               snippets.value = "${snippets.value} #${tagInfoData.name}"
-                                               selectedTags.value.add(index)
-                                           }
-                                       }
-
-                                       viewModel.onEvent(
-                                           DetailMemoViewModel.Event.UpdateTagList(  id,   selectedTags.value )
-                                       )
-                                   },
-                                   content = {
-                                       Icon(
-                                           modifier = Modifier,
-                                           imageVector = Icons.Outlined.PublishedWithChanges,
-                                           contentDescription = "Save"
-                                       )
-                                   }
-                               )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
 
 
-                           }
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        isTagDialog = false
+                                        hapticProcessing()
+                                        snippets.value = ""
+                                        selectedTags.value.clear()
+                                        viewModel.onEvent(
+                                            DetailMemoViewModel.Event.UpdateTagList(
+                                                id,
+                                                arrayListOf()
+                                            )
+                                        )
+                                    },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier,
+                                            imageVector = Icons.Outlined.Replay,
+                                            contentDescription = "Clear"
+                                        )
+                                    }
+                                )
+
+                                IconButton(
+                                    modifier = Modifier,
+                                    onClick = {
+                                        isTagDialog = false
+                                        hapticProcessing()
+                                        snippets.value = ""
+                                        selectedTags.value.clear()
+                                        tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                                            if (tagInfoData.isSet.value) {
+                                                snippets.value =
+                                                    "${snippets.value} #${tagInfoData.name}"
+                                                selectedTags.value.add(index)
+                                            }
+                                        }
+
+                                        viewModel.onEvent(
+                                            DetailMemoViewModel.Event.UpdateTagList(
+                                                id,
+                                                selectedTags.value
+                                            )
+                                        )
+                                    },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier,
+                                            imageVector = Icons.Outlined.PublishedWithChanges,
+                                            contentDescription = "Save"
+                                        )
+                                    }
+                                )
 
 
-                       }
-                   }
+                            }
 
 
+                        }
+                    }
 
-               }
+
+                }
 
             }
-
-
-
-
 
 
         }
     }
 
-
+}
 
 }

@@ -1,6 +1,5 @@
 package com.example.gismemo.viewmodel
 
-import android.location.Location
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,7 @@ import androidx.navigation.NavController
 import com.example.gismemo.data.Repository
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.model.WriteMemoDataType
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 
@@ -87,7 +87,7 @@ class WriteMemoViewModel (
     }
 
 
-    private fun searchWeather(location: Location) {
+    private fun searchWeather(location: LatLng) {
         viewModelScope.launch {
             repository.getWeatherData(
                 location.latitude.toString(), location.longitude.toString()
@@ -170,7 +170,7 @@ class WriteMemoViewModel (
 
 
             object InitMemo: Event()
-            data class  SearchWeather(val location: Location): Event()
+            data class  SearchWeather(val location: LatLng): Event()
 
         }
 

@@ -58,7 +58,7 @@ import coil.size.Size
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
-import com.example.gismemo.db.entity.toCURRENTLOCATION_TBL
+import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.model.*
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.shared.composables.*
@@ -455,7 +455,7 @@ fun WriteMemoView(navController: NavController ){
 
             val id = System.currentTimeMillis()
 
-            location?.let {
+
                 viewModel.onEvent(
                     WriteMemoViewModel.Event.UploadMemo(
                         id = id,
@@ -463,10 +463,10 @@ fun WriteMemoView(navController: NavController ){
                         isMark = isMark,
                         selectedTagArrayList = selectedTagArray.value,
                         title = title,
-                        location = it.toCURRENTLOCATION_TBL()
+                        location = CURRENTLOCATION_TBL(dt=id, latitude = currentLocation.latitude.toFloat(), longitude = currentLocation.longitude.toFloat(), 0f)
                     )
                 )
-            }
+
 
 
 
@@ -635,13 +635,13 @@ fun WriteMemoView(navController: NavController ){
                                             if (snapShotList.isEmpty()) {
                                                 isSnapShot = true
                                             }
-                                            location?.let {
+
                                                 viewModel.onEvent(
-                                                    WriteMemoViewModel.Event.SearchWeather(
-                                                        it
-                                                    )
+                                                    WriteMemoViewModel.Event.SearchWeather(currentLocation)
                                                 )
-                                            }
+
+
+
                                             isAlertDialog.value = true
                                         }
                                     }

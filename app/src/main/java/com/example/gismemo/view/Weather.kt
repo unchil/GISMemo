@@ -84,7 +84,7 @@ fun WeatherContent(isSticky:Boolean = false ){
             if( currentLocation == LatLng(0.0,0.0)) {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
                     if (task.isSuccessful && task.result != null ) {
-                        viewModel.searchWeather(task.result)
+                        viewModel.searchWeather(task.result.toLatLng())
                     }
                 }
             }
