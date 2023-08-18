@@ -1,47 +1,18 @@
 package com.example.gismemo.view
 
 import android.Manifest
-import android.content.Context.CONNECTIVITY_SERVICE
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.compose.rememberNavController
-import coil.size.Size
-import com.example.gismemo.ChkNetWork
-import com.example.gismemo.R
 import com.example.gismemo.shared.composables.*
 import com.example.gismemo.ui.theme.GISMemoTheme
-import com.example.gismemo.utils.GetDeviceLocation
-import com.example.gismemo.utils.getDeviceLocation
-import com.example.gismemo.viewmodel.WriteMemoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
