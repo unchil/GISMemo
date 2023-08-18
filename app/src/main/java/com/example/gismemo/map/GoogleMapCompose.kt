@@ -42,16 +42,23 @@ import com.example.gismemo.db.entity.MEMO_TBL
 import com.example.gismemo.model.BiometricCheckType
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.shared.composables.*
+import com.example.gismemo.shared.utils.SnackBarChannelType
+import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.MemoMapViewModel
+import com.example.gismemo.viewmodel.WriteMemoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.widgets.ScaleBar
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 
@@ -299,7 +306,9 @@ fun PrevViewMap(){
 }
 
 @SuppressLint("MissingPermission")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class,
+    MapsComposeExperimentalApi::class
+)
 @Composable
 fun MemoMapView(navController: NavController){
 
@@ -354,6 +363,7 @@ fun MemoMapView(navController: NavController){
         mutableStateOf(null)
     }
 
+        var isGoCurrentLocation by remember { mutableStateOf(false) }
 
     LaunchedEffect( key1 =  currentLocation){
         if( currentLocation == LatLng(0.0,0.0)) {
@@ -367,7 +377,46 @@ fun MemoMapView(navController: NavController){
         }
     }
 
+        val snackbarHostState = remember { SnackbarHostState() }
+        val channel = remember { Channel<Int>(Channel.CONFLATED) }
+        LaunchedEffect(channel) {
+            channel.receiveAsFlow().collect { index ->
+                val channelData = snackbarChannelList.first {
+                    it.channel == index
+                }
 
+
+                val result = snackbarHostState.showSnackbar(
+                    message = channelData.message,
+                    actionLabel = channelData.actionLabel,
+                    withDismissAction = channelData.withDismissAction,
+                    duration = channelData.duration
+                )
+                when (result) {
+                    SnackbarResult.ActionPerformed -> {
+                        hapticProcessing()
+                        when (channelData.channelType) {
+                            else -> {  }
+                        }
+                    }
+                    SnackbarResult.Dismissed -> {
+                        hapticProcessing()
+                    }
+                }
+            }
+        }
+
+
+
+        val checkEnableLocationService:()-> Unit = {
+            fusedLocationProviderClient.lastLocation.addOnCompleteListener(context.mainExecutor) { task ->
+                if (!task.isSuccessful || task.result == null) {
+                    channel.trySend(snackbarChannelList.first {
+                        it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
+                    }.channel)
+                }
+            }
+        }
 
 
 
@@ -378,7 +427,6 @@ fun MemoMapView(navController: NavController){
     val markerState =  MarkerState( position = currentLocation )
     val defaultCameraPosition =  CameraPosition.fromLatLngZoom( currentLocation, 16f)
     val cameraPositionState =  CameraPositionState(position = defaultCameraPosition)
-
 
 
     var mapProperties by remember {
@@ -444,7 +492,10 @@ fun MemoMapView(navController: NavController){
                     })
                 },
                 sheetContainerColor = Color.LightGray.copy(alpha = 0.5f),
-                sheetPeekHeight = 0.dp
+                sheetPeekHeight = 0.dp,
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                }
 
             ) { padding ->
 
@@ -456,8 +507,21 @@ fun MemoMapView(navController: NavController){
                         properties = mapProperties,
                         uiSettings = uiSettings,
                         onMapLongClick = onMapLongClickHandler,
+                        onMyLocationButtonClick = {
+                            checkEnableLocationService.invoke()
+                            return@GoogleMap false
 
+                        }
                         ) {
+
+
+                        MapEffect(key1 = isGoCurrentLocation){
+                            if(isGoCurrentLocation) {
+                                it.animateCamera( CameraUpdateFactory.newLatLngZoom( currentLocation, 16F) )
+                                isGoCurrentLocation = false
+                            }
+                        }
+
 
                         Marker(
                             state = markerState,
@@ -524,7 +588,9 @@ fun MemoMapView(navController: NavController){
                         modifier = Modifier.align(Alignment.BottomEnd),
                         onClick = {
                             hapticProcessing()
-                            cameraPositionState.position = defaultCameraPosition
+                            isGoCurrentLocation = true
+                        //        cameraPositionState.position = defaultCameraPosition
+
                         }
                     ) {
                         Icon(

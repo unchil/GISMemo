@@ -3,6 +3,7 @@ package com.example.gismemo.shared.utils
 import androidx.compose.material3.SnackbarDuration
 
 enum class SnackBarChannelType {
+    LOCATION_SERVICE_DISABLE,
     AUTHENTICATION_FAILED,
     ITEM_DELETE,
     MARKER_CHANGE_SET,
@@ -28,6 +29,16 @@ data class SnackBarChannelData(
 )
 
 val snackbarChannelList = listOf(
+
+    SnackBarChannelData(
+        channelType = SnackBarChannelType.LOCATION_SERVICE_DISABLE,
+        channel = 11,
+        message = "위치정보 서비스를 이용할수 없습니다 .",
+        duration = SnackbarDuration.Short,
+        actionLabel = null,
+        withDismissAction = true,
+    ),
+
 
     SnackBarChannelData(
         channelType = SnackBarChannelType.AUTHENTICATION_FAILED,
@@ -61,7 +72,7 @@ val snackbarChannelList = listOf(
 
     SnackBarChannelData(
         channelType = SnackBarChannelType.MARKER_CHANGE_SET,
-        channel = 70,
+        channel = 700,
         message = "메모를 마커로 설정 하였습니다. ",
         duration = SnackbarDuration.Short,
         actionLabel = null,
@@ -82,7 +93,7 @@ val snackbarChannelList = listOf(
 
     SnackBarChannelData(
         channelType = SnackBarChannelType.LOCK_CHANGE_SET,
-        channel = 60,
+        channel = 600,
         message = "메모를 비밀로 설정 하였습니다.",
         duration = SnackbarDuration.Short,
         actionLabel = null,
