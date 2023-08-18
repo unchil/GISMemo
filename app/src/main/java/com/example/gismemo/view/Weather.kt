@@ -49,10 +49,9 @@ fun WeatherContent(isSticky:Boolean = false ){
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted =  multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false
     }
 
     PermissionRequiredCompose(

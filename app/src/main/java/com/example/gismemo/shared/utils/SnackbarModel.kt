@@ -3,6 +3,7 @@ package com.example.gismemo.shared.utils
 import androidx.compose.material3.SnackbarDuration
 
 enum class SnackBarChannelType {
+    BIOMETRIC_NO_SUCCESS,
     LOCATION_SERVICE_DISABLE,
     AUTHENTICATION_FAILED,
     ITEM_DELETE,
@@ -29,6 +30,16 @@ data class SnackBarChannelData(
 )
 
 val snackbarChannelList = listOf(
+
+    SnackBarChannelData(
+        channelType = SnackBarChannelType.BIOMETRIC_NO_SUCCESS,
+        channel = 12,
+        message = "비밀번호, 지문 등의 등록 및 사용을 확인해 주세요 ",
+        duration = SnackbarDuration.Short,
+        actionLabel = null,
+        withDismissAction = true,
+    ),
+
 
     SnackBarChannelData(
         channelType = SnackBarChannelType.LOCATION_SERVICE_DISABLE,

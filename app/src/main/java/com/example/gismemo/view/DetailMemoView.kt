@@ -61,10 +61,10 @@ fun DetailMemoView(navController: NavController, id:Long) {
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
     PermissionRequiredCompose(
@@ -341,7 +341,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
 
             IconButton(
-                modifier = Modifier.align(Alignment.BottomEnd),
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(color = Color.LightGray.copy(alpha = 0.7f)),
                 onClick = {
                     hapticProcessing()
                     isGoCurrentLocation = true

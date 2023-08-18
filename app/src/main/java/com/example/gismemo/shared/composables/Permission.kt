@@ -6,9 +6,7 @@ import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STR
 import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import android.hardware.biometrics.BiometricPrompt
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -37,7 +34,6 @@ import com.example.gismemo.view.ImageViewer
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import kotlinx.coroutines.launch
 
 
 fun biometricPrompt(

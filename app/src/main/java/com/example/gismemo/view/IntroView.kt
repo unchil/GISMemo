@@ -1,8 +1,8 @@
 package com.example.gismemo.view
 
 import android.Manifest
-import android.app.KeyguardManager
 import android.content.res.Configuration
+import androidx.biometric.BiometricManager
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -50,6 +49,7 @@ import com.example.gismemo.model.ListItemBackgroundAction
 import com.example.gismemo.model.getDesc
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.shared.composables.biometricPrompt
+import com.example.gismemo.shared.launchIntent_Biometric_Enroll
 import com.example.gismemo.shared.launchIntent_ShareMemo
 import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
@@ -388,17 +388,15 @@ fun MemoSwipeView(
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
 
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
 
-    fun checkBiometricSupport(): Boolean {
-        val isDeviceSecure = ContextCompat.getSystemService(context, KeyguardManager::class.java)?.isDeviceSecure ?: false
-        return isGranted || isDeviceSecure
-    }
+
+
 
 
 
@@ -480,7 +478,24 @@ fun MemoSwipeView(
         if(isToStart.value) -ANCHOR_OFFSET.dp else  ANCHOR_OFFSET.dp
     } else {  0.dp  }
 
+    val checkBiometricSupport: (() -> Unit) = {
+        val biometricManager = BiometricManager.from(context)
+        when (  biometricManager.canAuthenticate(
+            BiometricManager.Authenticators.BIOMETRIC_STRONG
+                    or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+        ) {
+            BiometricManager.BIOMETRIC_SUCCESS -> { }
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                launchIntent_Biometric_Enroll(context)
+            }
+            else -> {
+                channel?.trySend(snackbarChannelList.first {
+                    it.channelType == SnackBarChannelType.BIOMETRIC_NO_SUCCESS
+                }.channel)
+            }
+        }
 
+    }
 
     Card(
         modifier = Modifier
@@ -489,7 +504,8 @@ fun MemoSwipeView(
         shape = ShapeDefaults.ExtraSmall ,
         onClick = {
             hapticProcessing()
-            if(item.isSecret && checkBiometricSupport()) {
+            if(item.isSecret && isGranted ) {
+                checkBiometricSupport.invoke()
                 biometricPrompt(context, BiometricCheckType.DETAILVIEW, onResult)
             }else {
                 navController?.let {
@@ -517,7 +533,8 @@ fun MemoSwipeView(
                     when(it){
                         ListItemBackgroundAction.SHARE -> {
 
-                            if(item.isSecret && checkBiometricSupport()) {
+                            if(item.isSecret && isGranted ) {
+                                checkBiometricSupport.invoke()
                                 biometricPrompt(context, BiometricCheckType.SHARE, onResult)
                             }else {
                                 coroutineScope.launch {
@@ -528,7 +545,8 @@ fun MemoSwipeView(
                         }
                         ListItemBackgroundAction.DELETE -> {
 
-                            if(item.isSecret && checkBiometricSupport()) {
+                            if(item.isSecret && isGranted ) {
+                                checkBiometricSupport.invoke()
                                 biometricPrompt(context, BiometricCheckType.DELETE, onResult)
                             }else {
                                 if (event != null) {

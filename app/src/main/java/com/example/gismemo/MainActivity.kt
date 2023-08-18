@@ -459,12 +459,11 @@ fun ChkNetWork(
     val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
 
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                && (multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
-            ?: false)
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
     val  url = Uri.parse("android.resource://com.example.gismemo/" + R.drawable.baseline_wifi_off_black_48).toString().toUri()

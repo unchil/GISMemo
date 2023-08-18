@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
+import androidx.biometric.BiometricManager
 import androidx.compose.runtime.remember
 
 import androidx.core.app.ActivityCompat
@@ -20,6 +21,14 @@ import com.example.gismemo.viewmodel.MemoMapViewModel
 import java.io.File
 
 
+fun launchIntent_Biometric_Enroll(context: Context){
+    val intent =   Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+        putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+            BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        )
+    }
+    context.startActivity(intent)
+}
 
 fun launchIntent_ShareMemo(context: Context, db:LuckMemoDB, memo: MEMO_TBL){
 

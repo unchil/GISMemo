@@ -122,6 +122,7 @@ sealed class RecordingStatus {
 
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("RestrictedApi", "MissingPermission")
 @Composable
 
@@ -304,11 +305,10 @@ fun CameraCompose( navController: NavController? = null   ) {
         navController?.popBackStack()
     }
 
-    var isGranted by mutableStateOf(true)
-
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
 

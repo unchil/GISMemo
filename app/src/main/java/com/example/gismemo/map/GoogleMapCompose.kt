@@ -271,11 +271,10 @@ fun PrevViewMap(){
         CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
 
-        var isGranted by mutableStateOf(true)
+        var isGranted by mutableStateOf(false)
         permissions.forEach { chkPermission ->
-            isGranted = isGranted
-                    && (multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
-                ?: false)
+            isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+                ?: false
         }
 
         val navController = rememberNavController()
@@ -320,10 +319,10 @@ fun MemoMapView(navController: NavController){
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
     PermissionRequiredCompose(
@@ -585,7 +584,9 @@ fun MemoMapView(navController: NavController){
 
 
                     IconButton(
-                        modifier = Modifier.align(Alignment.BottomEnd),
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(color = Color.LightGray.copy(alpha = 0.7f)),
                         onClick = {
                             hapticProcessing()
                             isGoCurrentLocation = true
@@ -701,10 +702,10 @@ fun MemoView(
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
 
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by mutableStateOf(false)
     permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+            ?: false
     }
 
 
