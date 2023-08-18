@@ -1,17 +1,8 @@
 package com.example.gismemo.utils
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.icu.text.SimpleDateFormat
-import android.location.Location
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.platform.LocalContext
-import com.google.android.gms.location.LocationServices
-
-
 
 
 const val MILLISEC_CHECK = 9999999999
