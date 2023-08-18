@@ -2,7 +2,7 @@ package com.example.gismemo.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -131,7 +132,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
     val isMark = mutableStateOf(memo.value?.isPin ?: false)
     val snippets = mutableStateOf(memo.value?.snippets ?: "")
     val selectedTags = mutableStateOf(selectedTagArray.value)
-
+    var isTitleBox by  rememberSaveable{  mutableStateOf(true)}
 
     val fusedLocationProviderClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
@@ -196,6 +197,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
         }
     }
 
+        val density = LocalDensity.current
 
     BottomSheetScaffold(
         modifier = Modifier.statusBarsPadding(),
@@ -244,52 +246,92 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             }
 
-            weatherData.value?.let {
-                WeatherView(
-                    modifier = Modifier
-                        .width(400.dp)
-                        .align(Alignment.TopCenter)
-                        .padding(20.dp)
-                        .background(
-                            color = Color.Yellow.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(6.dp)
-                        ),
-                    item = it.toCURRENTWEATHER_TBL()
-                )
-            }
-
-            memo.value?.let {
-                Box(
-                    modifier = Modifier
-                        .width(400.dp)
-                        .padding(top = 200.dp)
-                        .padding(horizontal = 20.dp)
-                        .align(Alignment.TopCenter)
-                        .background(
-                            color = Color.Yellow.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .clip(RoundedCornerShape(8.dp)),
-
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        modifier = Modifier.padding(vertical = 10.dp),
-                        verticalArrangement = Arrangement.SpaceEvenly,
+            androidx.compose.material.IconButton(
+                modifier = Modifier.align(Alignment.TopCenter).clip(RoundedCornerShape(6.dp))
+                    .background(color = Color.Yellow.copy(alpha = 0.7f)).padding(horizontal = 10.dp),
+                onClick = {
+                    hapticProcessing()
+                    isTitleBox = !isTitleBox
+                },
+                content = {
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-
-                        Text(it.title)
-                        Text(it.desc)
-
-                        Text(text = snippets.value)
-
-
+                        Icon(
+                            imageVector = Icons.Outlined.Description,
+                            contentDescription = "titleBox"
+                        )
+                        Text("Memo Description")
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = if (isTitleBox) Icons.Outlined.UnfoldLess else Icons.Outlined.UnfoldMore,
+                            contentDescription = "titleBox "
+                        )
                     }
+                })
+
+            AnimatedVisibility(visible = isTitleBox,
+                enter = slideInVertically {
+                    // Slide in from 40 dp from the top.
+                    with(density) { -40.dp.roundToPx() }
+                } + expandVertically(
+                    // Expand from the top.
+                    expandFrom = Alignment.Top
+                ) + fadeIn(
+                    // Fade in with the initial alpha of 0.3f.
+                    initialAlpha = 0.3f
+                ),
+                exit = slideOutVertically() + shrinkVertically() + fadeOut()
+                ) {
+
+
+
+                memo.value?.let {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(top = 55.dp)
+                                .padding(horizontal = 20.dp)
+                                .background(
+                                    color = Color.Yellow,
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .clip(RoundedCornerShape(8.dp)),
+                            verticalArrangement = Arrangement.SpaceEvenly,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            weatherData.value?.let {
+                                WeatherView(
+                                    modifier = Modifier
+                                        .width(400.dp)
+                                        .background(
+                                            color = Color.Yellow,
+                                            shape = RoundedCornerShape(6.dp)
+                                        ),
+                                    item = it.toCURRENTWEATHER_TBL()
+                                )
+                            }
+
+
+
+                            Text(it.title)
+                            Text(it.desc)
+
+                            Text(text = snippets.value)
+
+
+                        }
+                    }
+
                 }
 
             }
-
-
 
 
             ScaleBar(
