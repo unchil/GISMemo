@@ -341,7 +341,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
 
             IconButton(
-                modifier = Modifier.align(Alignment.BottomEnd),
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(color = Color.LightGray.copy(alpha = 0.7f)),
                 onClick = {
                     hapticProcessing()
                     isGoCurrentLocation = true
