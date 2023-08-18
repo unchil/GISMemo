@@ -12,63 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.location.LocationServices
 
 
-// var currentLocation = LatLng(37.422672271728516, -122.0849838256836)
-
-
-@SuppressLint("MissingPermission")
-fun Context.getDeviceLocation(completeHandler: (Location?) -> Unit){
-
-    val fusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(this)
-
-    var lastKnownLocation: Location? = null
-
-    fusedLocationProviderClient.lastLocation.addOnCompleteListener(this.mainExecutor) { task ->
-        if (task.isSuccessful && task.result != null && task.result != lastKnownLocation) {
-            lastKnownLocation = task.result
-            completeHandler(task.result)
-        }else {
-            completeHandler(lastKnownLocation)
-        }
-    }
-}
-
-
-@SuppressLint("MissingPermission")
-@Composable
-fun GetDeviceLocation( completeHandler: (Location?) -> Unit){
-
-    val context = LocalContext.current
-
-    val fusedLocationProviderClient = rememberSaveable {
-        LocationServices.getFusedLocationProviderClient(context)
-    }
-    var lastKnownLocation by rememberSaveable {
-        mutableStateOf<Location?>(null)
-    }
-
-    fusedLocationProviderClient.lastLocation.addOnCompleteListener(context.findActivity()) { task ->
-
-        if (task.isSuccessful && task.result != null && task.result != lastKnownLocation) {
-            lastKnownLocation = task.result
-            completeHandler(task.result)
-
-        }else {
-            completeHandler(lastKnownLocation)
-        }
-
-
-    }
-}
-
-fun Context.findActivity(): Activity {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
-    }
-    throw IllegalStateException("no activity")
-}
 
 
 const val MILLISEC_CHECK = 9999999999

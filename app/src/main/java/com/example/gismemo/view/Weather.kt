@@ -3,20 +3,14 @@ package com.example.gismemo.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
@@ -28,22 +22,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.*
-import com.example.gismemo.db.entity.MEMO_FILE_TBL
 import com.example.gismemo.shared.composables.CheckPermission
 import com.example.gismemo.shared.composables.PermissionRequiredCompose
 import com.example.gismemo.shared.composables.PermissionRequiredComposeFuncName
 import com.example.gismemo.ui.theme.GISMemoTheme
-import com.example.gismemo.utils.getDeviceLocation
-import com.example.gismemo.viewmodel.ListViewModel
-import com.example.gismemo.viewmodel.SpeechToTextViewModel
 import com.example.gismemo.viewmodel.WeatherViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import kotlinx.coroutines.launch
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -59,26 +49,6 @@ fun WeatherContent(isSticky:Boolean = false ){
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val configuration = LocalConfiguration.current
-
-    val db = LocalLuckMemoDB.current
-    val viewModel = remember {
-        WeatherViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
-    }
-
-    val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
-
-    if( weatherData.value == null){
-        context.getDeviceLocation {it?.let {
-            lifecycleOwner.lifecycleScope.launch {
-                viewModel.searchWeather(it)
-            }
-        }}
-
-    }
-
     var isGranted by mutableStateOf(true)
     permissions.forEach { chkPermission ->
         isGranted = isGranted
@@ -90,6 +60,38 @@ fun WeatherContent(isSticky:Boolean = false ){
         multiplePermissions = permissions ,
         viewType = PermissionRequiredComposeFuncName.Weather
     ) {
+
+
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val configuration = LocalConfiguration.current
+
+    val db = LocalLuckMemoDB.current
+    val viewModel = remember {
+        WeatherViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
+    }
+
+        val fusedLocationProviderClient = remember {
+            LocationServices.getFusedLocationProviderClient(context)
+        }
+
+        val currentLocation by remember {
+            mutableStateOf(LatLng(0.0,0.0))
+        }
+
+        LaunchedEffect(key1 =  currentLocation){
+            if( currentLocation == LatLng(0.0,0.0)) {
+                fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
+                    if (task.isSuccessful && task.result != null ) {
+                        viewModel.searchWeather(task.result)
+                    }
+                }
+            }
+        }
+
+
+        val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
             modifier = Modifier

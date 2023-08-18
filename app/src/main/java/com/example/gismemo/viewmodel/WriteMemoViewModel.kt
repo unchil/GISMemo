@@ -8,19 +8,12 @@ import androidx.navigation.NavController
 import com.example.gismemo.data.Repository
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.model.WriteMemoDataType
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
 class WriteMemoViewModel (
     val repository: Repository
 ) : ViewModel() {
-
-
-
-    val currentLocationStateFlow: StateFlow<CURRENTLOCATION_TBL?>
-            = repository._currentLocation
 
 
         fun onEvent(event: Event){
@@ -50,12 +43,9 @@ class WriteMemoViewModel (
                 is Event.DeleteMemoItem -> {
                     deleteMemoItem(type = event.type, index = event.index)
                 }
-                is Event.SetDeviceLocation -> {
-                    setDeviceLocation(event.location)
-                }
 
-                is Event.SetCurrentLocation -> {
-                    setCurrentLocation(event.latlng)
+                is Event.SearchWeather -> {
+                    searchWeather(event.location)
                 }
 
                 is Event.UpdateIsLock -> {
@@ -97,34 +87,13 @@ class WriteMemoViewModel (
     }
 
 
-
-    private fun setCurrentLocation(latlng: LatLng){
-
+    private fun searchWeather(location: Location) {
         viewModelScope.launch {
-           repository.setCurrentLocation(
-               CURRENTLOCATION_TBL(
-               dt = System.currentTimeMillis(),
-               latitude = latlng.latitude.toFloat(),
-               longitude = latlng.longitude.toFloat(),
-               altitude = 0f)
-           )
-
             repository.getWeatherData(
-                latlng.latitude.toString(), latlng.longitude.toString())
+                location.latitude.toString(), location.longitude.toString()
+            )
         }
     }
-
-
-
-    private fun setDeviceLocation(location:Location){
-        viewModelScope.launch {
-            repository.setDeviceLocation(location )
-
-            repository.getWeatherData(
-                location.latitude.toString(), location.longitude.toString())
-        }
-    }
-
 
     private fun deleteMemoItem( type:WriteMemoDataType,  index:Int) {
         viewModelScope.launch {
@@ -201,9 +170,7 @@ class WriteMemoViewModel (
 
 
             object InitMemo: Event()
-
-            data class  SetDeviceLocation(val location: Location): Event()
-            data class SetCurrentLocation(val latlng:LatLng): Event()
+            data class  SearchWeather(val location: Location): Event()
 
         }
 

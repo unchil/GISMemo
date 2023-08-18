@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.location.Location
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.view.MotionEvent
@@ -56,8 +57,7 @@ import coil.size.Size
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
-import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
-import com.example.gismemo.db.entity.toLatLng
+import com.example.gismemo.db.entity.toCURRENTLOCATION_TBL
 import com.example.gismemo.model.*
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.shared.composables.*
@@ -65,9 +65,9 @@ import com.example.gismemo.shared.utils.FileManager
 import com.example.gismemo.shared.utils.SnackBarChannelType
 import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
-import com.example.gismemo.utils.getDeviceLocation
 import com.example.gismemo.viewmodel.MemoContainerViewModel
 import com.example.gismemo.viewmodel.WriteMemoViewModel
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -194,7 +194,7 @@ fun CreateMenu.getDesc():Pair<ImageVector, String?>{
 }
 
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "MissingPermission")
 @OptIn(
     ExperimentalMaterial3Api::class,
     MapsComposeExperimentalApi::class, ExperimentalComposeUiApi::class
@@ -220,14 +220,35 @@ fun WriteMemoView(navController: NavController ){
         }
     }
 
-    val currentLocation =
-        viewModel.currentLocationStateFlow.collectAsState().value
-            ?: CURRENTLOCATION_TBL(0L,0f,0f,0f)
+    val fusedLocationProviderClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
 
-    val markerState = MarkerState( position = currentLocation.toLatLng() )
-    val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation.toLatLng(), 16f)
+    var currentLocation by remember {
+        mutableStateOf(LatLng(0.0,0.0))
+    }
+
+    var location:Location? by remember {
+        mutableStateOf(null)
+    }
+
+
+    LaunchedEffect(key1 =  currentLocation){
+        if( currentLocation == LatLng(0.0,0.0)) {
+            fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
+                if (task.isSuccessful && task.result != null ) {
+                    location = task.result
+                    currentLocation = task.result.toLatLng()
+                }
+            }
+        }
+    }
+
+
+    val markerState = MarkerState( position = currentLocation)
+    val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation, 16f)
     val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
-    var mapProperties by remember {  mutableStateOf( MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = false) )  }
+    var mapProperties by remember {  mutableStateOf( MapProperties(mapType = MapType.NORMAL,   isMyLocationEnabled = true) )  }
     val uiSettings by remember {  mutableStateOf(  MapUiSettings(  zoomControlsEnabled = false) ) }
 
     val sheetState = SheetState(
@@ -334,9 +355,7 @@ fun WriteMemoView(navController: NavController ){
 
     val onMapLongClickHandler: (LatLng) -> Unit = {
         hapticProcessing()
-        markerState.position = it
-       // cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
-        viewModel.onEvent(WriteMemoViewModel.Event.SetCurrentLocation(it))
+        currentLocation = it
     }
 
     val addPolyline:(MotionEvent)-> Unit = { event ->
@@ -379,16 +398,20 @@ fun WriteMemoView(navController: NavController ){
 
         val id = System.currentTimeMillis()
 
-        viewModel.onEvent(
-            WriteMemoViewModel.Event.UploadMemo(
-                id = id,
-                isLock = isLock,
-                isMark = isMark,
-                selectedTagArrayList = selectedTagArray.value,
-                title = title,
-                location = currentLocation
+        location?.let {
+            viewModel.onEvent(
+                WriteMemoViewModel.Event.UploadMemo(
+                    id = id,
+                    isLock = isLock,
+                    isMark = isMark,
+                    selectedTagArrayList = selectedTagArray.value,
+                    title = title,
+                    location = it.toCURRENTLOCATION_TBL()
+                )
             )
-        )
+        }
+
+
 
         channel.trySend(snackbarChannelList.first {
             it.channelType == SnackBarChannelType.MEMO_SAVE
@@ -403,12 +426,6 @@ fun WriteMemoView(navController: NavController ){
 
     }
 
-
-    LaunchedEffect(key1 = viewModel ){
-        context.getDeviceLocation {it?.let {
-            viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
-        }}
-    }
 
         BottomSheetScaffold(
             modifier = Modifier.statusBarsPadding(),
@@ -432,13 +449,6 @@ fun WriteMemoView(navController: NavController ){
                     properties = mapProperties,
                     uiSettings = uiSettings,
                     onMapLongClick = onMapLongClickHandler ,
-                    onMyLocationButtonClick = {
-                        context.getDeviceLocation {it?.let {
-                            viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
-                        }}
-                        return@GoogleMap true
-                    }
-
                 ) {
 
 
@@ -534,6 +544,9 @@ fun WriteMemoView(navController: NavController ){
                                         }
                                         SaveMenu.SAVE -> {
                                             if(snapShotList.isEmpty()) {  isSnapShot = true   }
+                                            location?.let {
+                                                viewModel.onEvent(WriteMemoViewModel.Event.SearchWeather(it))
+                                            }
                                             isAlertDialog.value = true
                                         }
                                      }
@@ -551,6 +564,7 @@ fun WriteMemoView(navController: NavController ){
 
                 }
 
+                /*
 
                 Column(
                     modifier = Modifier
@@ -558,25 +572,12 @@ fun WriteMemoView(navController: NavController ){
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
-                    IconButton(
-                        onClick = {
-                            hapticProcessing()
-                            context.getDeviceLocation {it?.let {
-                                viewModel.onEvent(WriteMemoViewModel.Event.SetDeviceLocation(it))
-                                cameraPositionState.position = defaultCameraPosition
-                                markerState.position = currentLocation.toLatLng()
-                            }}
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.scale(1f),
-                            imageVector = Icons.Outlined.GpsFixed,
-                            contentDescription = "My Location",
-                        )
-                    }
+
 
                 }
 
+
+                 */
 
                 Column(
                     modifier = Modifier
@@ -620,6 +621,20 @@ fun WriteMemoView(navController: NavController ){
                         .align(alignmentDrawingMenuList)
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
+
+
+                    IconButton(
+                        onClick = {
+                            hapticProcessing()
+                            cameraPositionState.position = defaultCameraPosition
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = Icons.Outlined.ModeOfTravel,
+                            contentDescription = "ModeOfTravel",
+                        )
+                    }
 
                     DrawingMenuList.forEach {
                         AnimatedVisibility(visible = isVisibleMenu.value,
@@ -830,6 +845,8 @@ fun WriteMemoView(navController: NavController ){
                                                     selectedTagArray.value.add(index)
                                                 }
                                             }
+
+
                                         },
                                         content = {
                                             Icon(

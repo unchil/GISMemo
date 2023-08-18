@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.res.Configuration
 import android.location.Location
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -25,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -41,12 +39,10 @@ import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.MEMO_TBL
-import com.example.gismemo.db.entity.toLatLng
 import com.example.gismemo.model.BiometricCheckType
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.shared.composables.*
 import com.example.gismemo.ui.theme.GISMemoTheme
-import com.example.gismemo.utils.getDeviceLocation
 import com.example.gismemo.viewmodel.MemoMapViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -54,7 +50,6 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.widgets.ScaleBar
 import kotlinx.coroutines.launch
@@ -81,9 +76,20 @@ fun GoogleMapView() {
         mutableStateOf(LatLng(0.0,0.0))
     }
 
-    fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
-        if (task.isSuccessful && task.result != null ) {
-            currentLocation = task.result.toLatLng()
+    val isDeviceLocation = remember {
+        mutableStateOf(false)
+    }
+
+
+    LaunchedEffect(key1 = isDeviceLocation.value, key2 =  currentLocation){
+        if(isDeviceLocation.value || currentLocation == LatLng(0.0,0.0)) {
+
+            fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
+                if (task.isSuccessful && task.result != null ) {
+                    currentLocation = task.result.toLatLng()
+                }
+            }
+            isDeviceLocation.value = false
         }
     }
 
@@ -110,12 +116,13 @@ val uiSettings by remember {
             compassEnabled = true,
             myLocationButtonEnabled = true,
             mapToolbarEnabled = true,
+            zoomControlsEnabled = false
 
         )
     )
 }
 
-var isExpanded by remember { mutableStateOf(false) }
+
 
 val sheetState = SheetState(skipPartiallyExpanded = false, initialValue = Hidden)
 
@@ -146,7 +153,6 @@ val onMapLongClickHandler: (LatLng) -> Unit = {
         Box(Modifier.fillMaxSize()) {
 
                 GoogleMap(
-                  //  modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
                     properties = mapProperties,
                     uiSettings = uiSettings,
@@ -159,7 +165,7 @@ val onMapLongClickHandler: (LatLng) -> Unit = {
                        title = "lat/lng:(${String.format("%.5f", markerState.position.latitude)},${String.format("%.5f", markerState.position.longitude)})",
                    )
 
-           }
+                }
 
                ScaleBar(
                    modifier = Modifier
@@ -173,67 +179,17 @@ val onMapLongClickHandler: (LatLng) -> Unit = {
 
                    FloatingActionButton(
                        onClick = {
-                           mapProperties = mapProperties.copy(mapType = MapType.NORMAL)
-                           cameraPositionState.position = defaultCameraPosition
-                           markerState.position = currentLocation
-                           markerState.hideInfoWindow()
+                           isDeviceLocation.value = true
                        },
                        containerColor = Color.White.copy(alpha = 0.7f),
                    ) {
                        Icon(
                            modifier = Modifier,
-                           imageVector = Icons.Outlined.PinDrop,
-                           contentDescription = "Reset",
+                           imageVector = Icons.Outlined.CompassCalibration,
+                           contentDescription = "CompassCalibration",
                        )
                    }
 
-                   FloatingActionButton(
-                       onClick = {
-                           isExpanded = true
-                       },
-                       containerColor = Color.White.copy(alpha = 0.7f),
-                   ) {
-                       Icon(
-                           modifier = Modifier,
-                           imageVector = Icons.Outlined.Layers,
-                           contentDescription = "Reset",
-                       )
-                   }
-
-                   DropdownMenu(
-                       expanded = isExpanded,
-                       modifier = Modifier,
-                       onDismissRequest = { isExpanded = false },
-                   ) {
-
-                       MapType.values().filter {
-                           it.name == "NORMAL" ||
-                                   it.name == "TERRAIN" ||
-                                   it.name == "HYBRID"
-                       }.forEach {
-                           DropdownMenuItem(
-                               text = { Text(text = it.name) },
-                               onClick = { mapProperties = mapProperties.copy(mapType = it) },
-                               leadingIcon = {
-
-                                   var image: ImageVector =
-                                       when (it.name) {
-                                           "NORMAL" -> Icons.Outlined.Map
-                                           "TERRAIN" -> Icons.Outlined.Forest
-                                           "HYBRID" -> Icons.Outlined.Public
-                                           else -> Icons.Outlined.Layers
-                                       }
-
-                                   Icon(
-                                       modifier = Modifier,
-                                       imageVector = image,
-                                       contentDescription = "Layers",
-                                   )
-                               }
-                           )
-                       }
-
-                   }
 
                }
 
@@ -295,28 +251,31 @@ Button(
 fun PrevViewMap(){
 
      val permissionsManager = PermissionsManager()
-    val permissions = listOf(
-        Manifest.permission.INTERNET,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
-    val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
-    CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    CompositionLocalProvider( LocalPermissionsManager provides permissionsManager) {
+    CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
+
+
+        val permissions = listOf(
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
+        CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
 
         var isGranted by mutableStateOf(true)
         permissions.forEach { chkPermission ->
             isGranted = isGranted
-                    &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+                    && (multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+                ?: false)
         }
 
         val navController = rememberNavController()
 
         PermissionRequiredCompose(
             isGranted = isGranted,
-            multiplePermissions = permissions ,
+            multiplePermissions = permissions,
             viewType = PermissionRequiredComposeFuncName.Weather
         ) {
 
@@ -328,14 +287,15 @@ fun PrevViewMap(){
                     ) {
                         //      WriteMemoView(navController = navController)
                         //   DrawingOnMap()
-                       // GoogleMapView()
-                        MemoMapView(navController)
+                        GoogleMapView()
+                        //      MemoMapView(navController)
                     }
                 }
             }
         }
 
     }
+
 }
 
 @SuppressLint("MissingPermission")
@@ -351,6 +311,17 @@ fun MemoMapView(navController: NavController){
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
+    var isGranted by mutableStateOf(true)
+    permissions.forEach { chkPermission ->
+        isGranted = isGranted
+                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
+    }
+
+    PermissionRequiredCompose(
+        isGranted = isGranted,
+        multiplePermissions = permissions ,
+        viewType = PermissionRequiredComposeFuncName.MemoMap
+    ) {
 
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -364,34 +335,49 @@ fun MemoMapView(navController: NavController){
         }
     }
 
-
     val context = LocalContext.current
-
-
-
     val db = LocalLuckMemoDB.current
+
     val viewModel = remember {
         MemoMapViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
     }
 
-
-    LaunchedEffect(key1 =viewModel ){
-        context.getDeviceLocation {it?.let {
-            viewModel.onEvent(MemoMapViewModel.Event.SetDeviceLocation(it))
-        }}
-        viewModel.onEvent(MemoMapViewModel.Event.SetMarkers)
+    val fusedLocationProviderClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
     }
 
-    val currentLocation = viewModel.currentLocationFlow.collectAsState().value
-    val latLng = currentLocation?.toLatLng() ?: LatLng(0.0, 0.0)
+    var currentLocation by remember {
+        mutableStateOf(LatLng(0.0,0.0))
+    }
+
+    var location:Location? by remember {
+        mutableStateOf(null)
+    }
+
+
+    LaunchedEffect( key1 =  currentLocation){
+        if( currentLocation == LatLng(0.0,0.0)) {
+            fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
+                if (task.isSuccessful && task.result != null ) {
+                    location = task.result
+                    currentLocation = task.result.toLatLng()
+                }
+            }
+            viewModel.onEvent(MemoMapViewModel.Event.SetMarkers)
+        }
+    }
+
+
+
+
 
     val markerMemoList = viewModel.markerMemoList.collectAsState()
 
 
     // No ~~~~ remember
-    val markerState =  MarkerState( position = latLng )
-    val defaultCameraPosition =  CameraPosition.fromLatLngZoom( latLng, 16f)
-    var cameraPositionState =  CameraPositionState(position = defaultCameraPosition)
+    val markerState =  MarkerState( position = currentLocation )
+    val defaultCameraPosition =  CameraPosition.fromLatLngZoom( currentLocation, 16f)
+    val cameraPositionState =  CameraPositionState(position = defaultCameraPosition)
 
 
 
@@ -399,7 +385,7 @@ fun MemoMapView(navController: NavController){
         mutableStateOf(
             MapProperties(
                 mapType = MapType.NORMAL,
-                isMyLocationEnabled = false,
+                isMyLocationEnabled = true,
             )
         )
     }
@@ -422,8 +408,8 @@ fun MemoMapView(navController: NavController){
     val scaffoldState =  rememberBottomSheetScaffoldState( bottomSheetState = sheetState )
 
     val onMapLongClickHandler: (LatLng) -> Unit = {
-        markerState.position = it
-        cameraPositionState = CameraPositionState( position =  CameraPosition.fromLatLngZoom(it, 16f))
+        hapticProcessing()
+        currentLocation = it
     }
 
 
@@ -444,17 +430,7 @@ fun MemoMapView(navController: NavController){
 
 
 
-    var isGranted by mutableStateOf(true)
-    permissions.forEach { chkPermission ->
-        isGranted = isGranted
-                &&  ( multiplePermissionsState.permissions.find { it.permission == chkPermission  }?.status?.isGranted ?: false )
-    }
 
-    PermissionRequiredCompose(
-        isGranted = isGranted,
-        multiplePermissions = permissions ,
-        viewType = PermissionRequiredComposeFuncName.MemoMap
-    ) {
 
             BottomSheetScaffold(
                 modifier = Modifier.statusBarsPadding(),
@@ -483,6 +459,10 @@ fun MemoMapView(navController: NavController){
 
                         ) {
 
+                        Marker(
+                            state = markerState,
+                            title = "lat/lng:(${String.format("%.5f", markerState.position.latitude)},${String.format("%.5f", markerState.position.longitude)})",
+                        )
 
                         markerMemoList.value.forEach {
 
@@ -540,37 +520,19 @@ fun MemoMapView(navController: NavController){
                     }
 
 
-
-
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(end = 10.dp)
-                            .padding(top = 10.dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(color = Color.LightGray.copy(alpha = 0.7f))
-                    ) {
-
-                        IconButton(
-                            onClick = {
-                                hapticProcessing()
-                                cameraPositionState.position = defaultCameraPosition
-                                if (currentLocation != null) {
-                                    markerState.position = currentLocation.toLatLng()
-                                }
-
-
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(1f),
-                                imageVector = Icons.Outlined.GpsFixed,
-                                contentDescription = "My Location",
-                            )
+                    IconButton(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        onClick = {
+                            hapticProcessing()
+                            cameraPositionState.position = defaultCameraPosition
                         }
-
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = Icons.Outlined.ModeOfTravel,
+                            contentDescription = "ModeOfTravel",
+                        )
                     }
-
 
 
 

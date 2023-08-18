@@ -1,6 +1,5 @@
 package com.example.gismemo.data
 
-import android.location.Location
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.paging.Pager
@@ -135,8 +134,6 @@ class Repository{
 
     val OPENWEATHER_URL = "https://api.openweathermap.org/data/2.5/"
 
-    val _currentLocation:MutableStateFlow<CURRENTLOCATION_TBL?>  = MutableStateFlow(null)
-
     val _currentWeather:MutableStateFlow<CURRENTWEATHER_TBL?>  = MutableStateFlow(null)
 
     suspend fun deleteMemoItem( type:WriteMemoDataType,  index:Int) {
@@ -241,8 +238,6 @@ class Repository{
             desc = desc,
             snapshot = snapshot
         )
-
-
 
 
         database.memoDao.insert(memoTbl)
@@ -468,22 +463,6 @@ class Repository{
     }
 
 
-
-    suspend fun setCurrentLocation(item: CURRENTLOCATION_TBL){
-        database.withTransaction {
-            database.currentLocationDao.trancate()
-            database.currentLocationDao.insert(item)
-            _currentLocation.emit(item)
-        }
-    }
-
-    suspend fun setDeviceLocation(location: Location){
-        database.withTransaction {
-            database.currentLocationDao.trancate()
-            database.currentLocationDao.insert(location.toCURRENTLOCATION_TBL())
-            _currentLocation.emit(location.toCURRENTLOCATION_TBL())
-        }
-    }
 
     suspend fun getWeatherData(latitude: String, longitude: String){
 
