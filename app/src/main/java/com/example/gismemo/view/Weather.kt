@@ -27,6 +27,8 @@ import com.example.gismemo.db.*
 import com.example.gismemo.shared.composables.CheckPermission
 import com.example.gismemo.shared.composables.PermissionRequiredCompose
 import com.example.gismemo.shared.composables.PermissionRequiredComposeFuncName
+import com.example.gismemo.shared.utils.SnackBarChannelType
+import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.WeatherViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -39,7 +41,7 @@ import com.google.android.gms.maps.model.LatLng
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission", "SuspiciousIndentation")
 @Composable
-fun WeatherContent(isSticky:Boolean = false ){
+fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)->Unit)? = null){
 
     val permissions = listOf(
         Manifest.permission.INTERNET,
@@ -75,15 +77,23 @@ fun WeatherContent(isSticky:Boolean = false ){
             LocationServices.getFusedLocationProviderClient(context)
         }
 
-        val currentLocation by remember {
-            mutableStateOf(LatLng(0.0,0.0))
-        }
 
-        LaunchedEffect(key1 =  currentLocation){
-            if( currentLocation == LatLng(0.0,0.0)) {
+        var isSuccessfulTask by remember { mutableStateOf( false ) }
+        var checkCurrentLocation by remember { mutableStateOf(true) }
+
+
+        LaunchedEffect(key1 =  checkCurrentLocation){
+            if(checkCurrentLocation) {
+                checkCurrentLocation = false
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
                     if (task.isSuccessful && task.result != null ) {
+                        isSuccessfulTask = true
                         viewModel.searchWeather(task.result.toLatLng())
+                    } else {
+                        onCheckLocationService?.let {
+                            it(false)
+
+                        }
                     }
                 }
             }
@@ -93,26 +103,35 @@ fun WeatherContent(isSticky:Boolean = false ){
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier
-                .background(color = Color.White)
+            modifier = Modifier.fillMaxWidth()
+                .background(color = Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            weatherData.value?.let {
+            if (!isSuccessfulTask  ) {
 
-                when (configuration.orientation) {
-                    Configuration.ORIENTATION_PORTRAIT -> {
-                        WeatherView(it)
-                    }
-                    else -> {
-                        if (isSticky) {
-                            WeatherView(it)
-                        } else {
-                            WeatherViewLandScape(it)
-                        }
-                    }
+                Button(onClick = {
+                    checkCurrentLocation = true
+                }) {
+                    Text("CHECK LOCATION SERVICE")
                 }
 
 
+            } else {
+                weatherData.value?.let {
+                    when (configuration.orientation) {
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            WeatherView(it)
+                        }
+                        else -> {
+                            if (isSticky) {
+                                WeatherView(it)
+                            } else {
+                                WeatherViewLandScape(it)
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -210,7 +229,9 @@ fun WeatherViewLandScape(
         Icon (
             imageVector = Icons.Outlined.LightMode
             ,contentDescription = "clear sky"
-            , modifier = Modifier.fillMaxWidth(0.5f).aspectRatio(1f)
+            , modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .aspectRatio(1f)
             , tint = Color(255, 165, 0)
         )
 

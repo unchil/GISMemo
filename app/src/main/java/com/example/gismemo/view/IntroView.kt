@@ -290,7 +290,13 @@ fun IntroView(
 
                         if (!isPortrait) {
                             Box(modifier = Modifier.fillMaxWidth(0.4f)) {
-                                WeatherContent()
+                                WeatherContent(){
+                                    if(!it){
+                                        channel.trySend(snackbarChannelList.first {
+                                            it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
+                                        }.channel)
+                                    }
+                                }
                             }
                         }
 
@@ -312,7 +318,15 @@ fun IntroView(
                             ) {
 
                                 if (isPortrait) {
-                                    stickyHeader { WeatherContent() }
+                                    stickyHeader {
+                                        WeatherContent(){
+                                            if(!it){
+                                                channel.trySend(snackbarChannelList.first {
+                                                    it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
+                                                }.channel)
+                                            }
+                                        }
+                                    }
                                 }
 
                                 items(memoListStream.itemCount) {
