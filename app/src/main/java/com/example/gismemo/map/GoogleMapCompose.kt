@@ -584,7 +584,7 @@ fun MemoMapView(navController: NavController){
 
 
                     IconButton(
-                        modifier = Modifier.align(Alignment.BottomEnd)
+                        modifier = Modifier.align(Alignment.TopStart)
                             .clip(RoundedCornerShape(6.dp))
                             .background(color = Color.LightGray.copy(alpha = 0.7f)),
                         onClick = {
@@ -605,13 +605,13 @@ fun MemoMapView(navController: NavController){
 
                     ScaleBar(
                         modifier = Modifier
-                            .align(Alignment.TopStart),
+                            .align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 10.dp),
                         cameraPositionState = cameraPositionState
                     )
 
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .align(Alignment.BottomStart)
+                            .align(Alignment.CenterEnd)
                             .clip(RoundedCornerShape(6.dp))
                             .background(color = Color.LightGray.copy(alpha = 0.7f))
 
@@ -626,7 +626,7 @@ fun MemoMapView(navController: NavController){
                             Icon(
                                 modifier = Modifier.scale(1f),
                                 imageVector = if (isVisibleMenu.value) Icons.Outlined.OpenWith else Icons.Outlined.Api,
-                                contentDescription = "CreateMenu",
+                                contentDescription = "OpenWith",
                             )
                         }
 

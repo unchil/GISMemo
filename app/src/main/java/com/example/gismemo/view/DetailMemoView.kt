@@ -335,13 +335,13 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
 
             ScaleBar(
-                modifier = Modifier.align(Alignment.TopStart),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 10.dp),
                 cameraPositionState = cameraPositionState
             )
 
 
             IconButton(
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(Alignment.TopStart)
                     .clip(RoundedCornerShape(6.dp))
                     .background(color = Color.LightGray.copy(alpha = 0.7f)),
                 onClick = {
@@ -361,7 +361,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.CenterEnd)
                     .clip(RoundedCornerShape(6.dp))
                     .background(color = Color.LightGray.copy(alpha = 0.7f)),
             ) {
