@@ -366,10 +366,10 @@ enum class PermissionRequiredComposeFuncName {
 
 fun PermissionRequiredComposeFuncName.getTitle(): String {
     return when(this.name) {
-        PermissionRequiredComposeFuncName.SpeechToText.name -> {"REQUEST PERMISSION : RECORD_AUDIO"}
-        PermissionRequiredComposeFuncName.Weather.name -> {"REQUEST PERMISSION : [INTERNET,LOCATION]"}
-        PermissionRequiredComposeFuncName.Camera.name -> {"REQUEST PERMISSION : [CAMERA,RECORD_AUDIO]"}
-        PermissionRequiredComposeFuncName.MemoMap.name -> {"REQUEST PERMISSION : [INTERNET,LOCATION]"}
+        PermissionRequiredComposeFuncName.SpeechToText.name -> {"REQUEST: RECORD_AUDIO"}
+        PermissionRequiredComposeFuncName.Weather.name -> {"REQUEST: LOCATION"}
+        PermissionRequiredComposeFuncName.Camera.name -> {"REQUEST : CAMERA, RECORD_AUDIO"}
+        PermissionRequiredComposeFuncName.MemoMap.name -> {"REQUEST : LOCATION"}
         else -> {"REQUEST PERMISSION :"}
     }
 }
