@@ -614,8 +614,9 @@ fun WriteMemoView(navController: NavController ){
                     ) {}
                 }
 
+
                 ScaleBar(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 50.dp,end = 10.dp),
                     cameraPositionState = cameraPositionState
                 )
 
