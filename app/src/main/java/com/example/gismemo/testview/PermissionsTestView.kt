@@ -37,9 +37,9 @@ fun PermissionTestView() {
     val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(false)
+    var isGranted by mutableStateOf(true)
     permissions.forEach { chkPermission ->
-        isGranted = multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
+        isGranted = isGranted &&  multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
             ?: false
     }
 
