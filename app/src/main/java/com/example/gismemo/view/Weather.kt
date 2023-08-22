@@ -3,7 +3,6 @@ package com.example.gismemo.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -28,15 +27,12 @@ import com.example.gismemo.db.*
 import com.example.gismemo.shared.composables.CheckPermission
 import com.example.gismemo.shared.composables.PermissionRequiredCompose
 import com.example.gismemo.shared.composables.PermissionRequiredComposeFuncName
-import com.example.gismemo.shared.utils.SnackBarChannelType
-import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.WeatherViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -62,11 +58,8 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         multiplePermissions = permissions ,
         viewType = PermissionRequiredComposeFuncName.Weather
     ) {
-
-
-
+        
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
     val configuration = LocalConfiguration.current
 
     val db = LocalLuckMemoDB.current
