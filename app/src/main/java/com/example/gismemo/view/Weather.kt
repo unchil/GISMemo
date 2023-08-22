@@ -3,6 +3,7 @@ package com.example.gismemo.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -108,16 +109,33 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            if (!isSuccessfulTask  ) {
 
-                Button(onClick = {
-                    checkCurrentLocation = true
-                }) {
-                    Text("CHECK LOCATION SERVICE")
-                }
+            androidx.compose.animation.AnimatedVisibility  (!isSuccessfulTask  ) {
+
+                androidx.compose.material.IconButton(
+
+                    onClick = { checkCurrentLocation = true },
+                    content = {
+                        Row(
+                            modifier = Modifier,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(end = 10.dp),
+                                imageVector = Icons.Outlined.LocationSearching,
+                                contentDescription = "LocationSearching"
+                            )
+                            Text("Location Searching")
+                        }
+                    })
 
 
-            } else {
+            }
+
+
+
+
+            androidx.compose.animation.AnimatedVisibility (weatherData.value != null){
                 weatherData.value?.let {
                     when (configuration.orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
@@ -133,6 +151,9 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
                     }
                 }
             }
+
+
+
         }
 
     }
