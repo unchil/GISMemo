@@ -584,7 +584,7 @@ fun MemoMapView(navController: NavController){
 
 
                     IconButton(
-                        modifier = Modifier.align(Alignment.BottomEnd)
+                        modifier = Modifier.align(Alignment.TopStart)
                             .clip(RoundedCornerShape(6.dp))
                             .background(color = Color.LightGray.copy(alpha = 0.7f)),
                         onClick = {
@@ -605,7 +605,7 @@ fun MemoMapView(navController: NavController){
 
                     ScaleBar(
                         modifier = Modifier
-                            .align(Alignment.TopStart),
+                            .align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 10.dp),
                         cameraPositionState = cameraPositionState
                     )
 
