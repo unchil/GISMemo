@@ -97,10 +97,10 @@ val DrawingMenuList = listOf(
 fun DrawingMenu.getDesc():Pair<ImageVector, ImageVector?> {
     return when(this){
         DrawingMenu.DrawEraser -> {
-            Pair( Icons.Outlined.Draw , Icons.Outlined.Toll)
+            Pair( Icons.Outlined.Draw , Icons.Outlined.Swipe)
         }
         DrawingMenu.Eraser -> {
-            Pair( Icons.Outlined.AllOut , Icons.Outlined.AllOut)
+            Pair( Icons.Outlined.Toll , Icons.Outlined.AllOut)
         }
     }
 }
