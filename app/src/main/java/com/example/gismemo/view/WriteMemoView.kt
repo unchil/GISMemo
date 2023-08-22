@@ -86,17 +86,21 @@ import java.util.*
 
 
 enum class DrawingMenu {
-DrawEraser
+DrawEraser,Eraser
 }
 
 val DrawingMenuList = listOf(
-    DrawingMenu.DrawEraser
+    DrawingMenu.DrawEraser,
+    DrawingMenu.Eraser
 )
 
 fun DrawingMenu.getDesc():Pair<ImageVector, ImageVector?> {
     return when(this){
         DrawingMenu.DrawEraser -> {
-            Pair( Icons.Outlined.Draw , Icons.Outlined.TouchApp)
+            Pair( Icons.Outlined.Draw , Icons.Outlined.Toll)
+        }
+        DrawingMenu.Eraser -> {
+            Pair( Icons.Outlined.AllOut , Icons.Outlined.AllOut)
         }
     }
 }
@@ -759,6 +763,11 @@ fun WriteMemoView(navController: NavController ){
                                                 )
                                             )
                                         }
+                                        DrawingMenu.Eraser -> {
+                                            polylineList.clear()
+                                            polylineListR.clear()
+                                            isMapClear = true
+                                        }
                                     }
                                 }) {
 
@@ -767,6 +776,9 @@ fun WriteMemoView(navController: NavController ){
                                     DrawingMenu.DrawEraser -> {
                                         if (!isDrawing) it.getDesc().first else it.getDesc().second
                                             ?: it.getDesc().first
+                                    }
+                                    DrawingMenu.Eraser -> {
+                                        it.getDesc().first
                                     }
                                 }
 
