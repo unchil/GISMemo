@@ -86,22 +86,27 @@ import java.util.*
 
 
 enum class DrawingMenu {
-DrawEraser,Eraser
+Draw,Swipe,Eraser
 }
 
 val DrawingMenuList = listOf(
-    DrawingMenu.DrawEraser,
+    DrawingMenu.Draw,
+    DrawingMenu.Swipe,
     DrawingMenu.Eraser
 )
 
-fun DrawingMenu.getDesc():Pair<ImageVector, ImageVector?> {
+fun DrawingMenu.getDesc():Pair<ImageVector, Color> {
     return when(this){
-        DrawingMenu.DrawEraser -> {
-            Pair( Icons.Outlined.Draw , Icons.Outlined.Swipe)
+        DrawingMenu.Draw -> {
+            Pair( Icons.Outlined.Draw , Color.Red)
+        }
+        DrawingMenu.Swipe -> {
+            Pair( Icons.Outlined.Swipe ,  Color.Red)
         }
         DrawingMenu.Eraser -> {
-            Pair( Icons.Outlined.Toll , Icons.Outlined.AllOut)
+            Pair( Icons.Outlined.Toll ,  Color.Black)
         }
+
     }
 }
 
@@ -298,6 +303,7 @@ fun WriteMemoView(navController: NavController ){
         var isMapClear by remember { mutableStateOf(false) }
         val currentPolyline = mutableStateListOf<LatLng>()
         var isDrawing by rememberSaveable { mutableStateOf(false) }
+        var isEraser by rememberSaveable { mutableStateOf(false) }
         val selectedTagArray: MutableState<ArrayList<Int>> =
             rememberSaveable { mutableStateOf(arrayListOf()) }
         var isLock by rememberSaveable { mutableStateOf(false) }
@@ -323,7 +329,7 @@ fun WriteMemoView(navController: NavController ){
             Configuration.ORIENTATION_PORTRAIT -> {
                 polylineList = polylineListR.toMutableStateList()
                 alignmentSaveMenuList = Alignment.TopCenter
-                alignmentMyLocation = Alignment.TopEnd
+                alignmentMyLocation = Alignment.TopStart
                 alignmentCreateMenuList = Alignment.CenterStart
                 alignmentSettingMenuList = Alignment.BottomStart
                 alignmentDrawingMenuList = Alignment.BottomEnd
@@ -333,8 +339,8 @@ fun WriteMemoView(navController: NavController ){
             else -> {
                 polylineList = polylineListR.toMutableStateList()
                 alignmentSaveMenuList = Alignment.TopCenter
-                alignmentMyLocation = Alignment.TopEnd
-                alignmentCreateMenuList = Alignment.TopStart
+                alignmentMyLocation = Alignment.TopStart
+                alignmentCreateMenuList = Alignment.CenterStart
                 alignmentSettingMenuList = Alignment.BottomStart
                 alignmentDrawingMenuList = Alignment.BottomEnd
                 alignmentMapTypeMenuList = Alignment.CenterEnd
@@ -609,7 +615,7 @@ fun WriteMemoView(navController: NavController ){
                 }
 
                 ScaleBar(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier.align(Alignment.TopCenter),
                     cameraPositionState = cameraPositionState
                 )
 
@@ -663,7 +669,7 @@ fun WriteMemoView(navController: NavController ){
 
                 }
 
-                /*
+
 
                 Column(
                     modifier = Modifier
@@ -671,10 +677,21 @@ fun WriteMemoView(navController: NavController ){
                         .clip(RoundedCornerShape(6.dp))
                         .background(color = Color.LightGray.copy(alpha = 0.7f))) {
 
-
+                    IconButton(
+                        onClick = {
+                            hapticProcessing()
+                            isGoCurrentLocation = true
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = Icons.Outlined.ModeOfTravel,
+                            contentDescription = "ModeOfTravel",
+                        )
+                    }
 
                 }
-                 */
+
 
                 Column(
                     modifier = Modifier
@@ -727,19 +744,6 @@ fun WriteMemoView(navController: NavController ){
                 ) {
 
 
-                    IconButton(
-                        onClick = {
-                            hapticProcessing()
-                            isGoCurrentLocation = true
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.scale(1f),
-                            imageVector = Icons.Outlined.ModeOfTravel,
-                            contentDescription = "ModeOfTravel",
-                        )
-                    }
-
                     DrawingMenuList.forEach {
                         AnimatedVisibility(
                             visible = isVisibleMenu.value,
@@ -750,41 +754,54 @@ fun WriteMemoView(navController: NavController ){
                                     hapticProcessing()
                                     when (it) {
 
-                                        DrawingMenu.DrawEraser -> {
-                                            isDrawing = !isDrawing
+                                        DrawingMenu.Draw -> {
+                                            isDrawing = true
                                             viewModel.onEvent(
                                                 WriteMemoViewModel.Event.UpdateIsDrawing(
                                                     isDrawing
                                                 )
                                             )
+
+                                        }
+
+                                        DrawingMenu.Swipe -> {
+                                            isDrawing = false
                                             viewModel.onEvent(
                                                 WriteMemoViewModel.Event.UpdateIsEraser(
                                                     !isDrawing
                                                 )
                                             )
                                         }
+
                                         DrawingMenu.Eraser -> {
                                             polylineList.clear()
                                             polylineListR.clear()
                                             isMapClear = true
                                         }
+
+
                                     }
                                 }) {
 
-                                val icon = when (it) {
 
-                                    DrawingMenu.DrawEraser -> {
-                                        if (!isDrawing) it.getDesc().first else it.getDesc().second
-                                            ?: it.getDesc().first
+                                val iconColor = when (it) {
+                                    DrawingMenu.Draw -> {
+                                        if(isDrawing) it.getDesc().second else Color.Black
                                     }
-                                    DrawingMenu.Eraser -> {
-                                        it.getDesc().first
+                                    DrawingMenu.Swipe -> {
+                                        if(!isDrawing) it.getDesc().second else Color.Black
                                     }
+                                    else -> {
+                                        it.getDesc().second
+                                    }
+
                                 }
 
+
                                 Icon(
-                                    imageVector = icon,
+                                    imageVector =  it.getDesc().first,
                                     contentDescription = it.name,
+                                    tint = iconColor
                                 )
                             }
 
