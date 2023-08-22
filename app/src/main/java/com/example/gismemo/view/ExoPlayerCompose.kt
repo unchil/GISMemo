@@ -70,7 +70,7 @@ fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
 
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVisibleAmplitudes:Boolean = false){
+fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVisibleAmplitudes:Boolean = false, trackInfo:((Int)->Unit)? = null ){
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -123,6 +123,12 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 
             if ( events.contains(Player.EVENT_TRACKS_CHANGED) ) {
                 super.onEvents(player, events)
+
+                trackInfo?.let {
+                    it(player.currentMediaItemIndex)
+                }
+
+
                 if(isVisibleAmplitudes) {
                     player.playWhenReady = false
                     player.seekTo(0L)
@@ -130,6 +136,14 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                     waveformProgress = 0F
                     player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
                         mediaItemAmplitudes = context.setAmplitudes(uri = uri)
+                        mediaItemTitle =
+                            "${player.currentMediaItemIndex + 1}번 트렉[${uri.lastPathSegment.toString()}]"
+                    }
+                }else{
+                    player.playWhenReady = false
+                    player.seekTo(0L)
+                    mediaItemDuration = player.duration
+                    player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
                         mediaItemTitle =
                             "${player.currentMediaItemIndex + 1}번 트렉[${uri.lastPathSegment.toString()}]"
                     }
@@ -184,15 +198,14 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 
     Column {
 
+        if(mediaItemTitle.isNotEmpty()){
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = mediaItemTitle,
+                textAlign = TextAlign.Center
+            )
 
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = mediaItemTitle,
-            textAlign = TextAlign.Center
-        )
-
-
-
+        }
 
         if (isVisibleAmplitudes && mediaItemAmplitudes.isNotEmpty()) {
 
@@ -292,6 +305,10 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 @Composable
 private fun PrevExoplayerCompose(){
 
+        val uriList = listOf<Uri>(
+            "/data/data/com.example.gismemo/files/videos/2023-08-23-09-56-21-341.mp4".toUri(),
+            "/data/data/com.example.gismemo/files/videos/2023-08-23-09-56-37-675.mp4".toUri()
+        )
 
     GISMemoTheme {
 
@@ -301,7 +318,7 @@ private fun PrevExoplayerCompose(){
         ) {
     //       ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/audios/20230601-092114739_record.ogg".toUri())
 
-            ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/videos/2023-06-08-18-24-16-156.mp4".toUri())
+            ExoplayerCompose( uriList = uriList)
         }
 
     }

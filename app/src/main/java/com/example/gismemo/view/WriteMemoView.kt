@@ -1340,6 +1340,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
     }
 
     val pagerState =   rememberPagerState()
+    var videoTrackIndex by remember { mutableStateOf(0) }
+    val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
 
     val defaultData:Pair<String, Int> = when(item){
         is MemoData.Photo ->  Pair(WriteMemoDataType.PHOTO.name, item.dataList.size)
@@ -1356,10 +1358,10 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             .padding(2.dp)
     ) {
 
-        Box (
+        Box(
             modifier = Modifier.fillMaxWidth(),
-            contentAlignment =Alignment.Center
-        ){
+            contentAlignment = Alignment.Center
+        ) {
 
             androidx.compose.material3.Text(
                 modifier = Modifier
@@ -1372,17 +1374,17 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             )
 
             onDelete?.let {
-                if(defaultData.second > 0) {
+                if (defaultData.second > 0) {
                     IconButton(
                         modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = {
                             hapticProcessing()
-                                it(pagerState.currentPage)
-                                channel?.let {channel ->
-                                    channel.trySend(snackbarChannelList.first {snackBarChannelData ->
-                                        snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
-                                    }.channel)
-                                }
+                            it(pagerState.currentPage)
+                            channel?.let { channel ->
+                                channel.trySend(snackbarChannelList.first { snackBarChannelData ->
+                                    snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
+                                }.channel)
+                            }
                         },
                         content = {
                             Icon(
@@ -1403,52 +1405,109 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =  if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                Box( modifier = Modifier
-                    .padding(2.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .size(10.dp) )
+                val color = when (item) {
+                    is MemoData.Video -> {
+                        if (videoTrackIndex == iteration) Color.DarkGray else Color.LightGray
+                    }
+                    else -> {
+                        if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .size(10.dp)
+                )
             }
         }
 
-        // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
-        //val verticalModifier =  remember { if (defaultData.first != WriteMemoDataType.VIDEO.name ) Modifier.verticalScroll(state = scrollState) else Modifier }
 
-        if(defaultData.second > 0) {
-            HorizontalPager(
+        // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
+
+
+        when (item) {
+            is MemoData.Video -> {
+                if (defaultData.second > 0) {
+                ExoplayerCompose(
+                    uriList = item.dataList.toList(),
+                    isVisibleAmplitudes = false
+                ) {
+                    videoTrackIndex = it
+                }
+
+            } else {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.White),
-                pageCount = defaultData.second,
-                state = pagerState,
-            ) { page ->
+                    .padding(10.dp)
+                    .background(color = Color.LightGray)
+            )
+        }
 
-                when (item) {
-                    is MemoData.AudioText -> AudioTextView(data = item.dataList[page])
-                    is MemoData.Photo -> ImageViewer(
-                        data = (item.dataList[page]),
-                        size = Size.ORIGINAL,
-                        isZoomable = false
+            }
+
+            else -> {
+                if (defaultData.second > 0) {
+                    HorizontalPager(
+                        modifier = Modifier.verticalScroll(state = scrollState)
+                            .fillMaxSize()
+                            .background(color = Color.White),
+                        pageCount = defaultData.second,
+                        state = pagerState,
+                    ) { page ->
+
+                        when (item) {
+                            is MemoData.AudioText -> {
+                             //   audioUriList.value = item.dataList[page].second
+                                AudioTextView(data = item.dataList[page])
+                            }
+                            is MemoData.Photo -> ImageViewer(
+                                data = (item.dataList[page]),
+                                size = Size.ORIGINAL,
+                                isZoomable = false
+                            )
+                            is MemoData.SnapShot -> ImageViewer(
+                                data = (item.dataList[page]),
+                                size = Size.ORIGINAL,
+                                isZoomable = false
+                            )
+                            else -> {}
+                        }
+                    }
+
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                            .background(color = Color.LightGray)
                     )
-                    is MemoData.SnapShot -> ImageViewer(
-                        data = (item.dataList[page]),
-                        size = Size.ORIGINAL,
-                        isZoomable = false
-                    )
-                    is MemoData.Video -> ExoplayerCompose(
-                        uri = item.dataList[page],
+                }
+            }
+        }
+
+/*
+        when (item) {
+            is MemoData.AudioText -> {
+                Box( modifier = Modifier
+                    .height(240.dp)
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+
+                ) {
+                    ExoplayerCompose(
+                        uriList = audioUriList.value,
                         isVisibleAmplitudes = false
                     )
                 }
             }
-
-        } else {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
-                .background(color = Color.LightGray))
+            else -> {}
         }
+
+ */
 
 
     } // Column
