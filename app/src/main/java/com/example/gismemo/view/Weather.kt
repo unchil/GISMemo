@@ -58,7 +58,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         multiplePermissions = permissions ,
         viewType = PermissionRequiredComposeFuncName.Weather
     ) {
-        
+
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
