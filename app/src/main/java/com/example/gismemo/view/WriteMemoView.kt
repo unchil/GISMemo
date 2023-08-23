@@ -1479,7 +1479,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
             }
             else -> {
-
                 if (defaultData.second > 0) {
                     HorizontalPager(
                         modifier = Modifier
@@ -1488,8 +1487,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                             .background(color = Color.White),
                         pageCount = defaultData.second,
                         state = pagerState,
-
                     ) { page ->
+
                         when (item) {
                             is MemoData.AudioText -> {
                                 AudioTextView(data = item.dataList[page])
@@ -1517,27 +1516,33 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                     )
                 }
             }
-
-
-
         }
 
+<<<<<<<<< Temporary merge branch 1
+
+
+/*
         when (item) {
             is MemoData.AudioText -> {
-
-                Box(
-                    modifier = Modifier
-                        .height(280.dp)
-                        .fillMaxWidth()
+                Box( modifier = Modifier
+                    .height(240.dp)
+                    .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
 
                 ) {
-                    ExoplayerCompose(uriList =  item.dataList[pagerState.targetPage].second, isVisibleAmplitudes = true)
+                    ExoplayerCompose(
+                        uriList = audioUriList.value,
+                        isVisibleAmplitudes = false
+                    )
                 }
-
             }
-
             else -> {}
         }
+
+ */
+=========
+>>>>>>>>> Temporary merge branch 2
+
 
     } // Column
 
