@@ -1339,7 +1339,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
         }
     }
 
-    val pagerState =   rememberPagerState()
+    val pagerState  =   rememberPagerState(initialPage = 0)
     var videoTrackIndex by remember { mutableStateOf(0) }
     val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
 
