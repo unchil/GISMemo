@@ -1518,10 +1518,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             }
         }
 
-<<<<<<<<< Temporary merge branch 1
 
-
-/*
         when (item) {
             is MemoData.AudioText -> {
                 Box( modifier = Modifier
@@ -1531,7 +1528,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
                 ) {
                     ExoplayerCompose(
-                        uriList = audioUriList.value,
+                        uriList = item.dataList[pagerState.targetPage].second,
                         isVisibleAmplitudes = false
                     )
                 }
@@ -1539,9 +1536,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             else -> {}
         }
 
- */
-=========
->>>>>>>>> Temporary merge branch 2
+
 
 
     } // Column
