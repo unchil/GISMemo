@@ -1445,7 +1445,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                                 videoTrackIndex =  if(it >= 0F){
                                     if ( videoTrackIndex - 1 > 0 )  --videoTrackIndex else 0
                                 }else {
-                                    if ( videoTrackIndex + 1 <  defaultData.second )  ++videoTrackIndex else defaultData.second
+                                    if ( videoTrackIndex  <  defaultData.second - 1 )  ++videoTrackIndex else defaultData.second -1
                                 }
                             }
                         ).fillMaxSize(),
