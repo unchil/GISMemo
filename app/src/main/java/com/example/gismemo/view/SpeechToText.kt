@@ -142,6 +142,8 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
 
 
 
+
+
     }
 
 }
@@ -327,7 +329,7 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
                         .fillMaxWidth()
                         .height(280.dp)
                       ) {
-                        ExoplayerCompose(uri  = it, isVisibleAmplitudes = true)
+                        ExoplayerCompose(uriList  = listOf(it) , isVisibleAmplitudes = true)
                     }
                 }
 

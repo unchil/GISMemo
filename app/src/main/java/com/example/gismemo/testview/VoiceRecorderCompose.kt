@@ -257,7 +257,7 @@ fun VoiceRecorderCompose(){
 
 
             recordingUri?.let {
-                if(!recordingStarted.value)   ExoplayerCompose(uri = it , isVisibleAmplitudes = true)
+                if(!recordingStarted.value)   ExoplayerCompose(uriList = listOf(it)  , isVisibleAmplitudes = true)
             }
 
         }

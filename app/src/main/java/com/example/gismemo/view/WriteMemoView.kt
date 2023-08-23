@@ -14,7 +14,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -620,7 +619,9 @@ fun WriteMemoView(navController: NavController ){
 
 
                 ScaleBar(
-                    modifier = Modifier.align(Alignment.TopEnd).padding(top = 50.dp,end = 10.dp),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 50.dp, end = 10.dp),
                     cameraPositionState = cameraPositionState
                 )
 
@@ -1345,7 +1346,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
     val pagerState  =   rememberPagerState(initialPage = 0)
     var videoTrackIndex by remember { mutableStateOf(0) }
-    val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
+ //   val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
 
     val defaultData:Pair<String, Int> = when(item){
         is MemoData.Photo ->  Pair(WriteMemoDataType.PHOTO.name, item.dataList.size)
@@ -1432,23 +1433,26 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
         // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
 
         val draggableState =  rememberDraggableState{}
+
         when (item) {
             is MemoData.Video -> {
 
                 if (defaultData.second > 0) {
 
                     Box(
-                        modifier = Modifier.draggable(
-                            state = draggableState,
-                            orientation = Orientation.Horizontal,
-                            onDragStopped = {
-                                videoTrackIndex =  if(it >= 0F){
-                                    if ( videoTrackIndex - 1 > 0 )  --videoTrackIndex else 0
-                                }else {
-                                    if ( videoTrackIndex  <  defaultData.second - 1 )  ++videoTrackIndex else defaultData.second -1
+                        modifier = Modifier
+                            .draggable(
+                                state = draggableState,
+                                orientation = Orientation.Horizontal,
+                                onDragStopped = {
+                                    videoTrackIndex = if (it >= 0F) {
+                                        if (videoTrackIndex - 1 > 0) --videoTrackIndex else 0
+                                    } else {
+                                        if (videoTrackIndex < defaultData.second - 1) ++videoTrackIndex else defaultData.second - 1
+                                    }
                                 }
-                            }
-                        ).fillMaxSize(),
+                            )
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ){
                         ExoplayerCompose(
@@ -1477,7 +1481,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             else -> {
                 if (defaultData.second > 0) {
                     HorizontalPager(
-                        modifier = Modifier.verticalScroll(state = scrollState)
+                        modifier = Modifier
+                            .verticalScroll(state = scrollState)
                             .fillMaxSize()
                             .background(color = Color.White),
                         pageCount = defaultData.second,
@@ -1486,7 +1491,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
                         when (item) {
                             is MemoData.AudioText -> {
-                             //   audioUriList.value = item.dataList[page].second
                                 AudioTextView(data = item.dataList[page])
                             }
                             is MemoData.Photo -> ImageViewer(
@@ -1514,25 +1518,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             }
         }
 
-/*
-        when (item) {
-            is MemoData.AudioText -> {
-                Box( modifier = Modifier
-                    .height(240.dp)
-                    .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-
-                ) {
-                    ExoplayerCompose(
-                        uriList = audioUriList.value,
-                        isVisibleAmplitudes = false
-                    )
-                }
-            }
-            else -> {}
-        }
-
- */
 
 
     } // Column

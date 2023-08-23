@@ -70,7 +70,11 @@ fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
 
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVisibleAmplitudes:Boolean = false, setTrackIndex:((ExoPlayer)->Unit)? = null , trackInfo:((Int)->Unit)? = null ){
+fun  ExoplayerCompose(
+    uriList: List<Uri> = emptyList(),
+    isVisibleAmplitudes:Boolean = false,
+    setTrackIndex:((ExoPlayer)->Unit)? = null ,
+    trackInfo:((Int)->Unit)? = null ){
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -78,8 +82,6 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
     var waveformProgress by remember { mutableStateOf(0F) }
 
     var mediaItemDuration by remember { mutableStateOf(0L) }
-
-
 
     var mediaItemAmplitudes:Amplitudes by  remember { mutableStateOf( emptyList() ) }
 
@@ -139,7 +141,7 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                     player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
                         mediaItemAmplitudes = context.setAmplitudes(uri = uri)
                         mediaItemTitle =
-                            "${player.currentMediaItemIndex + 1}번 트렉[${uri.lastPathSegment.toString()}]"
+                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
                     }
                 }else{
                     player.playWhenReady = false
@@ -147,7 +149,7 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
                     mediaItemDuration = player.duration
                     player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
                         mediaItemTitle =
-                            "${player.currentMediaItemIndex + 1}번 트렉[${uri.lastPathSegment.toString()}]"
+                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
                     }
                 }
             }
@@ -159,37 +161,23 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
     }
 
 
-
     val exoPlayer =   remember { context.getExoPlayer(exoPlayerListener) }
 
     setTrackIndex?.invoke(exoPlayer)
 
 
-    LaunchedEffect(key1 = uri, key2 = uriList){
-
-        uri?.let {
-            if (exoPlayer.mediaItemCount > 0) {
-                exoPlayer.addMediaItem(exoPlayer.mediaItemCount , MediaItem.fromUri(it))
-                exoPlayer.seekTo(exoPlayer.mediaItemCount - 1, 0)
-            } else {
-                exoPlayer.setMediaItem(MediaItem.fromUri(it))
-            }
-        }
+    LaunchedEffect(key1 = uriList){
 
         if(uriList.isNotEmpty()){
-            if (exoPlayer.mediaItemCount > 0) {
-                uriList.forEach {
-                    mediaItems.add(MediaItem.fromUri(it))
-                }
-                exoPlayer.addMediaItems(exoPlayer.mediaItemCount , mediaItems)
-            } else {
-                uriList.forEach {
-                    mediaItems.add(MediaItem.fromUri(it))
-                }
-                exoPlayer.setMediaItems(mediaItems)
+
+            uriList.forEach {
+                mediaItems.add(MediaItem.fromUri(it))
             }
+            exoPlayer.setMediaItems(mediaItems)
+
         }
     }
+
 
 
 /*

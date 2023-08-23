@@ -421,6 +421,7 @@ fun GisMemoNavHost(
                 isZoomable = true )
         }
 
+        /*
         composable(
             route = GisMemoDestinations.ExoPlayerView.route,
             arguments = listOf(
@@ -436,6 +437,8 @@ fun GisMemoNavHost(
                 isVisibleAmplitudes = GisMemoDestinations.ExoPlayerView.getIsVisibleAmplitudesFromArgs(it.arguments)
             )
         }
+
+         */
 
     }
 
