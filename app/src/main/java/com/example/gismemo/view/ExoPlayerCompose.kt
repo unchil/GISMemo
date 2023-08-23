@@ -71,6 +71,7 @@ fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
 fun  ExoplayerCompose(
+    uri:Uri? = null,
     uriList: List<Uri> = emptyList(),
     isVisibleAmplitudes:Boolean = false,
     setTrackIndex:((ExoPlayer)->Unit)? = null ,
@@ -166,7 +167,16 @@ fun  ExoplayerCompose(
     setTrackIndex?.invoke(exoPlayer)
 
 
-    LaunchedEffect(key1 = uriList){
+    LaunchedEffect(key1 = uri, key2 = uriList){
+
+        uri?.let {
+            if (exoPlayer.mediaItemCount > 0) {
+                exoPlayer.addMediaItem(exoPlayer.mediaItemCount , MediaItem.fromUri(it))
+                exoPlayer.seekTo(exoPlayer.mediaItemCount - 1, 0)
+            } else {
+                exoPlayer.setMediaItem(MediaItem.fromUri(it))
+            }
+        }
 
         if(uriList.isNotEmpty()){
 

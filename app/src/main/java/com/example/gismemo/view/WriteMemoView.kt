@@ -1521,16 +1521,19 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
         when (item) {
             is MemoData.AudioText -> {
-                Box( modifier = Modifier
-                    .height(280.dp)
-                    .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                if (defaultData.second > 0) {
+                    Box(
+                        modifier = Modifier
+                            .height(280.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
 
-                ) {
-                    ExoplayerCompose(
-                        uriList = item.dataList[pagerState.targetPage].second,
-                        isVisibleAmplitudes = true
-                    )
+                    ) {
+                        ExoplayerCompose(
+                            uriList = item.dataList[pagerState.targetPage].second,
+                            isVisibleAmplitudes = false
+                        )
+                    }
                 }
             }
             else -> {}
