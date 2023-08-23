@@ -14,7 +14,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -1345,7 +1344,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
     val pagerState  =   rememberPagerState(initialPage = 0)
     var videoTrackIndex by remember { mutableStateOf(0) }
-    val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
+ //   val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
 
     val defaultData:Pair<String, Int> = when(item){
         is MemoData.Photo ->  Pair(WriteMemoDataType.PHOTO.name, item.dataList.size)
@@ -1513,6 +1512,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                 }
             }
         }
+
+
 
 /*
         when (item) {
