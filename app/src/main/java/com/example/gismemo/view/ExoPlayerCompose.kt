@@ -70,7 +70,7 @@ fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
 
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVisibleAmplitudes:Boolean = false, trackInfo:((Int)->Unit)? = null ){
+fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVisibleAmplitudes:Boolean = false, setTrackIndex:((ExoPlayer)->Unit)? = null , trackInfo:((Int)->Unit)? = null ){
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -78,6 +78,8 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
     var waveformProgress by remember { mutableStateOf(0F) }
 
     var mediaItemDuration by remember { mutableStateOf(0L) }
+
+
 
     var mediaItemAmplitudes:Amplitudes by  remember { mutableStateOf( emptyList() ) }
 
@@ -156,7 +158,12 @@ fun  ExoplayerCompose( uri:Uri? = null,   uriList: List<Uri> = emptyList(), isVi
 
     }
 
+
+
     val exoPlayer =   remember { context.getExoPlayer(exoPlayerListener) }
+
+    setTrackIndex?.invoke(exoPlayer)
+
 
     LaunchedEffect(key1 = uri, key2 = uriList){
 

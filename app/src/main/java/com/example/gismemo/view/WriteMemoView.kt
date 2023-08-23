@@ -14,6 +14,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.DraggableState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -1427,28 +1431,49 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
         // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
 
-
+        val draggableState =  rememberDraggableState{}
         when (item) {
             is MemoData.Video -> {
+
                 if (defaultData.second > 0) {
-                ExoplayerCompose(
-                    uriList = item.dataList.toList(),
-                    isVisibleAmplitudes = false
-                ) {
-                    videoTrackIndex = it
+
+                    Box(
+                        modifier = Modifier.draggable(
+                            state = draggableState,
+                            orientation = Orientation.Horizontal,
+                            onDragStopped = {
+                                videoTrackIndex =  if(it >= 0F){
+                                    if ( videoTrackIndex - 1 > 0 )  --videoTrackIndex else 0
+                                }else {
+                                    if ( videoTrackIndex + 1 <  defaultData.second )  ++videoTrackIndex else defaultData.second
+                                }
+                            }
+                        ).fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        ExoplayerCompose(
+                            uriList = item.dataList.toList(),
+                            isVisibleAmplitudes = false,
+                            setTrackIndex = {exoPlayer ->
+                                exoPlayer.seekTo(videoTrackIndex, 0)
+                            }
+                        ) {
+                            videoTrackIndex = it
+                        }
+                    }
+
+
+
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                            .background(color = Color.LightGray)
+                    )
                 }
 
-            } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp)
-                    .background(color = Color.LightGray)
-            )
-        }
-
             }
-
             else -> {
                 if (defaultData.second > 0) {
                     HorizontalPager(
