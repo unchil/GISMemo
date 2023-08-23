@@ -1479,6 +1479,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
             }
             else -> {
+
                 if (defaultData.second > 0) {
                     HorizontalPager(
                         modifier = Modifier
@@ -1487,8 +1488,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                             .background(color = Color.White),
                         pageCount = defaultData.second,
                         state = pagerState,
-                    ) { page ->
 
+                    ) { page ->
                         when (item) {
                             is MemoData.AudioText -> {
                                 AudioTextView(data = item.dataList[page])
@@ -1516,9 +1517,27 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                     )
                 }
             }
+
+
+
         }
 
+        when (item) {
+            is MemoData.AudioText -> {
 
+                Box(
+                    modifier = Modifier
+                        .height(280.dp)
+                        .fillMaxWidth()
+
+                ) {
+                    ExoplayerCompose(uriList =  item.dataList[pagerState.targetPage].second, isVisibleAmplitudes = true)
+                }
+
+            }
+
+            else -> {}
+        }
 
     } // Column
 

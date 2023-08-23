@@ -128,7 +128,7 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
             keyboardActions = KeyboardActions.Default
         )
 
-
+/*
         Box( modifier = Modifier
             .height(280.dp)
             .fillMaxWidth()
@@ -138,7 +138,7 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
         }
 
 
-
+*/
 
 
 
