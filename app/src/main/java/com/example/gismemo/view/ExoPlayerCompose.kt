@@ -1,13 +1,21 @@
 package com.example.gismemo.view
 
 
+/*
+import com.linc.audiowaveform.AudioWaveform
+import com.linc.audiowaveform.infiniteLinearGradient
+import com.linc.audiowaveform.model.AmplitudeType
+import com.linc.audiowaveform.model.WaveformAlignment
+import linc.com.amplituda.Amplituda
+import linc.com.amplituda.callback.AmplitudaErrorListener
+
+ */
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,41 +25,26 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-
 import androidx.media3.ui.PlayerView
-
 import com.example.gismemo.ui.theme.GISMemoTheme
-
-
-
-import com.linc.audiowaveform.AudioWaveform
-import com.linc.audiowaveform.infiniteLinearGradient
-import com.linc.audiowaveform.model.AmplitudeType
-import com.linc.audiowaveform.model.WaveformAlignment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import linc.com.amplituda.Amplituda
-import linc.com.amplituda.callback.AmplitudaErrorListener
+
 
 typealias Amplitudes = List<Int>
 
-
+/*
  fun Context.setAmplitudes( uri:Uri) :Amplitudes {
     return  Amplituda(this).processAudio(uri.encodedPath)
         .get(AmplitudaErrorListener {
@@ -59,6 +52,8 @@ typealias Amplitudes = List<Int>
         })
         .amplitudesAsList()
 }
+
+ */
 
 fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
     return ExoPlayer.Builder(this).build().apply {
@@ -134,6 +129,17 @@ fun  ExoplayerCompose(
                 }
 
 
+                    player.playWhenReady = false
+                    player.seekTo(0L)
+                    mediaItemDuration = player.duration
+                    player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
+                        mediaItemTitle =
+                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
+                    }
+
+
+                /*
+
                 if(isVisibleAmplitudes) {
                     player.playWhenReady = false
                     player.seekTo(0L)
@@ -153,6 +159,8 @@ fun  ExoplayerCompose(
                             "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
                     }
                 }
+
+                 */
             }
 
 
@@ -211,7 +219,7 @@ fun  ExoplayerCompose(
             )
 
         }
-
+/*
         if (isVisibleAmplitudes && mediaItemAmplitudes.isNotEmpty()) {
 
             AudioWaveform(
@@ -246,6 +254,8 @@ fun  ExoplayerCompose(
             )
         }
 
+
+ */
 
             DisposableEffect(
                 Box(

@@ -1457,7 +1457,6 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
                     ){
                         ExoplayerCompose(
                             uriList = item.dataList.toList(),
-                            isVisibleAmplitudes = false,
                             setTrackIndex = {exoPlayer ->
                                 exoPlayer.seekTo(videoTrackIndex, 0)
                             }
@@ -1530,8 +1529,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
 
                     ) {
                         ExoplayerCompose(
-                            uriList = item.dataList[pagerState.targetPage].second,
-                            isVisibleAmplitudes = false
+                            uriList = item.dataList[pagerState.targetPage].second
                         )
                     }
                 }

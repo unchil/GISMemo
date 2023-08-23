@@ -329,7 +329,7 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
                         .fillMaxWidth()
                         .height(280.dp)
                       ) {
-                        ExoplayerCompose(uri  = it , isVisibleAmplitudes = false)
+                        ExoplayerCompose(uri  = it )
                     }
                 }
 
