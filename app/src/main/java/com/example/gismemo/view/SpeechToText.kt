@@ -88,14 +88,8 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
         }
     }
 
-
-
-
     var speechInput =  rememberSaveable { data.first }
-    val recordingUri: List<Uri>  = rememberSaveable { data.second }
-
-
-
+//    val recordingUri: List<Uri>  = rememberSaveable { data.second }
 
 
     Column(modifier = Modifier.fillMaxSize().padding( 20.dp),
@@ -134,15 +128,9 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
             .fillMaxWidth()
 
         ) {
-            ExoplayerCompose(uriList = recordingUri, isVisibleAmplitudes = true)
+            ExoplayerCompose(uriList = recordingUri)
         }
-
-
-*/
-
-
-
-
+ */
 
     }
 
