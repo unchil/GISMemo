@@ -1306,6 +1306,18 @@ fun MemoDataContainer(
         }
     )
 
+    /*
+    val snapShotList =  MemoData.SnapShot(dataList = viewModel.snapShotList.collectAsState().value.toMutableList())
+    val audioTextList = MemoData.AudioText(dataList = viewModel.audioTextList.collectAsState().value.toMutableList())
+    val photoList = MemoData.Photo(dataList = viewModel.phothoList.collectAsState().value.toMutableList())
+    val videoList = MemoData.Video(dataList = viewModel.videoList.collectAsState().value.toMutableList())
+
+    val memoDataList = listOf<MemoData>(
+        snapShotList,audioTextList, photoList, videoList
+    )
+
+     */
+
     val onDelete:((page:Int) -> Unit)  =   { page ->
         if (currentTabView.value ==  WriteMemoDataType.SNAPSHOT ) {
             deleteHandle?.let {
@@ -1320,9 +1332,12 @@ fun MemoDataContainer(
 
     Column(modifier = Modifier
     ) {
+
         memoData.value?.let {
             PagerMemoDataView(item = it, onDelete = if(deleteHandle != null) onDelete else null, channel = channel)
         }
+
+      //  PagerMemoDataView(item = memoDataList[currentTabIndex.value], onDelete = if(deleteHandle != null) onDelete else null, channel = channel)
     }
 
 }
@@ -1517,7 +1532,7 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             }
         }
 
-
+/*
         when (item) {
             is MemoData.AudioText -> {
                 if (defaultData.second > 0) {
@@ -1536,6 +1551,8 @@ fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, cha
             }
             else -> {}
         }
+
+ */
 
 
 

@@ -128,17 +128,17 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
             keyboardActions = KeyboardActions.Default
         )
 
-/*
+
         Box( modifier = Modifier
             .height(280.dp)
             .fillMaxWidth()
 
         ) {
-            ExoplayerCompose(uriList = recordingUri, isVisibleAmplitudes = true)
+            ExoplayerCompose(uriList = recordingUri)
         }
 
 
-*/
+
 
 
 
