@@ -4,11 +4,8 @@ package com.example.gismemo.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.*
@@ -31,22 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.util.Consumer
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
-import com.example.gismemo.model.WriteMemoDataType
 import com.example.gismemo.navigation.GisMemoDestinations
-
 import com.example.gismemo.shared.composables.*
 import com.example.gismemo.shared.utils.FileManager
 import com.example.gismemo.ui.theme.GISMemoTheme
 import com.example.gismemo.viewmodel.CameraViewModel
-import com.example.gismemo.viewmodel.SpeechToTextViewModel
-import com.example.gismemo.viewmodel.WriteMemoViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -58,61 +50,6 @@ import kotlin.coroutines.suspendCoroutine
 
 fun Long.fromNanoToSeconds() = (this / (1000 * 1000 * 1000)).toInt()
 
-
-suspend fun Context.createVideoCaptureUseCase(
-    lifecycleOwner: LifecycleOwner,
-    cameraSelector: CameraSelector,
-    previewView: PreviewView,
-    @ImageCapture.FlashMode  flashMode: Int = ImageCapture.FLASH_MODE_AUTO,
-    @TorchState.State  torchState: Int = TorchState.OFF,
-): Pair<VideoCapture<Recorder>, ImageCapture> {
-
-
-    val preview = androidx.camera.core.Preview.Builder().build()
-
-    val qualitySelector = QualitySelector.from( Quality.UHD, FallbackStrategy.lowerQualityOrHigherThan(
-        Quality.UHD)
-    )
-
-    val recorder = Recorder.Builder().setExecutor(mainExecutor)
-        .setQualitySelector(qualitySelector)
-        .build()
-
-    val videoCapture = VideoCapture.withOutput(recorder)
-
-    val imageCapture = ImageCapture.Builder()
-        .setFlashMode(flashMode)
-        .build()
-
-
-    getCameraProvider().let { cameraProvider ->
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(
-            lifecycleOwner,
-            cameraSelector,
-            preview,
-            videoCapture,
-            imageCapture
-        ).apply {
-            cameraControl.enableTorch(torchState == TorchState.ON)
-
-            preview.setSurfaceProvider(previewView.surfaceProvider)
-
-        }
-
-        return Pair(videoCapture, imageCapture)
-    }
-
-}
-
-suspend fun Context.getCameraProvider() : ProcessCameraProvider = suspendCoroutine{ continuation ->
-    ProcessCameraProvider.getInstance(this).also { listenableFuture ->
-        listenableFuture.addListener(
-            {continuation.resume(listenableFuture.get())},
-            mainExecutor
-        )
-    }
-}
 
 sealed class RecordingStatus {
     object Idle : RecordingStatus()
@@ -152,8 +89,6 @@ fun CameraCompose( navController: NavController? = null   ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val db = LocalLuckMemoDB.current
     val viewModel =   remember { CameraViewModel  (repository = RepositoryProvider.getRepository().apply { database = db }  ) }
- //   val viewModel =   remember { CameraViewModel(repository = RepositoryProvider.getRepository(context.applicationContext)) }
-
 
     val previewView: PreviewView = remember { PreviewView(context) }
     val videoCapture: MutableState<VideoCapture<Recorder>?> =   mutableStateOf(null)
@@ -177,54 +112,51 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     var videoUri : String?  by remember{ mutableStateOf(null)}
 
-
     lifecycleOwner.lifecycleScope.launch {
 
-        context.createVideoCaptureUseCase(
-            lifecycleOwner,
-            cameraSelector.value,
-            previewView,
-            flashMode.value,
-            torchState.value
-        ).let {
-            videoCapture.value = it.first
-            imageCapture.value = it.second
+        val preview = androidx.camera.core.Preview.Builder().build()
+
+        val qualitySelector = QualitySelector.from(
+            Quality.UHD, FallbackStrategy.lowerQualityOrHigherThan( Quality.UHD )
+        )
+
+        val recorder = Recorder.Builder().setExecutor(context.mainExecutor)
+            .setQualitySelector(qualitySelector)
+            .build()
+
+        videoCapture.value = VideoCapture.withOutput(recorder)
+        imageCapture.value = ImageCapture.Builder()
+            .setFlashMode(flashMode.value)
+            .build()
+
+        val cameraProvider: ProcessCameraProvider = suspendCoroutine { continuation ->
+            ProcessCameraProvider.getInstance(context).also { listenableFuture ->
+                listenableFuture.addListener(
+                    { continuation.resume(listenableFuture.get()) },
+                    context.mainExecutor
+                )
+            }
+        }.apply {
+            unbindAll()
+            bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector.value,
+                preview,
+                videoCapture.value,
+                imageCapture.value
+            ).apply {
+                cameraControl.enableTorch(torchState.value == TorchState.ON)
+                preview.setSurfaceProvider(previewView.surfaceProvider)
+            }
         }
 
-        val cameraInfos = context.getCameraProvider().availableCameraInfos
+        val cameraInfos = cameraProvider.availableCameraInfos
         isDualCamera.value = cameraInfos.size > 1
         currentCameraInfo.value = cameraInfos.find { cameraInfo ->
             cameraInfo.lensFacing == cameraSelector.value.lensFacing
         }
 
     }
-
-
-/*
-    LaunchedEffect(key1 = previewView ){
-        context.createVideoCaptureUseCase(
-            lifecycleOwner,
-            cameraSelector.value,
-            previewView,
-            flashMode.value,
-            torchState.value
-        ).let {
-            videoCapture.value = it.first
-            imageCapture.value = it.second
-        }
-
-        val cameraInfos = context.getCameraProvider().availableCameraInfos
-        isDualCamera.value = cameraInfos.size > 1
-        currentCameraInfo.value = cameraInfos.find { cameraInfo ->
-            cameraInfo.lensFacing == cameraSelector.value.lensFacing
-        }
-    }
-
-
- */
-
-
-
 
 
     val currentPhotoList = viewModel._currentPhoto.collectAsState().value.toMutableList()
