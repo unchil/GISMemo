@@ -128,8 +128,6 @@ sealed class RecordingStatus {
 
 fun CameraCompose( navController: NavController? = null   ) {
 
-
-
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()

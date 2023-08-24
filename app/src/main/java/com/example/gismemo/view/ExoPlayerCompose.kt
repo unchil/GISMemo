@@ -1,6 +1,5 @@
 package com.example.gismemo.view
 
-
 /*
 import com.linc.audiowaveform.AudioWaveform
 import com.linc.audiowaveform.infiniteLinearGradient
@@ -8,9 +7,7 @@ import com.linc.audiowaveform.model.AmplitudeType
 import com.linc.audiowaveform.model.WaveformAlignment
 import linc.com.amplituda.Amplituda
 import linc.com.amplituda.callback.AmplitudaErrorListener
-
  */
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
@@ -128,15 +125,13 @@ fun  ExoplayerCompose(
                     it(player.currentMediaItemIndex)
                 }
 
-
-                    player.playWhenReady = false
-                    player.seekTo(0L)
-                    mediaItemDuration = player.duration
-                    player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
-                        mediaItemTitle =
-                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
-                    }
-
+                player.playWhenReady = false
+                player.seekTo(0L)
+                mediaItemDuration = player.duration
+                player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
+                    mediaItemTitle =
+                        "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
+                }
 
                 /*
 
@@ -163,9 +158,7 @@ fun  ExoplayerCompose(
                  */
             }
 
-
         }
-
 
     }
 
@@ -187,12 +180,10 @@ fun  ExoplayerCompose(
         }
 
         if(uriList.isNotEmpty()){
-
             uriList.forEach {
                 mediaItems.add(MediaItem.fromUri(it))
             }
             exoPlayer.setMediaItems(mediaItems)
-
         }
     }
 
@@ -294,8 +285,6 @@ fun  ExoplayerCompose(
                                 )
                                 layoutParams = params
                             }
-
-
 
                         },
                         modifier = Modifier.fillMaxSize()
