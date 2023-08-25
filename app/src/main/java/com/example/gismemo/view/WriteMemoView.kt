@@ -279,19 +279,30 @@ fun WriteMemoView(navController: NavController ){
 
 
         var isGoCurrentLocation by remember { mutableStateOf(false) }
-        var isDarkMode by remember { mutableStateOf(false) }
-
+        var isDarkMode by rememberSaveable { mutableStateOf(false) }
+        var mapTypeIndex by rememberSaveable { mutableStateOf(0) }
         val markerState = MarkerState(position = currentLocation)
         val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation, 16f)
         val cameraPositionState = CameraPositionState(position = defaultCameraPosition)
+
         var mapProperties by remember {
             mutableStateOf(
                 MapProperties(
-                    mapType = MapType.NORMAL,
-                    isMyLocationEnabled = true
+               //     mapType = MapType.NORMAL,
+                    mapType =    MapType.values().first { mapType ->
+                        mapType.name == MapTypeMenuList[mapTypeIndex].name
+                    },
+                    isMyLocationEnabled = true,
+                    mapStyleOptions = if(isDarkMode) {
+                         MapStyleOptions.loadRawResourceStyle(
+                            context,
+                            R.raw.mapstyle_night
+                        )
+                    } else { null }
                 )
             )
         }
+
         val uiSettings by remember { mutableStateOf(MapUiSettings(zoomControlsEnabled = false)) }
 
         val sheetState = SheetState(
@@ -713,6 +724,7 @@ fun WriteMemoView(navController: NavController ){
                     ) {
 
                         IconButton(
+                            enabled = if(mapTypeIndex == 0) true else false,
                             onClick = {
                                 hapticProcessing()
                                 isDarkMode = !isDarkMode
@@ -964,7 +976,8 @@ fun WriteMemoView(navController: NavController ){
                         .clip(RoundedCornerShape(2.dp)).padding(2.dp)
                         .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
-                    MapTypeMenuList.forEach {
+                    //MapTypeMenuList.forEach {
+                    MapTypeMenuList.forEachIndexed { index, it ->
                         AnimatedVisibility(
                             visible = isVisibleMenu.value,
                         ) {
@@ -977,7 +990,7 @@ fun WriteMemoView(navController: NavController ){
                                             mapType.name == it.name
                                         }
                                         mapProperties = mapProperties.copy(mapType = mapType)
-
+                                        mapTypeIndex = index
 
 
                                 }) {

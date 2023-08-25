@@ -366,7 +366,8 @@ fun MemoMapView(navController: NavController){
     }
 
         var isGoCurrentLocation by remember { mutableStateOf(false) }
-        var isDarkMode by remember { mutableStateOf(false) }
+        var isDarkMode by rememberSaveable { mutableStateOf(false) }
+        var mapTypeIndex by rememberSaveable { mutableStateOf(0) }
 
     LaunchedEffect( key1 =  currentLocation){
         if( currentLocation == LatLng(0.0,0.0)) {
@@ -432,14 +433,22 @@ fun MemoMapView(navController: NavController){
     val cameraPositionState =  CameraPositionState(position = defaultCameraPosition)
 
 
-    var mapProperties by remember {
-        mutableStateOf(
-            MapProperties(
-                mapType = MapType.NORMAL,
-                isMyLocationEnabled = true,
+        var mapProperties by remember {
+            mutableStateOf(
+                MapProperties(
+                    mapType =    MapType.values().first { mapType ->
+                        mapType.name == MapTypeMenuList[mapTypeIndex].name
+                    },
+                    isMyLocationEnabled = true,
+                    mapStyleOptions = if(isDarkMode) {
+                        MapStyleOptions.loadRawResourceStyle(
+                            context,
+                            R.raw.mapstyle_night
+                        )
+                    } else { null }
+                )
             )
-        )
-    }
+        }
 
     val uiSettings by remember {
         mutableStateOf(
@@ -638,6 +647,7 @@ fun MemoMapView(navController: NavController){
                         ) {
 
                             IconButton(
+                                enabled = if(mapTypeIndex == 0) true else false,
                                 onClick = {
                                     hapticProcessing()
                                     isDarkMode = !isDarkMode
@@ -695,7 +705,7 @@ fun MemoMapView(navController: NavController){
                         }
 
 
-                        MapTypeMenuList.forEach {
+                        MapTypeMenuList.forEachIndexed { index, it ->
                             AnimatedVisibility(
                                 visible = isVisibleMenu.value,
                             ) {
@@ -705,6 +715,8 @@ fun MemoMapView(navController: NavController){
                                         mapType.name == it.name
                                     }
                                     mapProperties = mapProperties.copy(mapType = mapType)
+                                   mapTypeIndex = index
+
                                 }) {
 
                                     Icon(
