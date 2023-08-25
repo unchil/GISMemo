@@ -202,11 +202,12 @@ fun DetailMemoView(navController: NavController, id:Long) {
     BottomSheetScaffold(
         modifier = Modifier.statusBarsPadding(),
         scaffoldState = scaffoldState,
+        sheetContainerColor = MaterialTheme.colorScheme.surface,
+        sheetContentColor = MaterialTheme.colorScheme.onSurface,
         sheetContent = {
             MemoDataContainer()
         },
         sheetPeekHeight = 110.dp,
-        sheetContainerColor = Color.White,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
@@ -247,8 +248,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
             }
 
             androidx.compose.material.IconButton(
-                modifier = Modifier.align(Alignment.TopCenter)
-                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(2.dp)
                     .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
                 onClick = {
                     hapticProcessing()
@@ -256,7 +258,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                 },
                 content = {
                     Row(
-                        modifier = Modifier,
+                        modifier = Modifier.padding(horizontal = 10.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
@@ -296,10 +298,11 @@ fun DetailMemoView(navController: NavController, id:Long) {
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
-                            modifier = Modifier.padding(top = 55.dp)
+                            modifier = Modifier
+                                .padding(top = 55.dp)
                                 .padding(horizontal = 20.dp)
                                 .background(
-                                    color = Color.Yellow,
+                                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                                     shape = RoundedCornerShape(6.dp)
                                 )
                                 .clip(RoundedCornerShape(8.dp)),
@@ -312,18 +315,20 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                     modifier = Modifier
                                         .width(400.dp)
                                         .background(
-                                            color = Color.Yellow,
+                                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                6.dp
+                                            ),
                                             shape = RoundedCornerShape(6.dp)
                                         ),
                                     item = it.toCURRENTWEATHER_TBL()
                                 )
                             }
 
+                            Divider()
 
 
                             Text(it.title)
                             Text(it.desc)
-
                             Text(text = snippets.value)
 
 
@@ -336,14 +341,18 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
 
             ScaleBar(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 10.dp),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 10.dp, end = 10.dp),
                 cameraPositionState = cameraPositionState
             )
 
 
             IconButton(
-                modifier = Modifier.align(Alignment.TopStart)
-                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .clip(RoundedCornerShape(2.dp))
+                    .padding(2.dp)
                     .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
                 onClick = {
                     hapticProcessing()
@@ -363,7 +372,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .padding(2.dp)
                     .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             ) {
                 MapTypeMenuList.forEach {
@@ -392,7 +402,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .padding(2.dp)
                     .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             ) {
 

@@ -92,7 +92,7 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
 //    val recordingUri: List<Uri>  = rememberSaveable { data.second }
 
 
-    Column(modifier = Modifier.fillMaxSize().padding( 20.dp),
+    Column(modifier = Modifier.fillMaxSize().padding( 10.dp),
         horizontalAlignment= Alignment.CenterHorizontally
     ) {
 

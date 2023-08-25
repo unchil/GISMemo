@@ -13,7 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -77,8 +77,10 @@ fun MemoDataContainer(
     }
 
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background,
-        modifier = Modifier  ) {
+        backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+        contentColor =  androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+    ) {
 
         WriteMemoDataTypeList.forEachIndexed { index, it ->
             BottomNavigationItem(
@@ -86,12 +88,12 @@ fun MemoDataContainer(
                     Icon(
                         imageVector = it.getDesc().second,
                         contentDescription = it.getDesc().first ,
-                        tint = if( currentTabView.value ==  it) Color.Red else Color.Black
+                //        tint = if( currentTabView.value ==  it) Color.Red else Color.Black
                     )
                 },
                 label = { Text(it.getDesc().first)  },
                 selected = currentTabView.value ==  it,
-                selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
+               // selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
                     hapticProcessing()
                     currentTabView.value = it
@@ -102,8 +104,8 @@ fun MemoDataContainer(
     }
 
     Row(
-        modifier = Modifier
-            .background(color = Color.White)
+        modifier = Modifier.padding(horizontal = 10.dp)
+         //   .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
@@ -113,7 +115,7 @@ fun MemoDataContainer(
                     .height(2.dp)
                     .fillMaxWidth(1f / (WriteMemoDataTypeList.count() - iteration))
                     .clip(CircleShape)
-                    .background(if (currentTabIndex.value == iteration) Color.Red else Color.LightGray))
+                    .background(if (currentTabIndex.value == iteration) Color.Red else Color.Transparent))
         }
     }
 
@@ -174,6 +176,7 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
 
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(2.dp)
     ) {
@@ -186,11 +189,10 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
             androidx.compose.material3.Text(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .background(color = Color.Transparent)
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
                 text = defaultData.first,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.titleMedium
             )
 
             onDelete?.let {
@@ -219,13 +221,12 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
         }
 
         Row(
-            modifier = Modifier
-                .background(color = Color.White)
+            modifier = Modifier.padding(vertical = 10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                val color =if (pagerState.currentPage == iteration) Color.Red else MaterialTheme.colorScheme.onSurface
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
@@ -238,10 +239,10 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
 
         if (defaultData.second > 0) {
             HorizontalPager(
-                modifier = Modifier
+                modifier = Modifier .padding(10.dp)
                     .verticalScroll(state = scrollState)
                     .fillMaxSize()
-                    .background(color = Color.White),
+                    .background(color = MaterialTheme.colorScheme.background),
                 pageCount = defaultData.second,
                 state = pagerState,
             ) { page ->
@@ -256,7 +257,7 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)
-                    .background(color = Color.LightGray)
+                    .background(color = Color.DarkGray)
             )
         }
 
@@ -288,6 +289,7 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
 
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(2.dp)
     ) {
@@ -300,11 +302,10 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
             androidx.compose.material3.Text(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .background(color = Color.Transparent)
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
                 text = defaultData.first,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.titleMedium
             )
 
             onDelete?.let {
@@ -333,13 +334,12 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
         }
 
         Row(
-            modifier = Modifier
-                .background(color = Color.White)
+            modifier = Modifier.padding(vertical = 10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =   if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                val color =   if (pagerState.currentPage == iteration) Color.Red else  MaterialTheme.colorScheme.onSurface
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
@@ -352,19 +352,21 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
 
         if (defaultData.second > 0) {
             HorizontalPager(
-                modifier = Modifier
+                modifier = Modifier.padding(10.dp)
                     .verticalScroll(state = scrollState)
                     .fillMaxSize()
-                    .background(color = Color.White),
+                    .background(color = MaterialTheme.colorScheme.background),
                 pageCount = defaultData.second,
                 state = pagerState,
             ) { page ->
+
                  AudioTextView(data = item.dataList[page])
+
             }
 
             Box(
                 modifier = Modifier
-                    .height(280.dp)
+                    .height(220.dp)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
 
@@ -379,7 +381,7 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)
-                    .background(color = Color.LightGray)
+                    .background(color = Color.DarkGray)
             )
         }
 
@@ -413,6 +415,7 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
 
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(2.dp)
     ) {
@@ -425,11 +428,10 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
             androidx.compose.material3.Text(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .background(color = Color.Transparent)
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
                 text = defaultData.first,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.titleMedium
             )
 
             onDelete?.let {
@@ -459,12 +461,12 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
 
         Row(
             modifier = Modifier
-                .background(color = Color.White)
+                .padding(vertical = 10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =  if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                val color =   if (pagerState.currentPage == iteration) Color.Red else  MaterialTheme.colorScheme.onSurface
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
@@ -479,6 +481,7 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
                 if (defaultData.second > 0) {
                     HorizontalPager(
                         modifier = Modifier
+                            .padding(10.dp)
                             .verticalScroll(state = scrollState)
                             .fillMaxSize()
                             .background(color = Color.White),
@@ -497,7 +500,7 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(10.dp)
-                            .background(color = Color.LightGray)
+                            .background(color = Color.DarkGray)
                     )
                 }
 
@@ -530,6 +533,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
 
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(2.dp)
     ) {
@@ -546,7 +550,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
                 text = defaultData.first,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.titleMedium
             )
 
             onDelete?.let {
@@ -576,12 +580,12 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
 
         Row(
             modifier = Modifier
-                .background(color = Color.White)
+                .padding(vertical = 10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =   if (videoTrackIndex == iteration) Color.DarkGray else Color.LightGray
+                val color =   if (pagerState.currentPage == iteration) Color.Red else  MaterialTheme.colorScheme.onSurface
 
                 Box(
                     modifier = Modifier
@@ -602,6 +606,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
 
             Box(
                 modifier = Modifier
+                    .padding(10.dp)
                     .draggable(
                         state = draggableState,
                         orientation = Orientation.Horizontal,
@@ -633,7 +638,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)
-                    .background(color = Color.LightGray)
+                    .background(color = Color.DarkGray)
             )
         }
 

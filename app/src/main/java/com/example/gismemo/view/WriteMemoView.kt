@@ -509,7 +509,8 @@ fun WriteMemoView(navController: NavController ){
                 )
             },
             sheetPeekHeight = 110.dp,
-            sheetContainerColor = Color.White,
+            sheetContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+            sheetContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             }
