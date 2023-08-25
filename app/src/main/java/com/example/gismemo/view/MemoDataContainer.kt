@@ -527,7 +527,6 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
         }
     }
 
-    val pagerState  =   rememberPagerState(initialPage = 0)
     var videoTrackIndex by remember { mutableStateOf(0) }
     val defaultData:Pair<String, Int> = Pair(WriteMemoDataType.VIDEO.name, item.dataList.size)
 
@@ -559,7 +558,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
                         modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = {
                             hapticProcessing()
-                            it(pagerState.currentPage)
+                            it(videoTrackIndex)
                             channel?.let { channel ->
                                 channel.trySend(snackbarChannelList.first { snackBarChannelData ->
                                     snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
@@ -585,8 +584,8 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(defaultData.second) { iteration ->
-                val color =   if (pagerState.currentPage == iteration) Color.Red else  MaterialTheme.colorScheme.onSurface
 
+                val color =   if (videoTrackIndex == iteration) Color.Red else  MaterialTheme.colorScheme.onSurface
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
