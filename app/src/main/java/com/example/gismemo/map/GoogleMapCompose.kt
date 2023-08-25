@@ -296,8 +296,8 @@ fun PrevViewMap(){
                     ) {
                         //      WriteMemoView(navController = navController)
                         //   DrawingOnMap()
-                        GoogleMapView()
-                        //      MemoMapView(navController)
+                      //  GoogleMapView()
+                            MemoMapView(navController)
                     }
                 }
             }
@@ -857,7 +857,8 @@ fun MemoView(
                         .fillMaxWidth()
                         .height(SwipeBoxHeight)
                         .background(Color.LightGray)
-                        .clip(shape),
+                 //       .clip(shape),
+                    .background(androidx.compose.material3.MaterialTheme.colorScheme.inverseOnSurface),
 
                     contentAlignment = Alignment.Center
                 ) {
@@ -867,12 +868,12 @@ fun MemoView(
                             .fillMaxWidth()
                             .padding(horizontal = 0.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
 
                         Icon(
                             modifier = Modifier
-                                .width(30.dp)
+                     //           .width(30.dp)
                                 .scale(1f),
                             imageVector = if (item.isSecret) Icons.Outlined.Lock else Icons.Outlined.LockOpen,
                             contentDescription = "Lock",
@@ -888,7 +889,7 @@ fun MemoView(
 
                         Icon(
                             modifier = Modifier
-                                .width(30.dp)
+                          //      .width(30.dp)
                                 .scale(1f),
                             imageVector = if (item.isPin) Icons.Outlined.LocationOn else Icons.Outlined.LocationOff,
                             contentDescription = "Mark",

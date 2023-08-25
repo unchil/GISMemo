@@ -261,6 +261,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             }
 
+            /*
             androidx.compose.material.IconButton(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -288,70 +289,77 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     }
                 })
 
-            AnimatedVisibility(visible = isTitleBox,
-                enter = slideInVertically {
-                    // Slide in from 40 dp from the top.
-                    with(density) { -40.dp.roundToPx() }
-                } + expandVertically(
-                    // Expand from the top.
-                    expandFrom = Alignment.Top
-                ) + fadeIn(
-                    // Fade in with the initial alpha of 0.3f.
-                    initialAlpha = 0.3f
-                ),
-                exit = slideOutVertically() + shrinkVertically() + fadeOut()
-                ) {
+             */
+
 
 
 
                 memo.value?.let {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopCenter)
+                            .align(Alignment.Center)
                             .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(top = 55.dp)
-                                .padding(horizontal = 20.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                                    shape = RoundedCornerShape(6.dp)
-                                )
-                                .clip(RoundedCornerShape(8.dp)),
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            horizontalAlignment = Alignment.CenterHorizontally
+
+                        AnimatedVisibility(visible = isTitleBox,
+                            enter = slideInVertically {
+                                // Slide in from 40 dp from the top.
+                                with(density) { 40.dp.roundToPx() }
+                            } + expandVertically(
+                                // Expand from the top.
+                                expandFrom = Alignment.Top
+                            ) + fadeIn(
+                                // Fade in with the initial alpha of 0.3f.
+                                initialAlpha = 0.3f
+                            ),
+                            exit = slideOutVertically() + shrinkVertically() + fadeOut()
                         ) {
 
-                            weatherData.value?.let {
-                                WeatherView(
-                                    modifier = Modifier
-                                        .width(400.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                6.dp
+
+                            Column(
+                                modifier = Modifier
+                                    .padding(horizontal = 2.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                                        shape = RoundedCornerShape(8.dp)
+                                    ),
+                         //           .clip(RoundedCornerShape(8.dp)),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+
+                                weatherData.value?.let {
+                                    WeatherView(
+                                        modifier = Modifier
+                                            .width(400.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                                    6.dp
+                                                ),
+                                                shape = RoundedCornerShape(6.dp)
                                             ),
-                                            shape = RoundedCornerShape(6.dp)
-                                        ),
-                                    item = it.toCURRENTWEATHER_TBL()
-                                )
+                                        item = it.toCURRENTWEATHER_TBL()
+                                    )
+                                }
+
+                                Divider()
+
+
+                                Text(it.title)
+                                Text(it.desc)
+                                Text(text = snippets.value)
+
+
                             }
-
-                            Divider()
-
-
-                            Text(it.title)
-                            Text(it.desc)
-                            Text(text = snippets.value)
-
-
                         }
-                    }
 
+                    }
                 }
 
-            }
+
+
+
 
 
             ScaleBar(
@@ -490,6 +498,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     onClick = {
                         hapticProcessing()
                         isVisibleMenu.value = !isVisibleMenu.value
+                        isTitleBox = !isTitleBox
                     }
                 ) {
                     Icon(
@@ -601,15 +610,17 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             Box(
                 modifier = Modifier
-                    .clip(ShapeDefaults.ExtraSmall)
-                    .background(color = Color.White)
+                    .padding(2.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        shape = RoundedCornerShape(8.dp))
                     .align(Alignment.Center)
-                    .fillMaxWidth(0.9f),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
 
 
-                if (isTagDialog) {
+                AnimatedVisibility(visible = isTagDialog) {
 
                     AssistChipGroupView(
                         isVisible = isTagDialog,

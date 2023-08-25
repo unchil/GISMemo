@@ -1005,81 +1005,91 @@ fun WriteMemoView(navController: NavController ){
                 }
 
 
-                Box(
-                    modifier = Modifier
-                        .clip(ShapeDefaults.ExtraSmall)
-                        .background(color = Color.White.copy(alpha = 0.7f))
-                        .align(Alignment.Center)
-                        .fillMaxWidth(0.7f),
-                    contentAlignment = Alignment.Center
-                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .background(
+                                color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                                shape = RoundedCornerShape(8.dp))
+                            .align(Alignment.Center)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
 
+                        AnimatedVisibility(visible = isTagDialog) {
 
-                    if (isTagDialog) {
-
-                        AssistChipGroupView(
-                            isVisible = isTagDialog,
-                            setState = selectedTagArray,
-                        ) {
-
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.Center)
+                            AssistChipGroupView(
+                                isVisible = isTagDialog,
+                                setState = selectedTagArray,
                             ) {
 
-                                Divider()
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.Center)
                                 ) {
 
-                                    IconButton(
-                                        modifier = Modifier,
-                                        onClick = {
-                                            isTagDialog = false
-                                            hapticProcessing()
-                                            selectedTagArray.value.clear()
-                                        },
-                                        content = {
-                                            Icon(
-                                                modifier = Modifier,
-                                                imageVector = Icons.Outlined.Replay,
-                                                contentDescription = "Clear"
-                                            )
-                                        }
-                                    )
+                                    Divider()
 
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
 
-                                    IconButton(
-                                        modifier = Modifier,
-                                        onClick = {
-                                            hapticProcessing()
-                                            isTagDialog = false
-                                            selectedTagArray.value.clear()
-                                            tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                                if (tagInfoData.isSet.value) {
-                                                    selectedTagArray.value.add(index)
-                                                }
+                                        IconButton(
+                                            modifier = Modifier,
+                                            onClick = {
+                                                isTagDialog = false
+                                                hapticProcessing()
+                                                selectedTagArray.value.clear()
+                                            },
+                                            content = {
+                                                Icon(
+                                                    modifier = Modifier,
+                                                    imageVector = Icons.Outlined.Replay,
+                                                    contentDescription = "Clear"
+                                                )
                                             }
+                                        )
 
 
-                                        },
-                                        content = {
-                                            Icon(
-                                                modifier = Modifier,
-                                                imageVector = Icons.Outlined.PublishedWithChanges,
-                                                contentDescription = "Save"
-                                            )
-                                        }
-                                    )
+                                        IconButton(
+                                            modifier = Modifier,
+                                            onClick = {
+                                                hapticProcessing()
+                                                isTagDialog = false
+                                                selectedTagArray.value.clear()
+                                                tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                                                    if (tagInfoData.isSet.value) {
+                                                        selectedTagArray.value.add(index)
+                                                    }
+                                                }
 
+
+                                            },
+                                            content = {
+                                                Icon(
+                                                    modifier = Modifier,
+                                                    imageVector = Icons.Outlined.PublishedWithChanges,
+                                                    contentDescription = "Save"
+                                                )
+                                            }
+                                        )
+
+                                    }
                                 }
                             }
+
                         }
+
                     }
-                }
+
+
+
+
+
+
+
 
                 if (isAlertDialog.value) {
                     ConfirmDialog(
