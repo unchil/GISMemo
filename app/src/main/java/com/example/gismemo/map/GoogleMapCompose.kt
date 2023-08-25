@@ -584,9 +584,9 @@ fun MemoMapView(navController: NavController){
 
 
                     IconButton(
-                        modifier = Modifier.align(Alignment.TopStart)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(color = Color.LightGray.copy(alpha = 0.7f)),
+                        modifier = Modifier.align(Alignment.TopStart).padding(2.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(color =MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
                         onClick = {
                             hapticProcessing()
                             isGoCurrentLocation = true
@@ -612,8 +612,8 @@ fun MemoMapView(navController: NavController){
                     Column(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(color = Color.LightGray.copy(alpha = 0.7f))
+                            .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
 
                     ) {
 

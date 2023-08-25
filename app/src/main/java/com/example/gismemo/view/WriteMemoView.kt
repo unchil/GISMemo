@@ -108,7 +108,7 @@ fun DrawingMenu.getDesc():Pair<ImageVector, Color> {
             Pair( Icons.Outlined.Swipe ,  Color.Red)
         }
         DrawingMenu.Eraser -> {
-            Pair( Icons.Outlined.Toll ,  Color.Black)
+            Pair( Icons.Outlined.Toll ,  Color.Red)
         }
 
     }
@@ -630,8 +630,8 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSaveMenuList)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f))
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
 
                     SaveMenuList.forEach {
@@ -681,8 +681,9 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentMyLocation)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f))) {
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                ) {
 
                     IconButton(
                         onClick = {
@@ -703,8 +704,8 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentCreateMenuList)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f))
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
                     CreateMenuList.forEach {
                         AnimatedVisibility(
@@ -746,8 +747,8 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentDrawingMenuList)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f))
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
 
 
@@ -791,15 +792,15 @@ fun WriteMemoView(navController: NavController ){
                                 }) {
 
 
-                                val iconColor = when (it) {
+                                val iconColor:Color?  = when (it) {
                                     DrawingMenu.Draw -> {
-                                        if(isDrawing) it.getDesc().second else Color.Black
+                                        if(isDrawing) it.getDesc().second else null
                                     }
                                     DrawingMenu.Swipe -> {
-                                        if(!isDrawing) it.getDesc().second else Color.Black
+                                        if(!isDrawing) it.getDesc().second else null
                                     }
                                     else -> {
-                                        it.getDesc().second
+                                        null
                                     }
 
                                 }
@@ -808,7 +809,7 @@ fun WriteMemoView(navController: NavController ){
                                 Icon(
                                     imageVector =  it.getDesc().first,
                                     contentDescription = it.name,
-                                    tint = iconColor
+                                    tint = iconColor?: androidx.compose.material3.MaterialTheme.colorScheme.secondary
                                 )
                             }
 
@@ -821,8 +822,8 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSettingMenuList)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f))
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
 
                     IconButton(
@@ -921,8 +922,8 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentMapTypeMenuList)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(color = Color.LightGray.copy(alpha = 0.7f)),
+                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
                 ) {
                     MapTypeMenuList.forEach {
                         AnimatedVisibility(

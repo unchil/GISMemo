@@ -586,7 +586,7 @@ fun MemoSwipeView(
                         .fillMaxWidth()
                         .height(SwipeBoxHeight)
                         .offset(x = dismissContentOffset)
-                        .background(Color.LightGray)
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.inverseOnSurface)
                     ,
 
                     contentAlignment = Alignment.Center
@@ -718,6 +718,7 @@ private fun BackgroundContent(
                     }
                 ) {
                     Icon(
+                        modifier = Modifier.scale(scale),
                         imageVector = ListItemBackgroundAction.DELETE.getDesc().second,
                         contentDescription = ListItemBackgroundAction.DELETE.getDesc().first
                     )
@@ -737,7 +738,7 @@ fun SearchingProgressIndicator(
     if(isVisibility) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
-                color = Color.Gray,
+           //     color = Color.Gray,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -774,7 +775,6 @@ fun UpButton(
     if( showButton) {
         FloatingActionButton(
             modifier = Modifier.then(modifier),
-            containerColor = Color.LightGray,
       //      interactionSource =  interactionSource,
             onClick = {
                 coroutineScope.launch {
@@ -787,6 +787,7 @@ fun UpButton(
                 modifier = Modifier.scale(1f),
                 imageVector = Icons.Outlined.Publish,
                 contentDescription = "Up",
+
             )
 
         }

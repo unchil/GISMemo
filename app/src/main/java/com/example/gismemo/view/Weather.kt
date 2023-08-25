@@ -96,8 +96,8 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier.fillMaxWidth()
-                .background(color = Color.White),
+            modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.background)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -170,13 +170,13 @@ fun WeatherView(
         Text( item.toTextHeadLine()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            , style  = TextStyle( fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
 
         Text(item.toTextWeatherDesc()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            , style  = TextStyle( fontWeight = FontWeight.Bold, fontSize = 14.sp)
         )
 
         Row(
@@ -275,14 +275,13 @@ fun WeatherItem(id: ImageVector, desc: String){
             , modifier = Modifier
                 .height(20.dp)
                 .padding(end = 10.dp)
-            , tint = Color.Gray
 
         )
 
         Text( desc
             , modifier = Modifier
             , textAlign = TextAlign.Start
-            , style  = TextStyle(color = Color.Black, fontWeight = FontWeight.Light)
+            , style  = TextStyle( fontWeight = FontWeight.Light)
         )
     }
 

@@ -247,8 +247,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
             }
 
             androidx.compose.material.IconButton(
-                modifier = Modifier.align(Alignment.TopCenter).clip(RoundedCornerShape(6.dp))
-                    .background(color = Color.Yellow.copy(alpha = 0.7f)).padding(horizontal = 10.dp),
+                modifier = Modifier.align(Alignment.TopCenter)
+                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
                 onClick = {
                     hapticProcessing()
                     isTitleBox = !isTitleBox
@@ -342,8 +343,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             IconButton(
                 modifier = Modifier.align(Alignment.TopStart)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(color = Color.LightGray.copy(alpha = 0.7f)),
+                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
                 onClick = {
                     hapticProcessing()
                     isGoCurrentLocation = true
@@ -362,8 +363,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(color = Color.LightGray.copy(alpha = 0.7f)),
+                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             ) {
                 MapTypeMenuList.forEach {
                     AnimatedVisibility(
@@ -391,8 +392,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(color = Color.LightGray.copy(alpha = 0.7f))
+                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             ) {
 
                 IconButton(

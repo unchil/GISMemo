@@ -319,7 +319,7 @@ fun SearchView(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(color = Color.White),
+            .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Top
     ) {
 
@@ -531,7 +531,6 @@ fun SearchView(
                             modifier = Modifier.padding(start = 10.dp),
                             text = "start date - end date",
                             style = TextStyle(
-                                color = Color.Black,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 16.sp
                             )
@@ -614,7 +613,8 @@ fun AssistChipGroupView(
                             Icon(
                                 imageVector =   if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
                                 contentDescription = "",
-                                modifier = Modifier.size(AssistChipDefaults.IconSize)
+                                modifier = Modifier.size(AssistChipDefaults.IconSize),
+
                             )
                         },
                     )

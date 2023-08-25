@@ -138,15 +138,10 @@ class MainActivity : ComponentActivity() {
 
 
             GISMemoTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                Surface(  modifier = Modifier.fillMaxSize(),   color = MaterialTheme.colorScheme.surface  ) {
                     CompositionLocalProvider( LocalUsableHaptic provides isUsableHaptic.value) {
                         CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
                             CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
-
-
 
 
                                 Box(modifier = Modifier.fillMaxSize()) {
@@ -218,9 +213,7 @@ class MainActivity : ComponentActivity() {
                                                                             .height(40.dp)
                                                                             .border(
                                                                                 width = 25.dp,
-                                                                                color = Color.Blue.copy(
-                                                                                    alpha = 0.1f
-                                                                                ),
+                                                                                color = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.6f),
                                                                                 shape = ShapeDefaults.Large
                                                                             )
                                                                     )
@@ -310,9 +303,7 @@ class MainActivity : ComponentActivity() {
                                                                                     .height(40.dp)
                                                                                     .border(
                                                                                         width = 25.dp,
-                                                                                        color = Color.Blue.copy(
-                                                                                            alpha = 0.1f
-                                                                                        ),
+                                                                                        color = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.6f),
                                                                                         shape = ShapeDefaults.Large
                                                                                     )
                                                                             )
@@ -337,7 +328,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                }
+               }
             }
 
 
