@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.gismemo.LocalUsableHaptic
+import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.entity.toCURRENTWEATHER_TBL
@@ -39,6 +40,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.widgets.ScaleBar
 import kotlinx.coroutines.channels.Channel
@@ -148,6 +150,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
 
     var isGoCurrentLocation by remember { mutableStateOf(false) }
+        var isDarkMode by remember { mutableStateOf(false) }
 
     val markerState = MarkerState(position = currentLocation.value)
 
@@ -347,7 +350,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                 cameraPositionState = cameraPositionState
             )
 
-
+/*
             IconButton(
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -365,6 +368,68 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     contentDescription = "ModeOfTravel",
                 )
             }
+
+ */
+
+
+
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
+                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+            ) {
+
+                AnimatedVisibility(
+                    visible = isVisibleMenu.value,
+                ) {
+
+                    IconButton(
+                        onClick = {
+                            hapticProcessing()
+                            isGoCurrentLocation = true
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = Icons.Outlined.ModeOfTravel,
+                            contentDescription = "ModeOfTravel",
+                        )
+                    }
+                }
+                AnimatedVisibility(
+                    visible = isVisibleMenu.value,
+                ) {
+
+                    IconButton(
+                        onClick = {
+                            hapticProcessing()
+                            isDarkMode = !isDarkMode
+
+                            if (isDarkMode) {
+                                mapProperties = mapProperties.copy(
+                                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
+                                        context,
+                                        R.raw.mapstyle_night
+                                    )
+                                )
+                            } else {
+                                mapProperties = mapProperties.copy(mapStyleOptions = null)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = if (isDarkMode) Icons.Outlined.BedtimeOff else Icons.Outlined.DarkMode,
+                            contentDescription = "DarkMode",
+                        )
+                    }
+                }
+
+            }
+
+
 
 
 
