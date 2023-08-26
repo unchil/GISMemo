@@ -40,6 +40,9 @@ class Repository{
     val isUsableHaptic: MutableStateFlow<Boolean>
             = MutableStateFlow(true)
 
+    val isUsableDarkMode: MutableStateFlow<Boolean>
+            = MutableStateFlow(false)
+
     val currentIsDrawing: MutableStateFlow<Boolean>
             = MutableStateFlow(false)
 
@@ -73,6 +76,11 @@ class Repository{
     fun updateIsUsableHaptic(value:Boolean){
         isUsableHaptic.value = value
     }
+
+    fun updateIsUsableDarkMode(value:Boolean){
+        isUsableDarkMode.value = value
+    }
+
 
 
     fun updateCurrentIsDrawing(isDrawing:Boolean){

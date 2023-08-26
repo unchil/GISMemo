@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
@@ -42,7 +43,9 @@ fun SettingsView(navController: NavHostController){
     }
 
     val isUsableHaptic = LocalUsableHaptic.current
-    var checked by remember { mutableStateOf(isUsableHaptic) }
+    val isUsableDarkMode = LocalUsableDarkMode.current
+    var checkedIsUsableHaptic by remember { mutableStateOf(isUsableHaptic) }
+    var checkedIsDarkMode by remember { mutableStateOf(isUsableDarkMode) }
 
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -57,7 +60,19 @@ fun SettingsView(navController: NavHostController){
 
 
 
-    val icon: (@Composable () -> Unit)? = if (checked) {
+    val iconIsUsableHaptic: (@Composable () -> Unit)? = if (checkedIsUsableHaptic) {
+        {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+    } else {
+        null
+    }
+
+    val iconIsDarkMode: (@Composable () -> Unit)? = if (checkedIsDarkMode) {
         {
             Icon(
                 imageVector = Icons.Filled.Check,
@@ -73,12 +88,77 @@ fun SettingsView(navController: NavHostController){
         mutableStateOf(false)
     }
 
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text("Usable Haptic ")
+            Text("Usable DarkMode ")
+            Text("Clear All Memo")
+        }
+
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Switch(
+                modifier = Modifier.semantics { contentDescription = "IS Usable Haptic " },
+                checked = checkedIsUsableHaptic,
+                onCheckedChange = {
+                    hapticProcessing()
+                    checkedIsUsableHaptic = it
+                    viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableHaptic(it))
+                },
+                thumbContent = iconIsUsableHaptic
+            )
+
+            Switch(
+                modifier = Modifier.semantics { contentDescription = "IS Usable DarkMode " },
+                checked = checkedIsDarkMode,
+                onCheckedChange = {
+                    hapticProcessing()
+                    checkedIsDarkMode = it
+                    viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableDarkMode(it))
+                },
+                thumbContent = iconIsDarkMode
+            )
+
+            IconButton(
+                modifier = Modifier,
+                onClick = {
+                    hapticProcessing()
+                    isAlertDialog = true
+
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Clear All Memo"
+                    )
+                }
+            )
+
+        }
+    }
+
+
+
+
+    /*
     Column(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ){
 
         Row(
@@ -87,16 +167,36 @@ fun SettingsView(navController: NavHostController){
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text("IS Usable Haptic ")
+            Text("Usable Haptic ")
             Switch(
                 modifier = Modifier.semantics { contentDescription = "IS Usable Haptic " },
-                checked = checked,
+                checked = checkedIsUsableHaptic,
                 onCheckedChange = {
                     hapticProcessing()
-                    checked = it
+                    checkedIsUsableHaptic = it
                     viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableHaptic(it))
                 },
-                thumbContent = icon
+                thumbContent = iconIsUsableHaptic
+            )
+
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text("Usable DarkMode ")
+            Switch(
+                modifier = Modifier.semantics { contentDescription = "IS Usable DarkMode " },
+                checked = checkedIsDarkMode,
+                onCheckedChange = {
+                    hapticProcessing()
+                    checkedIsDarkMode = it
+                    viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableDarkMode(it))
+                },
+                thumbContent = iconIsDarkMode
             )
 
         }
@@ -216,6 +316,9 @@ fun SettingsView(navController: NavHostController){
         }
 
     }
+
+     */
+
 }
 
 @Preview
