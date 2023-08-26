@@ -319,10 +319,11 @@ fun WriteMemoView(navController: NavController ){
         var isTagDialog by rememberSaveable { mutableStateOf(false) }
         val isAlertDialog = rememberSaveable { mutableStateOf(false) }
         var isSnapShot by remember { mutableStateOf(false) }
+        var isDefaultSnapShot by rememberSaveable { mutableStateOf(false) }
         var isMapClear by remember { mutableStateOf(false) }
         val currentPolyline = mutableStateListOf<LatLng>()
         var isDrawing by rememberSaveable { mutableStateOf(false) }
-        var isEraser by rememberSaveable { mutableStateOf(false) }
+
         val selectedTagArray: MutableState<ArrayList<Int>> =
             rememberSaveable { mutableStateOf(arrayListOf()) }
         var isLock by rememberSaveable { mutableStateOf(false) }
@@ -482,8 +483,8 @@ fun WriteMemoView(navController: NavController ){
 
         val saveHandler: (title: String) -> Unit = { title ->
 
-            val id = System.currentTimeMillis()
 
+            val id = System.currentTimeMillis()
 
                 viewModel.onEvent(
                     WriteMemoViewModel.Event.UploadMemo(
@@ -495,8 +496,6 @@ fun WriteMemoView(navController: NavController ){
                         location = CURRENTLOCATION_TBL(dt=id, latitude = currentLocation.latitude.toFloat(), longitude = currentLocation.longitude.toFloat(), 0f)
                     )
                 )
-
-
 
 
             channel.trySend(snackbarChannelList.first {
@@ -564,10 +563,11 @@ fun WriteMemoView(navController: NavController ){
                                 viewModel.onEvent(WriteMemoViewModel.Event.SetSnapShot(snapShotList.toList()))
                                 isSnapShot = false
 
-                                channel.trySend(snackbarChannelList.first {
-                                    it.channelType == SnackBarChannelType.SNAPSHOT_RESULT
-                                }.channel)
-
+                                if(!isDefaultSnapShot) {
+                                    channel.trySend(snackbarChannelList.first {
+                                        it.channelType == SnackBarChannelType.SNAPSHOT_RESULT
+                                    }.channel)
+                                }
                             }
                         }
 
@@ -669,8 +669,10 @@ fun WriteMemoView(navController: NavController ){
                                             }.channel)
                                         }
                                         SaveMenu.SAVE -> {
+
                                             if (snapShotList.isEmpty()) {
                                                 isSnapShot = true
+                                                isDefaultSnapShot = true
                                             }
 
                                                 viewModel.onEvent(
@@ -1112,6 +1114,15 @@ fun WriteMemoView(navController: NavController ){
                 if (isAlertDialog.value) {
                     ConfirmDialog(
                         isAlertDialog = isAlertDialog,
+                        cancelSnapShot = {
+                            if(isDefaultSnapShot) {
+                                viewModel.onEvent(
+                                    WriteMemoViewModel.Event.DeleteMemoItem( WriteMemoDataType.SNAPSHOT, 0)
+                                )
+                                snapShotList.clear()
+                                isDefaultSnapShot = false
+                            }
+                        },
                         onEvent = saveHandler
                     )
                 }
@@ -1128,6 +1139,7 @@ fun WriteMemoView(navController: NavController ){
 @Composable
 fun ConfirmDialog(
     isAlertDialog: MutableState<Boolean> ,
+    cancelSnapShot:()->Unit,
     onEvent: (title:String) -> Unit,
 ) {
 
@@ -1174,6 +1186,7 @@ fun ConfirmDialog(
     AlertDialog(
         onDismissRequest = {
             isAlertDialog.value = false
+            cancelSnapShot.invoke()
         }
     ) {
 /*
@@ -1273,6 +1286,7 @@ fun ConfirmDialog(
                         onClick = {
                             hapticProcessing()
                             isAlertDialog.value = false
+                            cancelSnapShot.invoke()
                         }
                     ) {
                         Text(
