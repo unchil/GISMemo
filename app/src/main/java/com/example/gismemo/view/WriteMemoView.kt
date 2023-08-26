@@ -647,8 +647,11 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSaveMenuList)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
 
                     SaveMenuList.forEach {
@@ -698,8 +701,11 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentMyLocation)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
 
                     AnimatedVisibility(
@@ -755,8 +761,11 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentCreateMenuList)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
                     CreateMenuList.forEach {
                         AnimatedVisibility(
@@ -798,8 +807,11 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentDrawingMenuList)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
 
 
@@ -873,8 +885,11 @@ fun WriteMemoView(navController: NavController ){
                 Row(
                     modifier = Modifier
                         .align(alignmentSettingMenuList)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
 
                     IconButton(
@@ -973,8 +988,11 @@ fun WriteMemoView(navController: NavController ){
                 Column(
                     modifier = Modifier
                         .align(alignmentMapTypeMenuList)
-                        .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                        .background(color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                        .padding(2.dp)
+                        .background(
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                            shape = ShapeDefaults.ExtraSmall
+                        )
                 ) {
                     //MapTypeMenuList.forEach {
                     MapTypeMenuList.forEachIndexed { index, it ->
@@ -1010,7 +1028,7 @@ fun WriteMemoView(navController: NavController ){
                             .padding(2.dp)
                             .background(
                                 color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                                shape = RoundedCornerShape(8.dp))
+                                shape = ShapeDefaults.ExtraSmall)
                             .align(Alignment.Center)
                             .fillMaxWidth(),
                         contentAlignment = Alignment.Center

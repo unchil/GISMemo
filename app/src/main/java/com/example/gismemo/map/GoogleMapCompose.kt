@@ -621,8 +621,11 @@ fun MemoMapView(navController: NavController){
                     Column(
                         modifier = Modifier
                             .align(Alignment.TopStart)
-                            .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                            .background(color =MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+                            .padding(2.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                                shape = ShapeDefaults.ExtraSmall
+                            )
                     ) {
 
                         AnimatedVisibility(
@@ -642,6 +645,8 @@ fun MemoMapView(navController: NavController){
                                 )
                             }
                         }
+
+
                         AnimatedVisibility(
                             visible = isVisibleMenu.value,
                         ) {
@@ -683,27 +688,36 @@ fun MemoMapView(navController: NavController){
                         cameraPositionState = cameraPositionState
                     )
 
+
+                    IconButton(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(2.dp)
+                            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                                shape = ShapeDefaults.ExtraSmall),
+                        onClick = {
+                            hapticProcessing()
+                            isVisibleMenu.value = !isVisibleMenu.value
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector = if (isVisibleMenu.value) Icons.Outlined.OpenWith else Icons.Outlined.Api,
+                            contentDescription = "OpenWith",
+                        )
+                    }
+
+
                     Column(
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                            .padding(2.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                                shape =ShapeDefaults.ExtraSmall
+                            )
 
                     ) {
-
-                        IconButton(
-                            onClick = {
-                                hapticProcessing()
-                                isVisibleMenu.value = !isVisibleMenu.value
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.scale(1f),
-                                imageVector = if (isVisibleMenu.value) Icons.Outlined.OpenWith else Icons.Outlined.Api,
-                                contentDescription = "OpenWith",
-                            )
-                        }
-
 
                         MapTypeMenuList.forEachIndexed { index, it ->
                             AnimatedVisibility(
@@ -819,14 +833,12 @@ fun MemoView(
 
 
 
-
-    val shape = RoundedCornerShape(6.dp)
-
     Card(
         modifier = Modifier
             .height(260.dp)
-            .padding(top = 2.dp)
-        ,
+            .padding(top = 2.dp),
+                shape = ShapeDefaults.ExtraSmall ,
+
         onClick = {
 
 
@@ -856,8 +868,6 @@ fun MemoView(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(SwipeBoxHeight)
-                        .background(Color.LightGray)
-                 //       .clip(shape),
                     .background(androidx.compose.material3.MaterialTheme.colorScheme.inverseOnSurface),
 
                     contentAlignment = Alignment.Center
@@ -873,7 +883,6 @@ fun MemoView(
 
                         Icon(
                             modifier = Modifier
-                     //           .width(30.dp)
                                 .scale(1f),
                             imageVector = if (item.isSecret) Icons.Outlined.Lock else Icons.Outlined.LockOpen,
                             contentDescription = "Lock",
@@ -889,7 +898,6 @@ fun MemoView(
 
                         Icon(
                             modifier = Modifier
-                          //      .width(30.dp)
                                 .scale(1f),
                             imageVector = if (item.isPin) Icons.Outlined.LocationOn else Icons.Outlined.LocationOff,
                             contentDescription = "Mark",

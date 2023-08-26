@@ -322,7 +322,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                     .padding(horizontal = 2.dp)
                                     .background(
                                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                                        shape = RoundedCornerShape(8.dp)
+                                        shape = ShapeDefaults.ExtraSmall
                                     ),
                          //           .clip(RoundedCornerShape(8.dp)),
                                 verticalArrangement = Arrangement.SpaceEvenly,
@@ -337,7 +337,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                                     6.dp
                                                 ),
-                                                shape = RoundedCornerShape(6.dp)
+                                                shape = ShapeDefaults.ExtraSmall
                                             ),
                                         item = it.toCURRENTWEATHER_TBL()
                                     )
@@ -396,8 +396,11 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Column(
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .clip(RoundedCornerShape(2.dp)).padding(2.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                    .padding(2.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        shape =ShapeDefaults.ExtraSmall
+                    )
             ) {
 
                 AnimatedVisibility(
@@ -457,9 +460,11 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .clip(RoundedCornerShape(2.dp))
                     .padding(2.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        shape = ShapeDefaults.ExtraSmall
+                    )
             ) {
                 MapTypeMenuList.forEachIndexed { index, it ->
                     AnimatedVisibility(
@@ -489,9 +494,11 @@ fun DetailMemoView(navController: NavController, id:Long) {
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .clip(RoundedCornerShape(2.dp))
                     .padding(2.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                        shape = ShapeDefaults.ExtraSmall
+                    )
             ) {
 
                 IconButton(
@@ -613,7 +620,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     .padding(2.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                        shape = RoundedCornerShape(8.dp))
+                        shape =ShapeDefaults.ExtraSmall)
                     .align(Alignment.Center)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
