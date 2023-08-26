@@ -366,8 +366,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
             ScaleBar(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 10.dp, end = 10.dp),
+                    .align(Alignment.TopEnd)
+                    .padding(top = 50.dp, end = 10.dp),
                 cameraPositionState = cameraPositionState
             )
 
