@@ -1151,36 +1151,45 @@ fun ConfirmDialog(
         }
     }
 
+    // .background( color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
 
     AlertDialog(
         onDismissRequest = {
             isAlertDialog.value = false
         }
     ) {
+/*
         Surface(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight(),
+            color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
             shape = ShapeDefaults.Large,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
 
+ */
+
+
+
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 20.dp),
+                    .background(
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                    shape = ShapeDefaults.ExtraSmall)
+                    .wrapContentWidth()
+                    .wrapContentHeight()
+                    .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
                 Text(
-                    modifier = Modifier.padding(bottom = 10.dp),
+                    modifier = Modifier.padding(vertical = 10.dp),
                     text = "Memo Save",
                     textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
+                    style =  androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                 )
 
                 OutlinedTextField(
@@ -1221,7 +1230,6 @@ fun ConfirmDialog(
                             }
 
                         }
-
                     },
                     value = titleText.value,
                     onValueChange = { titleText.value = it },
@@ -1230,7 +1238,11 @@ fun ConfirmDialog(
                     keyboardActions = KeyboardActions.Default
                 )
 
-                Text(text = "Save the written memo and clear the screen.")
+                Text(
+                    text = "Save the written memo and clear the screen.",
+                    style =  androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -1248,11 +1260,8 @@ fun ConfirmDialog(
                         Text(
                             "Cancel",
                             textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
+                            style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                         )
                     }
 
@@ -1268,11 +1277,8 @@ fun ConfirmDialog(
                         Text(
                             "Confirm",
                             textAlign = TextAlign.Center,
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
+                            style  = androidx.compose.material3.MaterialTheme.typography.labelLarge,
+                            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                         )
                     }
 
@@ -1280,7 +1286,7 @@ fun ConfirmDialog(
                 }
             }
 
-        }
+    //    }
 
     }
 

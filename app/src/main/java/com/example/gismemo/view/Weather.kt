@@ -12,15 +12,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.*
 import com.example.gismemo.shared.composables.CheckPermission
@@ -33,6 +36,30 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 
+
+private fun getWeatherIcon(type:String):Int {
+    return when(type){
+        "01d" -> R.drawable.ic_openweather_01d
+        "01n" -> R.drawable.ic_openweather_01n
+        "02d" -> R.drawable.ic_openweather_02d
+        "02n" -> R.drawable.ic_openweather_02n
+        "03d" -> R.drawable.ic_openweather_03d
+        "03n" -> R.drawable.ic_openweather_03n
+        "04d" -> R.drawable.ic_openweather_04d
+        "04n" -> R.drawable.ic_openweather_04n
+        "09d" -> R.drawable.ic_openweather_09d
+        "09n" -> R.drawable.ic_openweather_09n
+        "10d" -> R.drawable.ic_openweather_10d
+        "10n" -> R.drawable.ic_openweather_10n
+        "11d" -> R.drawable.ic_openweather_11d
+        "11n" -> R.drawable.ic_openweather_11n
+        "13d" -> R.drawable.ic_openweather_13d
+        "13n" -> R.drawable.ic_openweather_13n
+        "50d" -> R.drawable.ic_openweather_50d
+        "50n" -> R.drawable.ic_openweather_50n
+        else -> R.drawable.ic_openweather_unknown
+    }
+}
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission", "SuspiciousIndentation")
@@ -96,7 +123,9 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.background)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background)
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -184,8 +213,11 @@ fun WeatherView(
 
         ) {
 
+
+
             Icon (
-                imageVector = Icons.Outlined.LightMode
+            //    imageVector = Icons.Outlined.LightMode
+                painter = painterResource(id = getWeatherIcon(item.icon))
                 ,contentDescription = "clear sky"
                 , modifier = Modifier
                     .align(Alignment.CenterVertically)
@@ -240,7 +272,8 @@ fun WeatherViewLandScape(
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
         Icon (
-            imageVector = Icons.Outlined.LightMode
+        //    imageVector = Icons.Outlined.LightMode
+            painter = painterResource(id = getWeatherIcon(item.icon))
             ,contentDescription = "clear sky"
             , modifier = Modifier
                 .fillMaxWidth(0.5f)
