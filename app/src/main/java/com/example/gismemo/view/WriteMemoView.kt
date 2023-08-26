@@ -59,6 +59,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.size.Size
+import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
@@ -279,7 +280,8 @@ fun WriteMemoView(navController: NavController ){
 
 
         var isGoCurrentLocation by remember { mutableStateOf(false) }
-        var isDarkMode by rememberSaveable { mutableStateOf(false) }
+        val isUsableDarkMode = LocalUsableDarkMode.current
+        var isDarkMode by remember { mutableStateOf(isUsableDarkMode) }
         var mapTypeIndex by rememberSaveable { mutableStateOf(0) }
         val markerState = MarkerState(position = currentLocation)
         val defaultCameraPosition = CameraPosition.fromLatLngZoom(currentLocation, 16f)

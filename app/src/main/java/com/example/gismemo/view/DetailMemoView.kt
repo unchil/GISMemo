@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
@@ -101,7 +102,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
             }
         }
     }
-        var isDarkMode by rememberSaveable { mutableStateOf(false) }
+        val isUsableDarkMode = LocalUsableDarkMode.current
+        var isDarkMode by remember{ mutableStateOf(isUsableDarkMode) }
         var mapTypeIndex by rememberSaveable { mutableStateOf(0) }
 
         var mapProperties by remember {
