@@ -30,6 +30,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -606,12 +607,29 @@ fun MemoSwipeView(
                         )
 
                         Column(
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f),
                             verticalArrangement = Arrangement.SpaceAround,
-                            horizontalAlignment = Alignment.Start
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(item.title)
-                            Text(item.desc)
-                            Text(item.snippets)
+                            Text(
+                               text =  item.title,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                minLines =  1,
+                            )
+                            Text(
+                                text =   item.desc,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                minLines =  1,
+                            )
+                            Text(
+                                text =   item.snippets,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                minLines =  1,
+                            )
                         }
 
                         Icon(

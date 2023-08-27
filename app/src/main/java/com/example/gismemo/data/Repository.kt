@@ -1,6 +1,7 @@
 package com.example.gismemo.data
 
 import android.net.Uri
+import android.provider.ContactsContract.SearchSnippets
 import androidx.core.net.toUri
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -208,10 +209,10 @@ class Repository{
         id:Long,
         isLock:Boolean,
         isMark:Boolean,
-
         selectTagArrayList:ArrayList<Int>,
         title:String,
         desc:String,
+        snippets: String,
         location: CURRENTLOCATION_TBL
     )  {
 
@@ -225,15 +226,6 @@ class Repository{
  */
 
         val snapshot = currentSnapShot.value.first().encodedPath ?: ""
-        var snippets = ""
-
-
-        selectTagArrayList.forEach {
-                snippets = "${snippets} #${tagInfoDataList[it].name}"
-        }
-
-
-
         val memoTbl = MEMO_TBL(
             id = id,
             latitude = location.latitude,

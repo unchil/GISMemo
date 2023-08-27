@@ -493,6 +493,13 @@ fun WriteMemoView(navController: NavController ){
                 viewModel.videoList.value.size
             )
 
+            var snippets = ""
+            selectedTagArray.value
+            selectedTagArray.value.forEach {
+                 snippets = "${snippets} #${  context.resources.getString( tagInfoDataList[it].name)   }"
+        }
+
+
             val id = System.currentTimeMillis()
 
                 viewModel.onEvent(
@@ -503,6 +510,7 @@ fun WriteMemoView(navController: NavController ){
                         selectedTagArrayList = selectedTagArray.value,
                         title = title,
                         desc = desc,
+                        snippets = snippets,
                         location = CURRENTLOCATION_TBL(dt=id, latitude = currentLocation.latitude.toFloat(), longitude = currentLocation.longitude.toFloat(), 0f)
                     )
                 )

@@ -48,6 +48,7 @@ class WriteMemoViewModel (
                         selectedTagArrayList = event.selectedTagArrayList,
                         title = event.title,
                         desc = event.desc,
+                        snippets = event.snippets,
                         location = event.location
                     )
                 }
@@ -128,10 +129,11 @@ class WriteMemoViewModel (
         selectedTagArrayList: ArrayList<Int>,
         title:String,
         desc:String,
+        snippets:String,
         location: CURRENTLOCATION_TBL ){
 
         viewModelScope.launch {
-            repository.insertMemo(id, isLock,isMark,selectedTagArrayList,title, desc,location)
+            repository.insertMemo(id, isLock,isMark,selectedTagArrayList,title, desc, snippets, location)
         }
     }
 
@@ -177,6 +179,7 @@ class WriteMemoViewModel (
                                    var selectedTagArrayList: ArrayList<Int>,
                                    var title:String,
                                    var desc:String,
+                                   var snippets:String,
                                    var location:CURRENTLOCATION_TBL
                                    ): Event()
 

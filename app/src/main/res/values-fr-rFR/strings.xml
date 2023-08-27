@@ -73,5 +73,5 @@
     <string name="weather_desc_temp">" temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
     <string name="weather_desc_weather">pression:%,.0fhPa humidité:%,.0f</string>
     <string name="weather_desc_wind">vent:%,.0fm/s deg:%,.0f° visibilité:%dkm</string>
-    <string name="memo_desc">Capture d\'écran :%s Texte audio :%s Photo :%s Vidéo :%s</string>
+    <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s</string>
 </resources>
