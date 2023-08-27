@@ -10,8 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -25,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.LocalUsableHaptic
+import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.shared.composables.LocalPermissionsManager
@@ -37,6 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsView(navController: NavHostController){
 
+    val context = LocalContext.current
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         SettingsViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
@@ -96,12 +100,12 @@ fun SettingsView(navController: NavHostController){
     ) {
         Column(
             modifier = Modifier,
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(26.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Text("Usable Haptic ")
-            Text("Usable DarkMode ")
-            Text("Clear All Memo")
+            Text(context.resources.getString(R.string.setting_UsableHaptic))
+            Text(context.resources.getString(R.string.setting_UsableDarkMode))
+            Text(context.resources.getString(R.string.setting_ClearAllMemo))
         }
 
         Column(
@@ -132,7 +136,7 @@ fun SettingsView(navController: NavHostController){
             )
 
             IconButton(
-                modifier = Modifier,
+                modifier = Modifier.scale(1.2f),
                 onClick = {
                     hapticProcessing()
                     isAlertDialog = true

@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -30,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gismemo.LocalUsableHaptic
+import com.example.gismemo.R
 import com.example.gismemo.shared.composables.LocalPermissionsManager
 import com.example.gismemo.shared.composables.PermissionsManager
 import com.example.gismemo.ui.theme.GISMemoTheme
@@ -40,37 +42,37 @@ typealias QueryData= Pair< SearchOption, SearchQueryDataValue>
 
 data class TagInfoData(
     var icon : ImageVector,
-    var name: String,
+    var name: Int,
     var isSet:MutableState<Boolean> = mutableStateOf(false)
 )
 
 val tagInfoDataList: List<TagInfoData> = listOf(
-    TagInfoData(Icons.Outlined.ShoppingCart, "마트"),
-    TagInfoData(Icons.Outlined.AccountBalance, "박물관"),
-    TagInfoData(Icons.Outlined.Store, "가게"),
-    TagInfoData(Icons.Outlined.Theaters, "극장"),
-    TagInfoData(Icons.Outlined.FlightTakeoff, "이륙"),
-    TagInfoData(Icons.Outlined.FlightLand, "착륙"),
-    TagInfoData(Icons.Outlined.Hotel, "호텔"),
-    TagInfoData(Icons.Outlined.School, "학교"),
-    TagInfoData(Icons.Outlined.Hiking, "하이킹"),
-    TagInfoData(Icons.Outlined.DownhillSkiing, "스키"),
-    TagInfoData(Icons.Outlined.Kayaking, "카약"),
-    TagInfoData(Icons.Outlined.Skateboarding, "스케이트보딩"),
-    TagInfoData(Icons.Outlined.Snowboarding, "스노우보딩"),
-    TagInfoData(Icons.Outlined.ScubaDiving, "스쿠버다이빙"),
-    TagInfoData(Icons.Outlined.RollerSkating, "롤러스케이팅"),
-    TagInfoData(Icons.Outlined.Photo, "포토스팟"),
-    TagInfoData(Icons.Outlined.Restaurant, "음식점"),
-    TagInfoData(Icons.Outlined.Park, "공원"),
-    TagInfoData(Icons.Outlined.LocalCafe, "카페"),
-    TagInfoData(Icons.Outlined.LocalTaxi, "택시"),
-    TagInfoData(Icons.Outlined.Forest, "숲"),
-    TagInfoData(Icons.Outlined.EvStation, "전기차 충전"),
-    TagInfoData(Icons.Outlined.FitnessCenter, "피트니스"),
-    TagInfoData(Icons.Outlined.House, "집"),
-    TagInfoData(Icons.Outlined.Apartment, "아파트"),
-    TagInfoData(Icons.Outlined.Cabin, "캐빈")
+    TagInfoData(Icons.Outlined.ShoppingCart, R.string.search_hashTag_ShoppingCart),
+    TagInfoData(Icons.Outlined.AccountBalance, R.string.search_hashTag_AccountBalance),
+    TagInfoData(Icons.Outlined.Store, R.string.search_hashTag_Store),
+    TagInfoData(Icons.Outlined.Theaters, R.string.search_hashTag_Theaters),
+    TagInfoData(Icons.Outlined.FlightTakeoff, R.string.search_hashTag_FlightTakeoff),
+    TagInfoData(Icons.Outlined.FlightLand, R.string.search_hashTag_FlightLand),
+    TagInfoData(Icons.Outlined.Hotel, R.string.search_hashTag_Hotel),
+    TagInfoData(Icons.Outlined.School, R.string.search_hashTag_School),
+    TagInfoData(Icons.Outlined.Hiking, R.string.search_hashTag_Hiking),
+    TagInfoData(Icons.Outlined.DownhillSkiing, R.string.search_hashTag_DownhillSkiing),
+    TagInfoData(Icons.Outlined.Kayaking, R.string.search_hashTag_Kayaking),
+    TagInfoData(Icons.Outlined.Skateboarding, R.string.search_hashTag_Skateboarding),
+    TagInfoData(Icons.Outlined.Snowboarding, R.string.search_hashTag_Snowboarding),
+    TagInfoData(Icons.Outlined.ScubaDiving, R.string.search_hashTag_ScubaDiving),
+    TagInfoData(Icons.Outlined.RollerSkating, R.string.search_hashTag_RollerSkating),
+    TagInfoData(Icons.Outlined.Photo, R.string.search_hashTag_Photo),
+    TagInfoData(Icons.Outlined.Restaurant, R.string.search_hashTag_Restaurant),
+    TagInfoData(Icons.Outlined.Park, R.string.search_hashTag_Park),
+    TagInfoData(Icons.Outlined.LocalCafe, R.string.search_hashTag_LocalCafe),
+    TagInfoData(Icons.Outlined.LocalTaxi, R.string.search_hashTag_LocalTaxi),
+    TagInfoData(Icons.Outlined.Forest, R.string.search_hashTag_Forest),
+    TagInfoData(Icons.Outlined.EvStation, R.string.search_hashTag_EvStation),
+    TagInfoData(Icons.Outlined.FitnessCenter, R.string.search_hashTag_FitnessCenter),
+    TagInfoData(Icons.Outlined.House, R.string.search_hashTag_House),
+    TagInfoData(Icons.Outlined.Apartment, R.string.search_hashTag_Apartment),
+    TagInfoData(Icons.Outlined.Cabin, R.string.search_hashTag_Cabin)
 ).sortedBy {
     it.name
 }
@@ -174,7 +176,7 @@ fun SearchView(
     onMessage:(() -> Unit)? = null
 ){
 
-
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -193,8 +195,16 @@ fun SearchView(
 
     val dateRangePickerState = rememberDateRangePickerState()
 
-    val secretOption =  listOf("Secret", "None", "All")
-    val markerOption =  listOf("Marker", "None", "All")
+    val secretOption =  listOf(
+        context.resources.getString(R.string.search_radioBt_secret),
+        context.resources.getString(R.string.search_radioBt_none),
+        context.resources.getString(R.string.search_radioBt_all)
+    )
+    val markerOption =  listOf(
+        context.resources.getString(R.string.search_radioBt_marker),
+        context.resources.getString(R.string.search_radioBt_none),
+        context.resources.getString(R.string.search_radioBt_all)
+    )
 
 
     val secretRadioGroupState = rememberSaveable {
@@ -314,7 +324,7 @@ fun SearchView(
 
      */
 
-
+// context.resources.getString(R.string.search_searchBar_placeholder)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -333,7 +343,7 @@ fun SearchView(
                 onActiveChange = {
                     isVisible.value = it
                 },
-                placeholder = { Text("Enter a title to search for") },
+                placeholder = { Text(context.resources.getString(R.string.search_searchBar_placeholder)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
@@ -353,7 +363,7 @@ fun SearchView(
                             Icon(
                                 modifier = Modifier,
                                 imageVector = Icons.Outlined.Search,
-                                contentDescription = "search"
+                                contentDescription = "Search"
                             )
                         }
                     )
@@ -391,7 +401,7 @@ fun SearchView(
                                 Icon(
                                     modifier = Modifier,
                                     imageVector = Icons.Outlined.Close,
-                                    contentDescription = "clear"
+                                    contentDescription = "Clear"
                                 )
                             }
                         )
@@ -417,11 +427,11 @@ fun SearchView(
                 Row(modifier = Modifier) {
                     Icon(
                         imageVector = Icons.Outlined.Lock,
-                        contentDescription = "secret"
+                        contentDescription = "Secret"
                     )
                     Text(
                         modifier = Modifier,
-                        text = " IsSecret : "
+                        text = context.resources.getString(R.string.search_radioBtGroup_secret)
                     )
                 }
             }
@@ -443,7 +453,7 @@ fun SearchView(
                     )
                     Text(
                         modifier = Modifier,
-                        text = "IsMarker : "
+                        text =  context.resources.getString(R.string.search_radioBtGroup_marker)
                     )
                 }
             }
@@ -470,7 +480,7 @@ fun SearchView(
                             imageVector = Icons.Outlined.Class,
                             contentDescription = "tag"
                         )
-                        Text("hashTag")
+                        Text(context.resources.getString(R.string.search_hashTag))
                         Icon(
                             modifier = Modifier,
                             imageVector = if (isTagBox) Icons.Outlined.UnfoldLess else Icons.Outlined.UnfoldMore,
@@ -510,7 +520,7 @@ fun SearchView(
                             imageVector = Icons.Outlined.CalendarMonth,
                             contentDescription = "date"
                         )
-                        Text("Search Period")
+                        Text(context.resources.getString(R.string.search_period))
                         Icon(
                             modifier = Modifier,
                             imageVector = if (isDateBox.value) Icons.Outlined.UnfoldLess else Icons.Outlined.UnfoldMore,
@@ -529,7 +539,7 @@ fun SearchView(
                     headline = {
                         Text(
                             modifier = Modifier.padding(start = 10.dp),
-                            text = "start date - end date",
+                            text = context.resources.getString(R.string.search_dateRangePicker_headline),
                             style = TextStyle(
                                 fontWeight = FontWeight.Light,
                                 fontSize = 16.sp
@@ -556,6 +566,8 @@ fun AssistChipGroupView(
     setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
     content: @Composable (( ) -> Unit)? = null
 ){
+
+    val context = LocalContext.current
 
     tagInfoDataList.clear()
     setState.value.forEach {
@@ -606,7 +618,7 @@ fun AssistChipGroupView(
                                     contentDescription = "",
                                     modifier = Modifier.size(AssistChipDefaults.IconSize)
                                 )
-                                Text(text = it.name)
+                                Text(text = context.resources.getString(it.name))
                             }
                         },
                         leadingIcon = {

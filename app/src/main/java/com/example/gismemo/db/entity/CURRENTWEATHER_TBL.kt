@@ -1,10 +1,12 @@
 package com.example.gismemo.db
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.icu.text.SimpleDateFormat
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.gismemo.R
 
 
 @Entity(tableName = "CURRENTWEATHER_TBL")
@@ -44,11 +46,13 @@ const val MILLISEC_CHECK = 9999999999
 const val MILLISEC_DIGIT = 1L
 const val MILLISEC_CONV_DIGIT = 1000L
 const val yyyyMMddHHmm = "yyyy/MM/dd HH:mm"
-const val WEATHER_TEXT_SUN = "sunrise:%s sunset:%s"
 const val HHmmss = "HH:mm:ss"
+
+const val WEATHER_TEXT_SUN = "sunrise:%s sunset:%s"
 const val WEATHER_TEXT_TEMP = "temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"
 const val WEATHER_TEXT_WEATHER = "pressure:%,.0fhPa humidity:%,.0f"
 const val WEATHER_TEXT_WIND = "wind:%,.0fm/s deg:%,.0f° visibility:%dkm"
+
 const  val TAG_M_KM = 1000
 
 @SuppressLint("SimpleDateFormat")
@@ -71,15 +75,15 @@ fun CURRENTWEATHER_TBL.toTextWeatherDesc(): String {
 }
 
 
-fun CURRENTWEATHER_TBL.toTextSun(): String {
-    return String.format( WEATHER_TEXT_SUN,
+fun CURRENTWEATHER_TBL.toTextSun(context: Context): String {
+    return String.format( context.resources.getString(R.string.weather_desc_sun),
         UnixTimeToString(this.sunrise, HHmmss),
         UnixTimeToString(this.sunset, HHmmss)
     )
 }
 
-fun CURRENTWEATHER_TBL.toTextTemp(): String {
-    return String.format ( WEATHER_TEXT_TEMP,
+fun CURRENTWEATHER_TBL.toTextTemp(context: Context): String {
+    return String.format ( context.resources.getString(R.string.weather_desc_temp),
         this.temp,
         this.temp_min,
         this.temp_max
@@ -87,17 +91,17 @@ fun CURRENTWEATHER_TBL.toTextTemp(): String {
 }
 
 
-fun CURRENTWEATHER_TBL.toTextWeather(): String {
-    return String.format( WEATHER_TEXT_WEATHER,
+fun CURRENTWEATHER_TBL.toTextWeather(context: Context): String {
+    return String.format( context.resources.getString(R.string.weather_desc_weather),
         this.pressure,
         this.humidity
     ) + "%"
 }
 
 
-fun CURRENTWEATHER_TBL.toTextWind(): String {
+fun CURRENTWEATHER_TBL.toTextWind(context: Context): String {
     return   String.format(
-        WEATHER_TEXT_WIND,
+        context.resources.getString(R.string.weather_desc_wind),
         this.speed,
         this.deg,
         this.visibility/ TAG_M_KM )

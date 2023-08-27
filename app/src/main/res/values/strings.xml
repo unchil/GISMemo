@@ -1,4 +1,86 @@
 <resources>
     <string name="app_name">GIS Memo</string>
     <string name="show_message">Show Message</string>
+
+    <string name="mainmenu_list">리스트</string>
+    <string name="mainmenu_write" >작성</string>
+    <string name="mainmenu_map" >지도</string>
+    <string name="mainmenu_setting" >설정</string>
+
+    <string name="snackbar_12">비밀번호, 지문 등의 등록 및 사용을 확인해 주세요.</string>
+    <string name="snackbar_11">위치정보 서비스를 이용할수 없습니다.</string>
+    <string name="snackbar_10">인증에 실패 하였습니다.</string>
+    <string name="snackbar_9">삭제 하였습니다.</string>
+    <string name="snackbar_8">메모를 삭제 하였습니다.</string>
+    <string name="snackbar_700">메모를 마커로 설정 하였습니다.</string>
+    <string name="snackbar_7">메모의 마커 설정을 해지 하였습니다.</string>
+    <string name="snackbar_600">메모를 비밀로 설정 하였습니다.</string>
+    <string name="snackbar_6">메모의 보안 설정을 해지 하였습니다.</string>
+    <string name="snackbar_5">캡쳐 하였습니다.</string>
+    <string name="snackbar_4">작성중된 메모를 저장 하였습니다.</string>
+    <string name="snackbar_3">검색된 데이터 </string>
+    <string name="snackbar_2">검색 조건을 클리어 하였습니다.</string>
+    <string name="snackbar_1">작성중인 메모를 클리어 하였습니다.</string>
+    <string name="snackbar_0">작성중인 메모를 클리어 하시겠습니까?</string>
+
+    <string name="search_searchBar_placeholder">검색할 제목을 입력하세요.</string>
+    <string name="search_radioBtGroup_secret">"보안 "</string>
+    <string name="search_radioBtGroup_marker">"마커 "</string>
+    <string name="search_radioBt_secret">보안</string>
+    <string name="search_radioBt_none">없음</string>
+    <string name="search_radioBt_all">모두</string>
+    <string name="search_radioBt_marker">마커</string>
+    <string name="search_hashTag">해시태그</string>
+    <string name="search_period">검색기간</string>
+    <string name="search_dateRangePicker_headline">시작일 - 종료일</string>
+
+    <string name="search_hashTag_ShoppingCart">마트</string>
+    <string name="search_hashTag_AccountBalance">박물관</string>
+    <string name="search_hashTag_Store">가게</string>
+    <string name="search_hashTag_Theaters">극장</string>
+    <string name="search_hashTag_FlightTakeoff">이륙</string>
+    <string name="search_hashTag_FlightLand">착륙</string>
+    <string name="search_hashTag_Hotel">호텔</string>
+    <string name="search_hashTag_School">학교</string>
+    <string name="search_hashTag_Hiking">하이킹</string>
+    <string name="search_hashTag_DownhillSkiing">스키</string>
+    <string name="search_hashTag_Kayaking">카약</string>
+    <string name="search_hashTag_Skateboarding">스케이트보딩</string>
+    <string name="search_hashTag_Snowboarding">스노우보딩</string>
+    <string name="search_hashTag_ScubaDiving">스쿠버다이빙</string>
+    <string name="search_hashTag_RollerSkating">롤러스케이팅</string>
+    <string name="search_hashTag_Photo">포토스팟</string>
+    <string name="search_hashTag_Restaurant">음식점</string>
+    <string name="search_hashTag_Park">공원</string>
+    <string name="search_hashTag_LocalCafe">카페</string>
+    <string name="search_hashTag_LocalTaxi">택시</string>
+    <string name="search_hashTag_Forest">숲</string>
+    <string name="search_hashTag_EvStation">전기차충전</string>
+    <string name="search_hashTag_FitnessCenter">피트니스</string>
+    <string name="search_hashTag_House">집</string>
+    <string name="search_hashTag_Apartment">아파트</string>
+    <string name="search_hashTag_Cabin">캐빈</string>
+
+    <string name="setting_UsableHaptic">햅틱 사용</string>
+    <string name="setting_UsableDarkMode">야간모드 사용</string>
+    <string name="setting_ClearAllMemo">전체 메모 삭제</string>
+
+    <string name="dataContainer_Screenshot">스크린샷</string>
+    <string name="dataContainer_AudioText">녹음 메모</string>
+    <string name="dataContainer_Photo">사진</string>
+    <string name="dataContainer_Video">동영상</string>
+
+    <string name="writeMemo_AlertDialog_Title">메모 저장</string>
+    <string name="writeMemo_AlertDialog_title_label">제목</string>
+    <string name="writeMemo_AlertDialog_desc">작성한 메모를 저장하고 화면을 지웁니다.</string>
+    <string name="writeMemo_AlertDialog_Cancel">취소</string>
+    <string name="writeMemo_AlertDialog_Confirm">확인</string>
+
+
+    <string name="weather_desc_sun"> "일출:%s 일몰:%s"</string>
+    <string name="weather_desc_temp"> "기온:%,.0f°C  최저:%,.0f°C  최고:%,.0f°C"</string>
+    <string name="weather_desc_weather"> "기압:%,.0fhPa 습도:%,.0f"</string>
+    <string name="weather_desc_wind">"바람:%,.0fm/s 방향:%,.0f° 가시거리:%dkm"</string>
+    <string name="memo_desc">"스크린샷:%s 녹음메모:%s 사진:%s 동영상:%s"</string>
+
 </resources>

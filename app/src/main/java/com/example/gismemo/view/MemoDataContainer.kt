@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ fun MemoDataContainer(
     deleteHandle:((index:Int)->Unit)? = null,
     channel: Channel<Int>? = null){
 
-
+    val context = LocalContext.current
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         MemoContainerViewModel(
@@ -87,11 +88,11 @@ fun MemoDataContainer(
                 icon = {
                     Icon(
                         imageVector = it.getDesc().second,
-                        contentDescription = it.getDesc().first ,
+                        contentDescription = context.resources.getString(   it.getDesc().first ) ,
                 //        tint = if( currentTabView.value ==  it) Color.Red else Color.Black
                     )
                 },
-                label = { Text(it.getDesc().first)  },
+                label = { Text( context.resources.getString(   it.getDesc().first) ) },
                 selected = currentTabView.value ==  it,
                // selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
@@ -158,6 +159,7 @@ fun MemoDataContainer(
 @Composable
 fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
 
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -171,7 +173,9 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
     }
 
     val pagerState  =   rememberPagerState(initialPage = 0)
-    val defaultData:Pair<String, Int> =  Pair(WriteMemoDataType.SNAPSHOT.name, item.dataList.size)
+    val defaultData:Pair<String, Int> =  Pair(
+         context.resources.getString(WriteMemoDataType.SNAPSHOT.getDesc().first )
+        , item.dataList.size)
     val scrollState = rememberScrollState()
 
     Column(
@@ -270,7 +274,7 @@ fun PagerSnapShotView(item: MemoData.SnapShot, onDelete:((page:Int) -> Unit)? = 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
-
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -284,7 +288,9 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
     }
 
     val pagerState  =   rememberPagerState(initialPage = 0)
-    val defaultData:Pair<String, Int> = Pair(WriteMemoDataType.AUDIOTEXT.name, item.dataList.size)
+    val defaultData:Pair<String, Int> = Pair(
+        context.resources.getString(WriteMemoDataType.AUDIOTEXT.getDesc().first )
+        , item.dataList.size)
     val scrollState = rememberScrollState()
 
     Column(
@@ -394,7 +400,7 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
-
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -409,7 +415,9 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
 
     val pagerState  =   rememberPagerState(initialPage = 0)
 
-    val defaultData:Pair<String, Int> = Pair(WriteMemoDataType.PHOTO.name, item.dataList.size)
+    val defaultData:Pair<String, Int> = Pair(
+        context.resources.getString(WriteMemoDataType.PHOTO.getDesc().first )
+        , item.dataList.size)
 
     val scrollState = rememberScrollState()
 
@@ -514,7 +522,7 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
-
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -528,7 +536,9 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
     }
 
     var videoTrackIndex by remember { mutableStateOf(0) }
-    val defaultData:Pair<String, Int> = Pair(WriteMemoDataType.VIDEO.name, item.dataList.size)
+    val defaultData:Pair<String, Int> = Pair(
+        context.resources.getString(WriteMemoDataType.VIDEO.getDesc().first )
+        , item.dataList.size)
 
     Column(
         modifier = Modifier

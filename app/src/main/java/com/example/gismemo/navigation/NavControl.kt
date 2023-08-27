@@ -97,34 +97,34 @@ val mainScreens:List<GisMemoDestinations> = listOf(
 
 sealed class GisMemoDestinations(
     val route:String,
-    val name:String? = null,
+    val name:Int = 0,
     val icon:ImageVector? = null,
 
 ){
 
     object IntroView : GisMemoDestinations(
         route = "introview",
-        name = "List",
+        name = R.string.mainmenu_list,
         icon = Icons.Outlined.FormatListBulleted
     )
 
 
     object WriteMemoView : GisMemoDestinations(
         route = "writememo",
-        name = "Write",
+        name = R.string.mainmenu_write,
         icon = Icons.Outlined.EditNote
     )
 
 
     object MapView : GisMemoDestinations(
         route = "mapview",
-        name = "Map",
+        name = R.string.mainmenu_map,
         icon = Icons.Outlined.Map
     )
 
     object SettingView : GisMemoDestinations(
         route = "settings",
-        name = "Setting",
+        name = R.string.mainmenu_setting,
         icon = Icons.Outlined.Settings
     )
 

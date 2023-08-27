@@ -211,15 +211,19 @@ class Repository{
 
         selectTagArrayList:ArrayList<Int>,
         title:String,
+        desc:String,
         location: CURRENTLOCATION_TBL
     )  {
 
 
         val memoFileTblList = mutableListOf<MEMO_FILE_TBL>()
         val memoTextTblList = mutableListOf<MEMO_TEXT_TBL>()
-
+/*
         val desc =
-            "map:${currentSnapShot.value.size} comment:${currentAudioText.value.size} photo:${currentPhoto.value.size} video:${currentVideo.value.size}"
+            "screenshot:${currentSnapShot.value.size} audioText:${currentAudioText.value.size} photo:${currentPhoto.value.size} video:${currentVideo.value.size}"
+
+ */
+
         val snapshot = currentSnapShot.value.first().encodedPath ?: ""
         var snippets = ""
 

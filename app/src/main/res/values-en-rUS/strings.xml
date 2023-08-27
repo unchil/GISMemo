@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GIS Memo</string>
+    <string name="show_message">Show Message</string>
+    <string name="mainmenu_list">List</string>
+    <string name="mainmenu_write">Write</string>
+    <string name="mainmenu_map">Map</string>
+    <string name="mainmenu_setting">Setting</string>
+    <string name="snackbar_12">Please check the registration and use of your password and fingerprint.</string>
+    <string name="snackbar_11">Location information service is not available.</string>
+    <string name="snackbar_10">Authentication failed.</string>
+    <string name="snackbar_9">Deleted.</string>
+    <string name="snackbar_8">The memo has been deleted.</string>
+    <string name="snackbar_700">Set the memo as a marker.</string>
+    <string name="snackbar_7">The memo marker setting has been cancelled.</string>
+    <string name="snackbar_600">The memo has been set as a secret.</string>
+    <string name="snackbar_6">Canceled the security settings of the memo.</string>
+    <string name="snackbar_5">Captured.</string>
+    <string name="snackbar_4">The written memo has been saved.</string>
+    <string name="snackbar_3">data retrieved</string>
+    <string name="snackbar_2">The search conditions have been cleared.</string>
+    <string name="snackbar_1">Cleared the memo being written.</string>
+    <string name="snackbar_0">Do you want to clear the memo you are writing?</string>
+    <string name="search_searchBar_placeholder">Enter a title to search for</string>
+    <string name="search_radioBtGroup_marker">"Marker "</string>
+    <string name="search_radioBtGroup_secret">"Secret "</string>
+    <string name="search_radioBt_secret">Secret</string>
+    <string name="search_radioBt_none">None</string>
+    <string name="search_radioBt_all">All</string>
+    <string name="search_radioBt_marker">Marker</string>
+    <string name="search_hashTag">HashTag</string>
+    <string name="search_period">Search Period</string>
+    <string name="search_dateRangePicker_headline">Start Date - End Date</string>
+    <string name="search_hashTag_ShoppingCart">ShoppingCart</string>
+    <string name="search_hashTag_AccountBalance">AccountBalance</string>
+    <string name="search_hashTag_Store">Store</string>
+    <string name="search_hashTag_Theaters">Theaters</string>
+    <string name="search_hashTag_FlightTakeoff">FlightTakeoff</string>
+    <string name="search_hashTag_FlightLand">FlightLand</string>
+    <string name="search_hashTag_Hotel">Hotel</string>
+    <string name="search_hashTag_School">School</string>
+    <string name="search_hashTag_Hiking">Hiking</string>
+    <string name="search_hashTag_DownhillSkiing">DownhillSkiing</string>
+    <string name="search_hashTag_Kayaking">Kayaking</string>
+    <string name="search_hashTag_Skateboarding">Skateboarding</string>
+    <string name="search_hashTag_Snowboarding">Snowboarding</string>
+    <string name="search_hashTag_ScubaDiving">ScubaDiving</string>
+    <string name="search_hashTag_RollerSkating">RollerSkating</string>
+    <string name="search_hashTag_Photo">Photo</string>
+    <string name="search_hashTag_Restaurant">Restaurant</string>
+    <string name="search_hashTag_Park">Park</string>
+    <string name="search_hashTag_LocalCafe">LocalCafe</string>
+    <string name="search_hashTag_LocalTaxi">LocalTaxi</string>
+    <string name="search_hashTag_Forest">Forest</string>
+    <string name="search_hashTag_EvStation">EvStation</string>
+    <string name="search_hashTag_FitnessCenter">FitnessCenter</string>
+    <string name="search_hashTag_House">House</string>
+    <string name="search_hashTag_Apartment">Apartment</string>
+    <string name="search_hashTag_Cabin">Cabin</string>
+
+    <string name="setting_UsableHaptic">Usable Haptic</string>
+    <string name="setting_UsableDarkMode">Usable DarkMode</string>
+    <string name="setting_ClearAllMemo">Clear All Memo</string>
+
+    <string name="dataContainer_Screenshot">Screenshot</string>
+    <string name="dataContainer_AudioText">AudioText</string>
+    <string name="dataContainer_Photo">Photo</string>
+    <string name="dataContainer_Video">Video</string>
+
+    <string name="writeMemo_AlertDialog_Title">Memo Save</string>
+    <string name="writeMemo_AlertDialog_title_label">Title</string>
+    <string name="writeMemo_AlertDialog_desc">Save the written memo and clear the screen.</string>
+    <string name="writeMemo_AlertDialog_Cancel">Cancel</string>
+    <string name="writeMemo_AlertDialog_Confirm">Confirm</string>
+
+    <string name="weather_desc_sun"> "sunrise:%s sunset:%s"</string>
+    <string name="weather_desc_temp"> "temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
+    <string name="weather_desc_weather"> "pressure:%,.0fhPa humidity:%,.0f"</string>
+    <string name="weather_desc_wind">"wind:%,.0fm/s deg:%,.0f° visibility:%dkm"</string>
+
+    <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s"</string>
+
+</resources>

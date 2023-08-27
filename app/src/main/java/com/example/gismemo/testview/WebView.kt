@@ -7,10 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -50,16 +52,18 @@ fun ImageWebViewer( url:String ) {
 @Composable
 fun PrevImageWebViewer() {
 
-
+    val context = LocalContext.current
     GISMemoTheme {
         androidx.compose.material3.Surface(
             modifier = Modifier.background(color = Color.White)
         ) {
 
 
-            ImageWebViewer(url = "https://google.co.kr")
+         //   ImageWebViewer(url = "https://google.co.kr")
             //  ImageWebViewer(url = "http://naver.com")
 
+            context.resources.getString(R.string.mainmenu_write)
+            Text(text = context.resources.getString(R.string.mainmenu_write))
         }
 
     }

@@ -339,6 +339,7 @@ fun MemoMapView(navController: NavController){
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
+
     fun hapticProcessing(){
         if(isUsableHaptic){
             coroutineScope.launch {
@@ -394,7 +395,7 @@ fun MemoMapView(navController: NavController){
 
 
                 val result = snackbarHostState.showSnackbar(
-                    message = channelData.message,
+                    message = context.resources.getString( channelData.message),
                     actionLabel = channelData.actionLabel,
                     withDismissAction = channelData.withDismissAction,
                     duration = channelData.duration

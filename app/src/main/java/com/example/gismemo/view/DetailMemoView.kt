@@ -183,7 +183,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
             }
 
             val result = snackbarHostState.showSnackbar(
-                message = channelData.message,
+                message = context.resources.getString( channelData.message),
                 actionLabel = channelData.actionLabel,
                 withDismissAction = channelData.withDismissAction,
                 duration = channelData.duration

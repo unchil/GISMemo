@@ -4,10 +4,15 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.gismemo.R
 import com.example.gismemo.data.Repository
+import com.example.gismemo.db.HHmmss
+import com.example.gismemo.db.UnixTimeToString
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
+import com.example.gismemo.db.toTextSun
 import com.example.gismemo.model.WriteMemoDataType
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
@@ -15,6 +20,10 @@ class WriteMemoViewModel (
     val repository: Repository
 ) : ViewModel() {
 
+    val  phothoList: StateFlow<List<Uri>> = repository.currentPhoto
+    val videoList: StateFlow<List<Uri>> =  repository.currentVideo
+    val audioTextList: StateFlow<List<Pair<String, List<Uri>>>> =  repository.currentAudioText
+    val snapShotList: StateFlow<List<Uri>> = repository.currentSnapShot
 
         fun onEvent(event: Event){
             when(event){
@@ -31,12 +40,14 @@ class WriteMemoViewModel (
                     initMemo()
                 }
                 is Event.UploadMemo -> {
+
                     upLoadMemo(
                         id = event.id,
                         isLock = event.isLock,
                         isMark = event.isMark,
                         selectedTagArrayList = event.selectedTagArrayList,
                         title = event.title,
+                        desc = event.desc,
                         location = event.location
                     )
                 }
@@ -116,10 +127,11 @@ class WriteMemoViewModel (
         isMark:Boolean,
         selectedTagArrayList: ArrayList<Int>,
         title:String,
+        desc:String,
         location: CURRENTLOCATION_TBL ){
 
         viewModelScope.launch {
-            repository.insertMemo(id, isLock,isMark,selectedTagArrayList,title,location)
+            repository.insertMemo(id, isLock,isMark,selectedTagArrayList,title, desc,location)
         }
     }
 
@@ -164,6 +176,7 @@ class WriteMemoViewModel (
                                    val isMark:Boolean,
                                    var selectedTagArrayList: ArrayList<Int>,
                                    var title:String,
+                                   var desc:String,
                                    var location:CURRENTLOCATION_TBL
                                    ): Event()
 

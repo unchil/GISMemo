@@ -188,6 +188,7 @@ fun WeatherView(
     modifier:Modifier = Modifier
 ){
 
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .padding(vertical = 20.dp),
@@ -228,10 +229,10 @@ fun WeatherView(
 
 
             Column (modifier = Modifier.fillMaxWidth()){
-                WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun())
-                WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp())
-                WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind())
-                WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather())
+                WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context))
+                WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context))
+                WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context))
+                WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context))
             }
 
 
@@ -246,7 +247,7 @@ fun WeatherViewLandScape(
     item: CURRENTWEATHER_TBL,
     modifier:Modifier = Modifier
 ) {
-
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .padding(vertical = 20.dp),
@@ -287,10 +288,10 @@ fun WeatherViewLandScape(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun())
-            WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp())
-            WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind())
-            WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather())
+            WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context))
+            WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context))
+            WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context))
+            WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context))
         }
 
 

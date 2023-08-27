@@ -63,7 +63,9 @@ import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.LocalUsableHaptic
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
+import com.example.gismemo.db.HHmmss
 import com.example.gismemo.db.LocalLuckMemoDB
+import com.example.gismemo.db.UnixTimeToString
 import com.example.gismemo.db.entity.CURRENTLOCATION_TBL
 import com.example.gismemo.model.*
 import com.example.gismemo.navigation.GisMemoDestinations
@@ -380,7 +382,7 @@ fun WriteMemoView(navController: NavController ){
 
 
                 val result = snackbarHostState.showSnackbar(
-                    message = channelData.message,
+                    message = context.resources.getString( channelData.message),
                     actionLabel = channelData.actionLabel,
                     withDismissAction = channelData.withDismissAction,
                     duration = channelData.duration
@@ -484,7 +486,12 @@ fun WriteMemoView(navController: NavController ){
         }
 
         val saveHandler: (title: String) -> Unit = { title ->
-
+            val desc = String.format( context.resources.getString(R.string.memo_desc),
+                viewModel.snapShotList.value.size,
+                viewModel.audioTextList.value.size,
+                viewModel.phothoList.value.size,
+                viewModel.videoList.value.size
+            )
 
             val id = System.currentTimeMillis()
 
@@ -495,6 +502,7 @@ fun WriteMemoView(navController: NavController ){
                         isMark = isMark,
                         selectedTagArrayList = selectedTagArray.value,
                         title = title,
+                        desc = desc,
                         location = CURRENTLOCATION_TBL(dt=id, latitude = currentLocation.latitude.toFloat(), longitude = currentLocation.longitude.toFloat(), 0f)
                     )
                 )
@@ -1145,7 +1153,7 @@ fun ConfirmDialog(
     onEvent: (title:String) -> Unit,
 ) {
 
-
+    val context = LocalContext.current
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
@@ -1219,7 +1227,7 @@ fun ConfirmDialog(
 
                 Text(
                     modifier = Modifier.padding(vertical = 10.dp),
-                    text = "Memo Save",
+                    text = context.resources.getString(R.string.writeMemo_AlertDialog_Title),
                     textAlign = TextAlign.Center,
                     style =  androidx.compose.material3.MaterialTheme.typography.headlineSmall,
                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
@@ -1266,13 +1274,13 @@ fun ConfirmDialog(
                     },
                     value = titleText.value,
                     onValueChange = { titleText.value = it },
-                    label = { androidx.compose.material3.Text("Title") },
+                    label = { androidx.compose.material3.Text(context.resources.getString(R.string.writeMemo_AlertDialog_title_label)) },
                     shape = OutlinedTextFieldDefaults.shape,
                     keyboardActions = KeyboardActions.Default
                 )
 
                 Text(
-                    text = "Save the written memo and clear the screen.",
+                    text = context.resources.getString(R.string.writeMemo_AlertDialog_desc),
                     style =  androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                 )
@@ -1292,7 +1300,7 @@ fun ConfirmDialog(
                         }
                     ) {
                         Text(
-                            "Cancel",
+                            context.resources.getString(R.string.writeMemo_AlertDialog_Cancel),
                             textAlign = TextAlign.Center,
                             style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
                             color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
@@ -1309,7 +1317,7 @@ fun ConfirmDialog(
                         }
                     ) {
                         Text(
-                            "Confirm",
+                            context.resources.getString(R.string.writeMemo_AlertDialog_Confirm),
                             textAlign = TextAlign.Center,
                             style  = androidx.compose.material3.MaterialTheme.typography.labelLarge,
                             color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface

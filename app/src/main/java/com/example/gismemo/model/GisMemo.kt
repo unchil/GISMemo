@@ -9,6 +9,7 @@ import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.gismemo.R
 
 
 /*
@@ -76,19 +77,19 @@ enum class WriteMemoDataType {
     PHOTO,AUDIOTEXT,VIDEO,SNAPSHOT
 }
 
-fun WriteMemoDataType.getDesc(): Pair<String, ImageVector>{
+fun WriteMemoDataType.getDesc(): Pair<Int, ImageVector>{
       return  when(this){
            WriteMemoDataType.PHOTO -> {
-               Pair(this.name,  Icons.Outlined.Photo)
+               Pair(R.string.dataContainer_Photo,  Icons.Outlined.Photo)
            }
            WriteMemoDataType.AUDIOTEXT -> {
-               Pair(this.name,  Icons.Outlined.Mic)
+               Pair(R.string.dataContainer_AudioText,  Icons.Outlined.Mic)
            }
            WriteMemoDataType.VIDEO -> {
-               Pair(this.name,  Icons.Outlined.Videocam)
+               Pair(R.string.dataContainer_Video,  Icons.Outlined.Videocam)
            }
            WriteMemoDataType.SNAPSHOT -> {
-               Pair(this.name,  Icons.Outlined.Screenshot)
+               Pair(R.string.dataContainer_Screenshot,  Icons.Outlined.Screenshot)
            }
        }
 }

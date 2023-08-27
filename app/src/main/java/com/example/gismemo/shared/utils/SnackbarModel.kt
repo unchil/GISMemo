@@ -1,6 +1,7 @@
 package com.example.gismemo.shared.utils
 
 import androidx.compose.material3.SnackbarDuration
+import com.example.gismemo.R
 
 enum class SnackBarChannelType {
     BIOMETRIC_NO_SUCCESS,
@@ -23,7 +24,7 @@ enum class SnackBarChannelType {
 data class SnackBarChannelData(
     val channelType: SnackBarChannelType,
     val channel:Int,
-    var message:String,
+    var message:Int,
     val duration: SnackbarDuration,
     val actionLabel:String?,
     val withDismissAction:Boolean,
@@ -34,7 +35,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.BIOMETRIC_NO_SUCCESS,
         channel = 12,
-        message = "비밀번호, 지문 등의 등록 및 사용을 확인해 주세요 ",
+        message = R.string.snackbar_12,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -44,7 +45,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.LOCATION_SERVICE_DISABLE,
         channel = 11,
-        message = "위치정보 서비스를 이용할수 없습니다 .",
+        message = R.string.snackbar_11,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -54,7 +55,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.AUTHENTICATION_FAILED,
         channel = 10,
-        message = "인증에 실패 하였습니다. ",
+        message = R.string.snackbar_10,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -64,7 +65,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.ITEM_DELETE,
         channel = 9,
-        message = "삭제 하였습니다. ",
+        message = R.string.snackbar_9,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -74,7 +75,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MEMO_DELETE,
         channel = 8,
-        message = "메모를 삭제 하였습니다. ",
+        message = R.string.snackbar_8,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -84,7 +85,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MARKER_CHANGE_SET,
         channel = 700,
-        message = "메모를 마커로 설정 하였습니다. ",
+        message = R.string.snackbar_700,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -95,7 +96,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MARKER_CHANGE_FREE,
         channel = 7,
-        message = "메모의 마커 설정을 해지 하였습니다.",
+        message = R.string.snackbar_7,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -105,7 +106,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.LOCK_CHANGE_SET,
         channel = 600,
-        message = "메모를 비밀로 설정 하였습니다.",
+        message = R.string.snackbar_600,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -115,7 +116,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.LOCK_CHANGE_FREE,
         channel = 6,
-        message = "메모의 보안 설정을 해지 하였습니다.",
+        message = R.string.snackbar_6,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -126,7 +127,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.SNAPSHOT_RESULT,
         channel = 5,
-        message = "캡쳐 하였습니다.",
+        message = R.string.snackbar_5,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -136,7 +137,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MEMO_SAVE,
         channel = 4,
-        message = "작성중된 메모를 저장 하였습니다.",
+        message = R.string.snackbar_4,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -146,7 +147,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.SEARCH_RESULT,
         channel = 3,
-        message = "검색된 데이터 ",
+        message = R.string.snackbar_3,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -156,7 +157,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.SEARCH_CLEAR,
         channel = 2,
-        message = "검색 조건을 클리어 하였습니다.",
+        message = R.string.snackbar_2,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -165,7 +166,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MEMO_CLEAR_RESULT,
         channel = 1,
-        message = "작성중인 메모를 클리어 하였습니다.",
+        message = R.string.snackbar_1,
         duration = SnackbarDuration.Short,
         actionLabel = null,
         withDismissAction = true,
@@ -174,7 +175,7 @@ val snackbarChannelList = listOf(
     SnackBarChannelData(
         channelType = SnackBarChannelType.MEMO_CLEAR_REQUEST,
         channel = 0,
-        message = "작성중인 메모를 클리어 하시겠습니까?",
+        message = R.string.snackbar_0,
         duration = SnackbarDuration.Indefinite,
         actionLabel = "Ok",
         withDismissAction = true,

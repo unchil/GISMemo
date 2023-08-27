@@ -73,6 +73,7 @@ fun IntroView(
     navController: NavHostController
 ) {
 
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val db = LocalLuckMemoDB.current
     val coroutineScope = rememberCoroutineScope()
@@ -166,16 +167,17 @@ fun IntroView(
             //----------
             val message = when (channelData.channelType) {
                 SnackBarChannelType.SEARCH_RESULT -> {
-                    channelData.message + "[${memoListStream.itemCount}]"
+
+                    context.resources.getString( channelData.message) + "[${memoListStream.itemCount}]"
                 }
                 else -> {
-                    channelData.message
+                    context.resources.getString( channelData.message)
                 }
             }
             //----------
 
             val result = snackBarHostState.showSnackbar(
-                message = message,
+                message =   message,
                 actionLabel = channelData.actionLabel,
                 withDismissAction = channelData.withDismissAction,
                 duration = channelData.duration
@@ -451,8 +453,6 @@ fun MemoSwipeView(
                     channel.trySend(
                         snackbarChannelList.first {
                             it.channelType == SnackBarChannelType.AUTHENTICATION_FAILED
-                        }.apply {
-                            message =  msg ?: message
                         }.channel
                     )
                 }

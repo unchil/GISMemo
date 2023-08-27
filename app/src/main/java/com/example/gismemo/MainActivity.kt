@@ -211,7 +211,7 @@ class MainActivity : ComponentActivity() {
                                                                                     Icon(
                                                                                         modifier = Modifier,
                                                                                         imageVector = it,
-                                                                                        contentDescription = item.name
+                                                                                        contentDescription =  context.resources.getString( item.name)
                                                                                     )
                                                                                 }
                                                                             }
@@ -236,7 +236,8 @@ class MainActivity : ComponentActivity() {
 
                                                                     }
 
-                                                                    item.name?.let { Text(text = it) }
+                                                                 //   item.name?.let { Text(text = it) }
+                                                                    Text(text = context.resources.getString( item.name))
 
                                                                 }
 
@@ -309,7 +310,7 @@ class MainActivity : ComponentActivity() {
                                                                                             Icon(
                                                                                                 modifier = Modifier,
                                                                                                 imageVector = it,
-                                                                                                contentDescription = item.name
+                                                                                                contentDescription = context.resources.getString( item.name)
                                                                                             )
                                                                                         }
                                                                                     }
@@ -338,11 +339,7 @@ class MainActivity : ComponentActivity() {
                                                                                 }
                                                                             }
 
-                                                                            item.name?.let {
-                                                                                Text(
-                                                                                    text = it
-                                                                                )
-                                                                            }
+                                                                            Text(text = context.resources.getString( item.name))
 
                                                                         }
 
