@@ -37,6 +37,11 @@ class Repository{
 
     val selectedWeather:MutableStateFlow<MEMO_WEATHER_TBL?> = MutableStateFlow(null)
 
+    val isChangeLocale: MutableStateFlow<Int>
+            = MutableStateFlow(0)
+
+    val onChangeLocale: MutableStateFlow<Boolean>
+            = MutableStateFlow(false)
 
     val isUsableHaptic: MutableStateFlow<Boolean>
             = MutableStateFlow(true)
@@ -82,6 +87,13 @@ class Repository{
         isUsableDarkMode.value = value
     }
 
+    fun updateOnChangeLocale(value:Boolean){
+        onChangeLocale.value = value
+    }
+
+    fun updateIsChangeLocale(value:Int){
+        isChangeLocale.value = value
+    }
 
 
     fun updateCurrentIsDrawing(isDrawing:Boolean){

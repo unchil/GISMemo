@@ -60,6 +60,9 @@
     <string name="setting_UsableHaptic">Haptique utilisable</string>
     <string name="setting_UsableDarkMode">Mode sombre utilisable</string>
     <string name="setting_ClearAllMemo">Effacer tout le mémo</string>
+    <string name="setting_Locale_en">Anglais</string>
+    <string name="setting_Locale_fr">Français</string>
+    <string name="setting_Locale_apply">Appliquer</string>
     <string name="dataContainer_Screenshot">Capture d\'écran</string>
     <string name="dataContainer_AudioText">Texte Audio</string>
     <string name="dataContainer_Photo">Photo</string>
@@ -73,5 +76,8 @@
     <string name="weather_desc_temp">" temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
     <string name="weather_desc_weather">pression:%,.0fhPa humidité:%,.0f</string>
     <string name="weather_desc_wind">vent:%,.0fm/s deg:%,.0f° visibilité:%dkm</string>
+    <string name="weather_location_searching"> "Recherche d'emplacement..."</string>
     <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s</string>
+    <string name="setting_Locale">sélection de la langue</string>
+    <string name="setting_Locale_ko">coréen</string>
 </resources>

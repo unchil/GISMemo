@@ -1,14 +1,17 @@
 package com.example.gismemo
 
 import android.Manifest
+import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -47,14 +50,17 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 
+
+val LocalChangeLocale = compositionLocalOf{ false }
 val LocalUsableHaptic = compositionLocalOf{ true }
 val LocalUsableDarkMode = compositionLocalOf{ false }
+
 class MainActivity : ComponentActivity() {
 
     private val permissionsManager = PermissionsManager()
-
 
     fun checkInternetConnected() :Boolean  {
         ( applicationContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
@@ -73,6 +79,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -86,10 +93,13 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
             val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
+            val onChangeLocale = repository.onChangeLocale.collectAsState()
+            val isChangeLocale = repository.isChangeLocale.collectAsState()
             val isUsableHaptic = repository.isUsableHaptic.collectAsState()
             val isUsableDarkMode = repository.isUsableDarkMode.collectAsState()
             val hapticFeedback = LocalHapticFeedback.current
             val isPressed = remember { mutableStateOf(false) }
+
 
             LaunchedEffect(key1 = isPressed.value, key2 = isUsableHaptic.value) {
                 if (isPressed.value && isUsableHaptic.value) {
@@ -97,6 +107,17 @@ class MainActivity : ComponentActivity() {
                     isPressed.value = false
                 }
             }
+
+            LaunchedEffect(key1 = isChangeLocale.value){
+                val locale = localeList[isChangeLocale.value]
+                Locale.setDefault(locale)
+                context.resources.configuration.setLocale(locale)
+                context.resources.configuration.setLayoutDirection(locale)
+                //    context.createConfigurationContext(context.resources.configuration)
+                context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
+            }
+
+
 
 
             val coroutineScope = rememberCoroutineScope()
@@ -122,6 +143,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+
             LaunchedEffect(key1 = currentBackStack){
                 val currentScreen = mainScreens.find {
                     it.route ==  currentBackStack?.destination?.route
@@ -145,218 +167,236 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.surface
                     ) {
-                        CompositionLocalProvider( LocalUsableDarkMode provides isUsableDarkMode.value) {
-                            CompositionLocalProvider(LocalUsableHaptic provides isUsableHaptic.value) {
-                                CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
-                                    CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
+                        CompositionLocalProvider(LocalChangeLocale provides onChangeLocale.value) {
+
+                            CompositionLocalProvider(LocalUsableDarkMode provides isUsableDarkMode.value) {
+                                CompositionLocalProvider(LocalUsableHaptic provides isUsableHaptic.value) {
+                                    CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
+                                        CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
 
 
-                                        Box(modifier = Modifier.fillMaxSize()) {
-                                            if (!isConnect.value) {
-                                                ChkNetWork(
-                                                    onCheckState = {
-                                                        coroutineScope.launch {
-                                                            isConnect.value =
-                                                                checkInternetConnected()
-                                                        }
-                                                    }
-                                                )
-                                            } else {
-                                                Column(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                                    verticalArrangement = Arrangement.Top
-                                                ) {
-
-                                                    if (isPortrait) {
-
-
-                                                        Row(
-                                                            modifier = Modifier
-                                                                .align(Alignment.CenterHorizontally)
-                                                                .fillMaxWidth()
-                                                                .height(90.dp)
-                                                                .shadow(6.dp),
-                                                            horizontalArrangement = Arrangement.Center,
-                                                            verticalAlignment = Alignment.CenterVertically
-                                                        ) {
-
-                                                            mainScreens.forEachIndexed { index, item ->
-
-
-                                                                Column(
-                                                                    modifier = Modifier.padding(
-                                                                        horizontal = 10.dp
-                                                                    ),
-                                                                    verticalArrangement = Arrangement.Center,
-                                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                                ) {
-
-                                                                    Box(modifier = Modifier) {
-
-                                                                        IconButton(
-                                                                            modifier = Modifier,
-
-                                                                            onClick = {
-                                                                                isPressed.value =
-                                                                                    true
-                                                                                selectedItem.value =
-                                                                                    index
-                                                                                navController.navigateTo(
-                                                                                    mainScreens[index].route
-                                                                                )
-                                                                            },
-                                                                            content = {
-                                                                                item.icon?.let {
-                                                                                    Icon(
-                                                                                        modifier = Modifier,
-                                                                                        imageVector = it,
-                                                                                        contentDescription =  context.resources.getString( item.name)
-                                                                                    )
-                                                                                }
-                                                                            }
-                                                                        )
-
-                                                                        if (selectedItem.value == index) {
-                                                                            Box(
-                                                                                modifier = Modifier
-                                                                                    .align(Alignment.Center)
-                                                                                    .width(40.dp)
-                                                                                    .height(40.dp)
-                                                                                    .border(
-                                                                                        width = 25.dp,
-                                                                                        color = MaterialTheme.colorScheme.surfaceTint.copy(
-                                                                                            alpha = 0.6f
-                                                                                        ),
-                                                                                        shape = ShapeDefaults.Large
-                                                                                    )
-                                                                            )
-
-                                                                        }
-
-                                                                    }
-
-                                                                 //   item.name?.let { Text(text = it) }
-                                                                    Text(text = context.resources.getString( item.name))
-
-                                                                }
-
-
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                if (!isConnect.value) {
+                                                    ChkNetWork(
+                                                        onCheckState = {
+                                                            coroutineScope.launch {
+                                                                isConnect.value =
+                                                                    checkInternetConnected()
                                                             }
-
                                                         }
-
-                                                    }
-
-                                                    Row(
+                                                    )
+                                                } else {
+                                                    Column(
                                                         modifier = Modifier.fillMaxWidth(),
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            0.dp
-                                                        ),
-                                                        verticalAlignment = Alignment.CenterVertically
-
+                                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                                        verticalArrangement = Arrangement.Top
                                                     ) {
 
-                                                        Box(
-                                                            modifier = Modifier.fillMaxWidth(
-                                                                gridWidth
-                                                            )
-                                                        ) {
-                                                            GisMemoNavHost(navController)
-                                                        }
+                                                        if (isPortrait) {
 
 
-                                                        if (!isPortrait) {
-
-                                                            Box(
+                                                            Row(
                                                                 modifier = Modifier
+                                                                    .align(Alignment.CenterHorizontally)
                                                                     .fillMaxWidth()
-                                                                    .padding(vertical = 2.dp)
+                                                                    .height(90.dp)
+                                                                    .shadow(6.dp),
+                                                                horizontalArrangement = Arrangement.Center,
+                                                                verticalAlignment = Alignment.CenterVertically
                                                             ) {
-                                                                Column(
-                                                                    modifier = Modifier
-                                                                        .align(Alignment.Center)
-                                                                        .fillMaxHeight()
-                                                                        .width(90.dp)
-                                                                        .shadow(6.dp),
-                                                                    verticalArrangement = Arrangement.Center,
-                                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                                ) {
 
-                                                                    mainScreens.forEachIndexed { index, item ->
+                                                                mainScreens.forEachIndexed { index, item ->
 
-                                                                        Column(
-                                                                            modifier = Modifier.padding(
-                                                                                vertical = 0.dp
-                                                                            ),
-                                                                            verticalArrangement = Arrangement.Center,
-                                                                            horizontalAlignment = Alignment.CenterHorizontally
-                                                                        ) {
 
-                                                                            Box(modifier = Modifier) {
-                                                                                IconButton(
-                                                                                    modifier = Modifier,
-                                                                                    onClick = {
-                                                                                        isPressed.value =
-                                                                                            true
-                                                                                        selectedItem.value =
-                                                                                            index
-                                                                                        navController.navigateTo(
-                                                                                            mainScreens[index].route
-                                                                                        )
-                                                                                    },
-                                                                                    content = {
-                                                                                        item.icon?.let {
-                                                                                            Icon(
-                                                                                                modifier = Modifier,
-                                                                                                imageVector = it,
-                                                                                                contentDescription = context.resources.getString( item.name)
+                                                                    Column(
+                                                                        modifier = Modifier.padding(
+                                                                            horizontal = 10.dp
+                                                                        ),
+                                                                        verticalArrangement = Arrangement.Center,
+                                                                        horizontalAlignment = Alignment.CenterHorizontally
+                                                                    ) {
+
+                                                                        Box(modifier = Modifier) {
+
+                                                                            IconButton(
+                                                                                modifier = Modifier,
+
+                                                                                onClick = {
+                                                                                    isPressed.value =
+                                                                                        true
+                                                                                    selectedItem.value =
+                                                                                        index
+                                                                                    navController.navigateTo(
+                                                                                        mainScreens[index].route
+                                                                                    )
+                                                                                },
+                                                                                content = {
+                                                                                    item.icon?.let {
+                                                                                        Icon(
+                                                                                            modifier = Modifier,
+                                                                                            imageVector = it,
+                                                                                            contentDescription = context.resources.getString(
+                                                                                                item.name
                                                                                             )
-                                                                                        }
+                                                                                        )
                                                                                     }
+                                                                                }
+                                                                            )
+
+                                                                            if (selectedItem.value == index) {
+                                                                                Box(
+                                                                                    modifier = Modifier
+                                                                                        .align(
+                                                                                            Alignment.Center
+                                                                                        )
+                                                                                        .width(40.dp)
+                                                                                        .height(40.dp)
+                                                                                        .border(
+                                                                                            width = 25.dp,
+                                                                                            color = MaterialTheme.colorScheme.surfaceTint.copy(
+                                                                                                alpha = 0.6f
+                                                                                            ),
+                                                                                            shape = ShapeDefaults.Large
+                                                                                        )
                                                                                 )
 
-                                                                                if (selectedItem.value == index) {
-                                                                                    Box(
-                                                                                        modifier = Modifier
-                                                                                            .align(
-                                                                                                Alignment.Center
-                                                                                            )
-                                                                                            .width(
-                                                                                                40.dp
-                                                                                            )
-                                                                                            .height(
-                                                                                                40.dp
-                                                                                            )
-                                                                                            .border(
-                                                                                                width = 25.dp,
-                                                                                                color = MaterialTheme.colorScheme.surfaceTint.copy(
-                                                                                                    alpha = 0.6f
-                                                                                                ),
-                                                                                                shape = ShapeDefaults.Large
-                                                                                            )
-                                                                                    )
-                                                                                }
                                                                             }
-
-                                                                            Text(text = context.resources.getString( item.name))
 
                                                                         }
 
+                                                                        //   item.name?.let { Text(text = it) }
+                                                                        Text(
+                                                                            text = context.resources.getString(
+                                                                                item.name
+                                                                            )
+                                                                        )
+
+                                                                    }
+
+
+                                                                }
+
+                                                            }
+
+                                                        }
+
+                                                        Row(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            horizontalArrangement = Arrangement.spacedBy(
+                                                                0.dp
+                                                            ),
+                                                            verticalAlignment = Alignment.CenterVertically
+
+                                                        ) {
+
+                                                            Box(
+                                                                modifier = Modifier.fillMaxWidth(
+                                                                    gridWidth
+                                                                )
+                                                            ) {
+                                                                GisMemoNavHost(navController)
+                                                            }
+
+
+                                                            if (!isPortrait) {
+
+                                                                Box(
+                                                                    modifier = Modifier
+                                                                        .fillMaxWidth()
+                                                                        .padding(vertical = 2.dp)
+                                                                ) {
+                                                                    Column(
+                                                                        modifier = Modifier
+                                                                            .align(Alignment.Center)
+                                                                            .fillMaxHeight()
+                                                                            .width(90.dp)
+                                                                            .shadow(6.dp),
+                                                                        verticalArrangement = Arrangement.Center,
+                                                                        horizontalAlignment = Alignment.CenterHorizontally
+                                                                    ) {
+
+                                                                        mainScreens.forEachIndexed { index, item ->
+
+                                                                            Column(
+                                                                                modifier = Modifier.padding(
+                                                                                    vertical = 0.dp
+                                                                                ),
+                                                                                verticalArrangement = Arrangement.Center,
+                                                                                horizontalAlignment = Alignment.CenterHorizontally
+                                                                            ) {
+
+                                                                                Box(modifier = Modifier) {
+                                                                                    IconButton(
+                                                                                        modifier = Modifier,
+                                                                                        onClick = {
+                                                                                            isPressed.value =
+                                                                                                true
+                                                                                            selectedItem.value =
+                                                                                                index
+                                                                                            navController.navigateTo(
+                                                                                                mainScreens[index].route
+                                                                                            )
+                                                                                        },
+                                                                                        content = {
+                                                                                            item.icon?.let {
+                                                                                                Icon(
+                                                                                                    modifier = Modifier,
+                                                                                                    imageVector = it,
+                                                                                                    contentDescription = context.resources.getString(
+                                                                                                        item.name
+                                                                                                    )
+                                                                                                )
+                                                                                            }
+                                                                                        }
+                                                                                    )
+
+                                                                                    if (selectedItem.value == index) {
+                                                                                        Box(
+                                                                                            modifier = Modifier
+                                                                                                .align(
+                                                                                                    Alignment.Center
+                                                                                                )
+                                                                                                .width(
+                                                                                                    40.dp
+                                                                                                )
+                                                                                                .height(
+                                                                                                    40.dp
+                                                                                                )
+                                                                                                .border(
+                                                                                                    width = 25.dp,
+                                                                                                    color = MaterialTheme.colorScheme.surfaceTint.copy(
+                                                                                                        alpha = 0.6f
+                                                                                                    ),
+                                                                                                    shape = ShapeDefaults.Large
+                                                                                                )
+                                                                                        )
+                                                                                    }
+                                                                                }
+
+                                                                                Text(
+                                                                                    text = context.resources.getString(
+                                                                                        item.name
+                                                                                    )
+                                                                                )
+
+                                                                            }
+
+                                                                        }
                                                                     }
                                                                 }
+
                                                             }
 
                                                         }
 
                                                     }
-
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+
                         }
                     }
 
@@ -539,3 +579,4 @@ fun ChkNetWork(
     }
 
 }
+

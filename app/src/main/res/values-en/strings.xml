@@ -62,6 +62,10 @@
     <string name="setting_UsableDarkMode">Usable DarkMode</string>
     <string name="setting_ClearAllMemo">Clear All Memo</string>
 
+    <string name="setting_Locale_en">English</string>
+    <string name="setting_Locale_fr">French</string>
+    <string name="setting_Locale_apply">Apply</string>
+
     <string name="dataContainer_Screenshot">Screenshot</string>
     <string name="dataContainer_AudioText">AudioText</string>
     <string name="dataContainer_Photo">Photo</string>
@@ -77,7 +81,11 @@
     <string name="weather_desc_temp"> "temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
     <string name="weather_desc_weather"> "pressure:%,.0fhPa humidity:%,.0f"</string>
     <string name="weather_desc_wind">"wind:%,.0fm/s deg:%,.0f° visibility:%dkm"</string>
+    <string name="weather_location_searching"> "Searching for location..."</string>
 
     <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s"</string>
+    <string name="setting_Locale">language selection</string>
+    <string name="setting_Locale_ko">Korean</string>
+
 
 </resources>

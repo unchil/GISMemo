@@ -17,6 +17,12 @@ class SettingsViewModel ( val repository: Repository) : ViewModel() {
             is Event.UpdateIsUsableDarkMode -> {
                 updateIsUsableDarkMode(event.isUsableDarkMode)
             }
+            is Event.UpdateOnChangeLocale -> {
+                updateOnChangeLocale(event.onChnageLocale)
+            }
+            is Event.UpdateIsChangeLocale -> {
+                updateIsChangeLocale(event.isChnageLocale)
+            }
             Event.clearAllMemo -> {
                 clearAllMemo()
             }
@@ -38,10 +44,23 @@ class SettingsViewModel ( val repository: Repository) : ViewModel() {
         repository.updateIsUsableDarkMode(isUsableDarkMode)
     }
 
+    private fun updateOnChangeLocale (onChangeLocale:Boolean) {
+        repository.updateOnChangeLocale(onChangeLocale)
+    }
+
+    private fun updateIsChangeLocale (isChangeLocale:Int) {
+        repository.updateIsChangeLocale(isChangeLocale)
+    }
+
     sealed class Event {
         data class UpdateIsUsableHaptic(val isUsable:Boolean): Event()
 
         data class UpdateIsUsableDarkMode(val isUsableDarkMode:Boolean): Event()
+
+        data class UpdateOnChangeLocale(val onChnageLocale:Boolean): Event()
+
+        data class UpdateIsChangeLocale(val isChnageLocale:Int): Event()
+
         object clearAllMemo: Event()
     }
 }

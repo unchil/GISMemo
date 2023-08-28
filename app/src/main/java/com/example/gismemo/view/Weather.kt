@@ -146,7 +146,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
                                 imageVector = Icons.Outlined.LocationSearching,
                                 contentDescription = "LocationSearching"
                             )
-                            Text("Location Searching")
+                            Text(text = context.resources.getString(R.string.weather_location_searching))
                         }
                     })
 
@@ -195,18 +195,17 @@ fun WeatherView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        item.toTextHeadLine()
 
         Text( item.toTextHeadLine()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = TextStyle( fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            , style  = MaterialTheme.typography.titleMedium
         )
 
         Text(item.toTextWeatherDesc()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = TextStyle( fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            , style  = MaterialTheme.typography.titleMedium
         )
 
         Row(
@@ -224,7 +223,7 @@ fun WeatherView(
                     .align(Alignment.CenterVertically)
                     .fillMaxWidth(0.3f)
                     .aspectRatio(1.5f)
-                , tint = Color(255, 165, 0)
+              //  , tint = Color(255, 165, 0)
             )
 
 
@@ -254,20 +253,18 @@ fun WeatherViewLandScape(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        item.toTextHeadLine()
-
         Text(
             item.toTextHeadLine(),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            style = MaterialTheme.typography.titleMedium
         )
 
         Text(
             item.toTextWeatherDesc(),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            style = MaterialTheme.typography.titleMedium
         )
 
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
@@ -279,7 +276,7 @@ fun WeatherViewLandScape(
             , modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .aspectRatio(1f)
-            , tint = Color(255, 165, 0)
+          //  , tint = Color(255, 165, 0)
         )
 
         Spacer(modifier = Modifier.padding(vertical = 10.dp))

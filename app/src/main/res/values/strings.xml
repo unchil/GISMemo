@@ -64,6 +64,11 @@
     <string name="setting_UsableHaptic">햅틱 사용</string>
     <string name="setting_UsableDarkMode">야간모드 사용</string>
     <string name="setting_ClearAllMemo">전체 메모 삭제</string>
+    <string name="setting_Locale">언어 선택</string>
+    <string name="setting_Locale_ko">한글</string>
+    <string name="setting_Locale_en">영어</string>
+    <string name="setting_Locale_fr">프랑스어</string>
+    <string name="setting_Locale_apply">적용</string>
 
     <string name="dataContainer_Screenshot">스크린샷</string>
     <string name="dataContainer_AudioText">녹음 메모</string>
@@ -81,6 +86,9 @@
     <string name="weather_desc_temp"> "기온:%,.0f°C  최저:%,.0f°C  최고:%,.0f°C"</string>
     <string name="weather_desc_weather"> "기압:%,.0fhPa 습도:%,.0f"</string>
     <string name="weather_desc_wind">"바람:%,.0fm/s 방향:%,.0f° 가시거리:%dkm"</string>
+    <string name="weather_location_searching"> "위치 검색 중..."</string>
+
+
     <string name="memo_desc">"스크린샷:%s 녹음메모:%s 사진:%s 동영상:%s"</string>
 
 </resources>
