@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsManager = PermissionsManager()
 
+
     fun checkInternetConnected() :Boolean  {
         ( applicationContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
             activeNetwork?.let {network ->
@@ -79,6 +80,24 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    override fun attachBaseContext(context: Context?) {
+
+        if(context != null){
+            context.let {
+                val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
+                val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
+                val locale = localeList[repository.isChangeLocale.value]
+                it.resources.configuration.setLocale(locale)
+                it.createConfigurationContext(it.resources.configuration)
+                super.attachBaseContext(it.createConfigurationContext(it.resources.configuration))
+            }
+        }else {
+            super.attachBaseContext(context)
+        }
+    }
+
+
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +113,6 @@ class MainActivity : ComponentActivity() {
             val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
             val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
             val onChangeLocale = repository.onChangeLocale.collectAsState()
-            val isChangeLocale = repository.isChangeLocale.collectAsState()
             val isUsableHaptic = repository.isUsableHaptic.collectAsState()
             val isUsableDarkMode = repository.isUsableDarkMode.collectAsState()
             val hapticFeedback = LocalHapticFeedback.current
@@ -107,18 +125,6 @@ class MainActivity : ComponentActivity() {
                     isPressed.value = false
                 }
             }
-
-            LaunchedEffect(key1 = isChangeLocale.value){
-                val locale = localeList[isChangeLocale.value]
-                Locale.setDefault(locale)
-                context.resources.configuration.setLocale(locale)
-                context.resources.configuration.setLayoutDirection(locale)
-                //    context.createConfigurationContext(context.resources.configuration)
-                context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
-            }
-
-
-
 
             val coroutineScope = rememberCoroutineScope()
 

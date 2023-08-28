@@ -1,5 +1,8 @@
 package com.example.gismemo.view
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -32,6 +35,15 @@ import com.example.gismemo.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
+fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("no activity")
+}
+
 
 val localeList =  listOf(
     Locale("ko"),
@@ -54,8 +66,6 @@ fun SettingsView(navController: NavHostController){
     var isLocaleChange by rememberSaveable { mutableStateOf(false) }
     var checkedIsUsableHaptic by remember { mutableStateOf(isUsableHaptic) }
     var checkedIsDarkMode by remember { mutableStateOf(isUsableDarkMode) }
-
-
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -67,8 +77,6 @@ fun SettingsView(navController: NavHostController){
         }
     }
 
-
-
     val iconIsUsableHaptic: (@Composable () -> Unit)? = if (checkedIsUsableHaptic) {
         {
             Icon(
@@ -77,9 +85,7 @@ fun SettingsView(navController: NavHostController){
                 modifier = Modifier.size(SwitchDefaults.IconSize),
             )
         }
-    } else {
-        null
-    }
+    } else {  null  }
 
     val iconIsDarkMode: (@Composable () -> Unit)? = if (checkedIsDarkMode) {
         {
@@ -89,9 +95,7 @@ fun SettingsView(navController: NavHostController){
                 modifier = Modifier.size(SwitchDefaults.IconSize),
             )
         }
-    } else {
-        null
-    }
+    } else {    null }
 
     var isAlertDialog by rememberSaveable {
         mutableStateOf(false)
@@ -112,11 +116,9 @@ fun SettingsView(navController: NavHostController){
     LaunchedEffect(key1 = localeRadioGroupState.value ){
 
         val locale = localeList[localeRadioGroupState.value]
-        Locale.setDefault(locale)
         context.resources.configuration.setLocale(locale)
-        context.resources.configuration.setLayoutDirection(locale)
-        //    context.createConfigurationContext(context.resources.configuration)
-        context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
+    //   context.createConfigurationContext(context.resources.configuration)
+       context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
         isLocaleChange = !isLocaleChange
         viewModel.onEvent(SettingsViewModel.Event.UpdateOnChangeLocale(isLocaleChange))
         viewModel.onEvent(SettingsViewModel.Event.UpdateIsChangeLocale(localeRadioGroupState.value))
