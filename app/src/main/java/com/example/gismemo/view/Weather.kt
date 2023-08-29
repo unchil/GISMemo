@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -123,7 +124,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier
+            modifier = Modifier.clickable(false,null,null){}
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.background)
             ,

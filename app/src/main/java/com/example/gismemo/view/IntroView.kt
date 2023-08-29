@@ -7,6 +7,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -293,7 +294,7 @@ fun IntroView(
 
                         if (!isPortrait) {
                             Box(modifier = Modifier.fillMaxWidth(0.4f)) {
-                                WeatherContent(){
+                                WeatherContent{
                                     if(!it){
                                         channel.trySend(snackbarChannelList.first {
                                             it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
@@ -595,6 +596,7 @@ fun MemoSwipeView(
 
                     Row(
                         modifier = Modifier
+                            .clickable(false,null,null){}
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround

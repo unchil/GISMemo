@@ -131,114 +131,137 @@ fun SettingsView(navController: NavHostController){
     }
 
     CompositionLocalProvider(LocalChangeLocaleCurrent provides isLocaleChange) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
 
+        Box(modifier = Modifier.fillMaxSize()) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.align(Alignment.Center)
+                    .width(500.dp)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    text = context.resources.getString(R.string.setting_UsableHaptic),
+
+                Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        text = context.resources.getString(R.string.setting_UsableHaptic),
+                    )
+
+                    Switch(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .semantics { contentDescription = "IS Usable Haptic " },
+                        checked = checkedIsUsableHaptic,
+                        onCheckedChange = {
+                            hapticProcessing()
+                            checkedIsUsableHaptic = it
+                            viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableHaptic(it))
+                        },
+                        thumbContent = iconIsUsableHaptic
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        text = context.resources.getString(R.string.setting_UsableDarkMode)
+                    )
+
+                    Switch(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .semantics {
+                                contentDescription = "IS Usable DarkMode "
+                            },
+                        checked = checkedIsDarkMode,
+                        onCheckedChange = {
+                            hapticProcessing()
+                            checkedIsDarkMode = it
+                            viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableDarkMode(it))
+                        },
+                        thumbContent = iconIsDarkMode
+                    )
+                }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        text = context.resources.getString(R.string.setting_ClearAllMemo)
+                    )
+
+                    IconButton(
+                        modifier = Modifier
+                            .scale(1.2f)
+                            .fillMaxWidth(0.5f),
+                        onClick = {
+                            hapticProcessing()
+                            isAlertDialog = true
+
+                        },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                contentDescription = "Clear All Memo"
+                            )
+                        }
+                    )
+                }
+
+
+
+                Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Language,
+                        contentDescription = "locale"
+                    )
+                    Text(context.resources.getString(R.string.setting_Locale))
+                }
+
+
+                RadioButtonGroupView(
+                    state = localeRadioGroupState,
+                    items = localeOption
                 )
 
-                Switch(
-                    modifier = Modifier.fillMaxWidth(0.5f).semantics { contentDescription = "IS Usable Haptic " },
-                    checked = checkedIsUsableHaptic,
-                    onCheckedChange = {
-                        hapticProcessing()
-                        checkedIsUsableHaptic = it
-                        viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableHaptic(it))
-                    },
-                    thumbContent = iconIsUsableHaptic
-                )
+
+                Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp))
+
+
             }
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(                    modifier = Modifier.fillMaxWidth(0.5f),
-                    text = context.resources.getString(R.string.setting_UsableDarkMode))
-
-                Switch(
-                    modifier = Modifier.fillMaxWidth(0.5f).semantics {
-                        contentDescription = "IS Usable DarkMode "
-                    },
-                    checked = checkedIsDarkMode,
-                    onCheckedChange = {
-                        hapticProcessing()
-                        checkedIsDarkMode = it
-                        viewModel.onEvent(SettingsViewModel.Event.UpdateIsUsableDarkMode(it))
-                    },
-                    thumbContent = iconIsDarkMode
-                )
-            }
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(                    modifier = Modifier.fillMaxWidth(0.5f),
-                    text = context.resources.getString(R.string.setting_ClearAllMemo))
-
-                IconButton(
-                    modifier = Modifier.scale(1.2f).fillMaxWidth(0.5f),
-                    onClick = {
-                        hapticProcessing()
-                        isAlertDialog = true
-
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = "Clear All Memo"
-                        )
-                    }
-                )
-            }
-
-
-
-            Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Language,
-                    contentDescription = "locale"
-                )
-                Text(context.resources.getString(R.string.setting_Locale))
-            }
-
-
-            RadioButtonGroupView(
-                state = localeRadioGroupState,
-                items = localeOption
-            )
-
-
-            Divider(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp))
-
 
         }
 
     }
 
 }
+
+
 
 @Preview
 @Composable
