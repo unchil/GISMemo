@@ -31,6 +31,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.HighlightOff
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -1274,7 +1275,7 @@ fun ConfirmDialog(
                                     titleText.value = ""
                                 }) {
                                 Icon(
-                                    imageVector = Icons.Rounded.HighlightOff,
+                                    imageVector = Icons.Rounded.Replay,
                                     contentDescription = "Clear"
                                 )
                             }

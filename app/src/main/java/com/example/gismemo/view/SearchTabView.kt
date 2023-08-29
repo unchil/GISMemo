@@ -400,7 +400,7 @@ fun SearchView(
                             content = {
                                 Icon(
                                     modifier = Modifier,
-                                    imageVector = Icons.Outlined.Close,
+                                    imageVector = Icons.Outlined.Replay,
                                     contentDescription = "Clear"
                                 )
                             }
