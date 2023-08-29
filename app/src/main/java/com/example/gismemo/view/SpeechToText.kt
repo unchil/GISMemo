@@ -48,7 +48,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
-
+import java.util.*
 
 
 val recognizerIntent =  {
@@ -61,8 +61,9 @@ val recognizerIntent =  {
 
     intent.putExtra(
         RecognizerIntent.EXTRA_LANGUAGE,
-        java.util.Locale.getDefault()
+        Locale.getDefault().language
     )
+
     intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Talk")
 
     /*
@@ -215,7 +216,7 @@ fun SpeechRecognizerCompose(navController: NavController   ) {
             RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
         )
 
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().language )
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Talk")
 
         intent.putExtra("android.speech.extra.GET_AUDIO", true)

@@ -87,6 +87,8 @@ class MainActivity : ComponentActivity() {
                 val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
                 val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
                 val locale = localeList[repository.isChangeLocale.value]
+                Locale.setDefault(locale)
+                context.resources.configuration.setLayoutDirection(locale)
                 it.resources.configuration.setLocale(locale)
                 it.createConfigurationContext(it.resources.configuration)
                 super.attachBaseContext(it.createConfigurationContext(it.resources.configuration))

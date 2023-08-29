@@ -116,7 +116,10 @@ fun SettingsView(navController: NavHostController){
         isLocaleChange = !isLocaleChange
 
         val locale = localeList[localeRadioGroupState.value]
+        Locale.setDefault(locale)
+
         context.resources.configuration.setLocale(locale)
+        context.resources.configuration.setLayoutDirection(locale)
     //    context.createConfigurationContext(context.resources.configuration)
        context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
         viewModel.onEvent(SettingsViewModel.Event.UpdateOnChangeLocale(isLocaleChange))
@@ -135,7 +138,8 @@ fun SettingsView(navController: NavHostController){
         Box(modifier = Modifier.fillMaxSize()) {
 
             Column(
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .align(Alignment.Center)
                     .width(500.dp)
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Top,
