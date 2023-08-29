@@ -77,7 +77,7 @@
     <string name="weather_desc_weather">pression:%,.0fhPa humidité:%,.0f</string>
     <string name="weather_desc_wind">vent:%,.0fm/s deg:%,.0f° visibilité:%dkm</string>
     <string name="weather_location_searching"> "Recherche d'emplacement"</string>
-    <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s</string>
+    <string name="memo_desc">"screenshot:%s audioText:%s photo:%s video:%s"</string>
     <string name="setting_Locale">sélection de la langue</string>
     <string name="setting_Locale_ko">Coréen</string>
 

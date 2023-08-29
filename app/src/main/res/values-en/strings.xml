@@ -83,7 +83,7 @@
     <string name="weather_desc_wind">"wind:%,.0fm/s deg:%,.0f° visibility:%dkm"</string>
     <string name="weather_location_searching"> "Searching for location"</string>
 
-    <string name="memo_desc">Screenshot:%s AudioText:%s Photo:%s Video:%s"</string>
+    <string name="memo_desc">"screenshot:%s audioText:%s photo:%s video:%s"</string>
     <string name="setting_Locale">language selection</string>
     <string name="setting_Locale_ko">Korean</string>
 
