@@ -1,5 +1,6 @@
 package com.example.gismemo.shared.composables
 
+import android.graphics.drawable.shapes.Shape
 import android.text.format.DateUtils
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.TorchState
@@ -12,8 +13,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.icons.rounded.FlashOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -195,13 +199,14 @@ fun CameraFlipIcon(
 @Composable
 fun Timer(modifier: Modifier = Modifier, seconds: Int) {
     if (seconds > 0) {
-        Box(modifier = Modifier.padding(vertical = 24.dp).then(modifier)) {
+        Box(modifier = Modifier.padding(vertical = 30.dp).then(modifier).clip(ShapeDefaults.Small)) {
             Text(
                 text = DateUtils.formatElapsedTime(seconds.toLong()),
-                color = Color.Black,
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White,
                 modifier = Modifier
-                    .background(color = Color.Yellow.copy(alpha = 0.5f))
-                    .padding(horizontal = 10.dp)
+                    .background(color = Color.Red.copy(alpha = 0.3f))
+                    .padding( horizontal = 6.dp)
                     .then(modifier)
             )
         }
