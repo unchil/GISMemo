@@ -51,11 +51,10 @@ val localeList =  listOf(
     Locale("fr")
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsView(navController: NavHostController){
     val LocalChangeLocaleCurrent = compositionLocalOf{ false }
-    val context = LocalContext.current
+    var context = LocalContext.current
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         SettingsViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
@@ -114,14 +113,20 @@ fun SettingsView(navController: NavHostController){
     }
 
     LaunchedEffect(key1 = localeRadioGroupState.value ){
+        isLocaleChange = !isLocaleChange
 
         val locale = localeList[localeRadioGroupState.value]
         context.resources.configuration.setLocale(locale)
-    //   context.createConfigurationContext(context.resources.configuration)
+    //    context.createConfigurationContext(context.resources.configuration)
        context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
-        isLocaleChange = !isLocaleChange
         viewModel.onEvent(SettingsViewModel.Event.UpdateOnChangeLocale(isLocaleChange))
         viewModel.onEvent(SettingsViewModel.Event.UpdateIsChangeLocale(localeRadioGroupState.value))
+
+/*
+        if(isLocaleChange) {
+            context.findActivity().recreate()
+        }
+ */
 
     }
 

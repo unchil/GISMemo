@@ -1,5 +1,7 @@
 package com.example.gismemo.model
 
+import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mic
@@ -55,16 +57,16 @@ enum class BiometricCheckType {
     DETAILVIEW, SHARE, DELETE
 }
 
-fun BiometricCheckType.getTitle():Pair<String,String> {
+fun BiometricCheckType.getTitle(getString: (Int)->String):Pair<String,String> {
     return when(this){
         BiometricCheckType.DETAILVIEW  -> {
-            Pair("메모 보기", "메모를 확인 하려면 보안 인증이 필요 합니다.")
+            Pair(getString(R.string.biometric_prompt_detailview_title), getString(R.string.biometric_prompt_detailview_msg))
         }
         BiometricCheckType.SHARE -> {
-            Pair("메모 공유", "메모를 공유 하려면 보안 인증이 필요 합니다.")
+            Pair(getString(R.string.biometric_prompt_share_title), getString(R.string.biometric_prompt_share_msg))
         }
         BiometricCheckType.DELETE -> {
-            Pair("메모 삭제", "메모를 삭제 하려면 보안 인증이 필요 합니다.")
+            Pair(getString(R.string.biometric_prompt_delete_title), getString(R.string.biometric_prompt_delete_msg))
         }
     }
 

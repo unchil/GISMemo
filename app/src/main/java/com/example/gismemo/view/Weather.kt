@@ -228,10 +228,10 @@ fun WeatherView(
 
 
             Column (modifier = Modifier.fillMaxWidth()){
-                WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context))
-                WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context))
-                WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context))
-                WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context))
+                WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context.resources::getString))
+                WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context.resources::getString))
+                WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context.resources::getString))
+                WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context.resources::getString))
             }
 
 
@@ -285,10 +285,10 @@ fun WeatherViewLandScape(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context))
-            WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context))
-            WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context))
-            WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context))
+            WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context.resources::getString))
+            WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context.resources::getString))
+            WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context.resources::getString))
+            WeatherItem(id = Icons.Outlined.Storm, desc = item.toTextWeather(context.resources::getString))
         }
 
 

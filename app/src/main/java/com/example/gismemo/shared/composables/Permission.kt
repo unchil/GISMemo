@@ -44,9 +44,9 @@ fun biometricPrompt(
 
     val biometricPrompt = BiometricPrompt.Builder(context)
         .apply {
-            setTitle(bioMetricCheckType.getTitle().first)
-            setSubtitle(bioMetricCheckType.getTitle().second)
-            setDescription("보안이 설정된 메모는 인증을 하셔야 합니다.")
+            setTitle(bioMetricCheckType.getTitle(context.resources::getString).first)
+            setSubtitle(bioMetricCheckType.getTitle(context.resources::getString).second)
+            setDescription(context.resources.getString(R.string.biometric_desc))
             //BiometricPrompt.PromptInfo.Builder 인스턴스에서는 setNegativeButtonText()와 setAllowedAuthenticators(... or DEVICE_CREDENTIAL)를 동시에 호출할 수 없습니다.
             setAllowedAuthenticators( BIOMETRIC_STRONG  or DEVICE_CREDENTIAL )
             //   setNegativeButton("취소", context.mainExecutor, { _ , _ ->   })
@@ -61,7 +61,7 @@ fun biometricPrompt(
             }
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                onResult(false, bioMetricCheckType, "Authentication failed")
+                onResult(false, bioMetricCheckType, context.resources.getString(R.string.biometric_err_msg))
             }
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
@@ -89,8 +89,8 @@ fun CheckPermission( multiplePermissionsState: MultiplePermissionsState){
 
         PermissionsManager.Action.SHOW_RATIONALE -> {
             PermissionRationaleDialog(
-                message = "기능 제약 없는 GisMemo 를 사용 하기 위해서 권한이 필요 합니다.",
-                title = "Permission Request",
+                message = context.resources.getString(R.string.permission_rationale_msg),
+                title =  context.resources.getString(R.string.permission_rationale_title),
                 primaryButtonText = "REQUEST",
                 onOkTapped = {
                     permissionsManager.getPermissionActionNew(multiplePermissionsState, coroutineScope)
@@ -100,8 +100,8 @@ fun CheckPermission( multiplePermissionsState: MultiplePermissionsState){
 
         PermissionsManager.Action.SHOW_SETTING -> {
             ShowGotoSettingsDialog(
-                title = "시스템 설정",
-                message = "App Info 에서 권한 설정을 해 주세요.",
+                title = context.resources.getString(R.string.permission_setting_title),
+                message = context.resources.getString(R.string.permission_setting_msg),
                 onSettingsTapped = {
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         data = Uri.parse("package:" + context.packageName)

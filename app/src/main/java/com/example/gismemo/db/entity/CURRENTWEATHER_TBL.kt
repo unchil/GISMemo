@@ -2,6 +2,7 @@ package com.example.gismemo.db
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.icu.text.SimpleDateFormat
 import androidx.annotation.NonNull
 import androidx.room.Entity
@@ -75,15 +76,15 @@ fun CURRENTWEATHER_TBL.toTextWeatherDesc(): String {
 }
 
 
-fun CURRENTWEATHER_TBL.toTextSun(context: Context): String {
-    return String.format( context.resources.getString(R.string.weather_desc_sun),
+fun CURRENTWEATHER_TBL.toTextSun(getString: (Int)->String ): String {
+    return String.format( getString(R.string.weather_desc_sun),
         UnixTimeToString(this.sunrise, HHmmss),
         UnixTimeToString(this.sunset, HHmmss)
     )
 }
 
-fun CURRENTWEATHER_TBL.toTextTemp(context: Context): String {
-    return String.format ( context.resources.getString(R.string.weather_desc_temp),
+fun CURRENTWEATHER_TBL.toTextTemp(getString: (Int)->String): String {
+    return String.format ( getString(R.string.weather_desc_temp),
         this.temp,
         this.temp_min,
         this.temp_max
@@ -91,17 +92,17 @@ fun CURRENTWEATHER_TBL.toTextTemp(context: Context): String {
 }
 
 
-fun CURRENTWEATHER_TBL.toTextWeather(context: Context): String {
-    return String.format( context.resources.getString(R.string.weather_desc_weather),
+fun CURRENTWEATHER_TBL.toTextWeather(getString: (Int)->String): String {
+    return String.format( getString(R.string.weather_desc_weather),
         this.pressure,
         this.humidity
     ) + "%"
 }
 
 
-fun CURRENTWEATHER_TBL.toTextWind(context: Context): String {
+fun CURRENTWEATHER_TBL.toTextWind(getString: (Int)->String): String {
     return   String.format(
-        context.resources.getString(R.string.weather_desc_wind),
+        getString(R.string.weather_desc_wind),
         this.speed,
         this.deg,
         this.visibility/ TAG_M_KM )
