@@ -7,12 +7,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorFilter.Companion.tint
@@ -199,11 +202,7 @@ fun WeatherView(
     val context = LocalContext.current
     val isUsableDarkMode = LocalUsableDarkMode.current
     val colorFilter:ColorFilter? = if(isUsableDarkMode){
-        if( item.icon == "04d" || item.icon == "04n"  || item.icon == "50d" || item.icon == "50n"){
-            tint(Color.LightGray)
-        }else {
-            null
-        }
+        tint(Color.LightGray.copy(alpha = 0.3f), blendMode = BlendMode.Darken)
     }else {
         null
     }
@@ -212,7 +211,7 @@ fun WeatherView(
 
     Column(
         modifier = modifier
-            .padding(vertical = 20.dp),
+            .padding(vertical = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -254,11 +253,10 @@ fun WeatherView(
 
             Image(
                 painter =  painterResource(id = getWeatherIcon(item.icon)),
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                .aspectRatio(1.5f),
+                modifier = Modifier .clip(ShapeDefaults.Small)
+                    .fillMaxWidth(0.2f),
                 contentDescription = "weather",
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
                 colorFilter = colorFilter
             )
@@ -266,7 +264,7 @@ fun WeatherView(
 
 
 
-            Column (modifier = Modifier){
+            Column (modifier = Modifier.padding(start= 10.dp)){
                 WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context.resources::getString))
                 WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context.resources::getString))
                 WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context.resources::getString))
@@ -289,11 +287,7 @@ fun WeatherViewLandScape(
 
     val isUsableDarkMode = LocalUsableDarkMode.current
     val colorFilter:ColorFilter? = if(isUsableDarkMode){
-        if( item.icon == "04d" || item.icon == "04n"  || item.icon == "50d" || item.icon == "50n"){
-            tint(Color.LightGray)
-        }else {
-            null
-        }
+        tint(Color.LightGray.copy(alpha = 0.3f), blendMode = BlendMode.Darken)
     }else {
         null
     }
@@ -333,11 +327,10 @@ fun WeatherViewLandScape(
 
         Image(
             painter =  painterResource(id = getWeatherIcon(item.icon)),
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .aspectRatio(1.5f),
+            modifier = Modifier .clip(ShapeDefaults.Small)
+                .fillMaxWidth(0.5f),
             contentDescription = "weather",
-            contentScale = ContentScale.FillHeight,
+            contentScale = ContentScale.Crop,
             alignment = Alignment.Center,
             colorFilter = colorFilter
             )
