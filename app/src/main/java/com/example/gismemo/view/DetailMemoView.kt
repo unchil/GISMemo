@@ -682,15 +682,18 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                     onClick = {
                                         isTagDialog = false
                                         hapticProcessing()
-                                        snippets.value = ""
+
                                         selectedTags.value.clear()
+
+                                        var snippetsTemp = ""
                                         tagInfoDataList.forEachIndexed { index, tagInfoData ->
                                             if (tagInfoData.isSet.value) {
-                                            //    snippets.value =  "${snippets.value} #${tagInfoData.name}"
-                                                snippets.value = "${snippets.value } #${  context.resources.getString( tagInfoDataList[index].name)   }"
+                                                snippetsTemp = "${snippetsTemp } #${  context.resources.getString( tagInfoDataList[index].name)   }"
                                                 selectedTags.value.add(index)
                                             }
                                         }
+
+                                        snippets.value = snippetsTemp
 
                                         viewModel.onEvent(
                                             DetailMemoViewModel.Event.UpdateTagList(
