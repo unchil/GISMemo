@@ -135,7 +135,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         Column(
             modifier = Modifier
                 .clickable(false, null, null) {}
-                .fillMaxWidth()
+                .fillMaxWidth().padding(horizontal = 10.dp)
                 .background(color = MaterialTheme.colorScheme.background)
             ,
             horizontalAlignment = Alignment.CenterHorizontally

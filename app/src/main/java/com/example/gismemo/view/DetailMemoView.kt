@@ -326,15 +326,13 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                                         shape = ShapeDefaults.ExtraSmall
                                     ),
-                         //           .clip(RoundedCornerShape(8.dp)),
                                 verticalArrangement = Arrangement.SpaceEvenly,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
 
                                 weatherData.value?.let {
                                     WeatherView(
-                                        modifier = Modifier
-                                         //   .width(400.dp)
+                                        modifier = Modifier.padding(horizontal = 10.dp)
                                             .background(
                                                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                                     6.dp
