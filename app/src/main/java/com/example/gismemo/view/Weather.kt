@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gismemo.LocalUsableDarkMode
 import com.example.gismemo.R
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.*
@@ -131,8 +133,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
             modifier = Modifier
                 .clickable(false, null, null) {}
                 .fillMaxWidth()
-             //   .background(color = MaterialTheme.colorScheme.background)
-                .background(color = Color.LightGray.copy(alpha = 0.1f))
+                .background(color = MaterialTheme.colorScheme.background)
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -196,6 +197,19 @@ fun WeatherView(
 ){
 
     val context = LocalContext.current
+    val isUsableDarkMode = LocalUsableDarkMode.current
+    val colorFilter:ColorFilter? = if(isUsableDarkMode){
+        if( item.icon == "04d" || item.icon == "04n"  || item.icon == "50d" || item.icon == "50n"){
+            tint(Color.LightGray)
+        }else {
+            null
+        }
+    }else {
+        null
+    }
+
+
+
     Column(
         modifier = modifier
             .padding(vertical = 20.dp),
@@ -237,6 +251,7 @@ fun WeatherView(
  */
 
 
+
             Image(
                 painter =  painterResource(id = getWeatherIcon(item.icon)),
                 modifier = Modifier
@@ -245,6 +260,7 @@ fun WeatherView(
                 contentDescription = "weather",
                 contentScale = ContentScale.FillHeight,
                 alignment = Alignment.Center,
+                colorFilter = colorFilter
             )
 
 
@@ -270,6 +286,18 @@ fun WeatherViewLandScape(
     modifier:Modifier = Modifier
 ) {
     val context = LocalContext.current
+
+    val isUsableDarkMode = LocalUsableDarkMode.current
+    val colorFilter:ColorFilter? = if(isUsableDarkMode){
+        if( item.icon == "04d" || item.icon == "04n"  || item.icon == "50d" || item.icon == "50n"){
+            tint(Color.LightGray)
+        }else {
+            null
+        }
+    }else {
+        null
+    }
+
     Column(
         modifier = modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
@@ -311,7 +339,7 @@ fun WeatherViewLandScape(
             contentDescription = "weather",
             contentScale = ContentScale.FillHeight,
             alignment = Alignment.Center,
-
+            colorFilter = colorFilter
             )
 
 
