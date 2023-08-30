@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">GIS Memo</string>
     <string name="show_message">Voir le message</string>
+
+    <string name="showGotoSettingsDialog_title" >Paramètre</string>
+
     <string name="mainmenu_list">Liste</string>
     <string name="mainmenu_write">Écrire</string>
     <string name="mainmenu_map">Carte</string>
@@ -24,10 +27,8 @@
     <string name="search_searchBar_placeholder">Entrez un titre à rechercher</string>
     <string name="search_radioBtGroup_marker">"Marker "</string>
     <string name="search_radioBtGroup_secret">Secrète</string>
-    <string name="search_radioBt_secret">Secrète</string>
     <string name="search_radioBt_none">None</string>
     <string name="search_radioBt_all">All</string>
-    <string name="search_radioBt_marker">Marker</string>
     <string name="search_hashTag">HashTag</string>
     <string name="search_period">Période de recherche</string>
     <string name="search_dateRangePicker_headline">Date de début - Date de fin</string>
@@ -73,12 +74,12 @@
     <string name="writeMemo_AlertDialog_Cancel">Annuler</string>
     <string name="writeMemo_AlertDialog_Confirm">Confirmer</string>
     <string name="weather_desc_sun">lever du soleil :%s coucher du soleil :%s</string>
-    <string name="weather_desc_temp">" temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
-    <string name="weather_desc_weather">pression:%,.0fhPa humidité:%,.0f</string>
-    <string name="weather_desc_wind">vent:%,.0fm/s deg:%,.0f° visibilité:%dkm</string>
+    <string name="weather_desc_temp">" temp:%.0f°C  min:%.0f°C  max:%.0f°C"</string>
+    <string name="weather_desc_weather">pression:%.0fhPa humidité:%.0f</string>
+    <string name="weather_desc_wind">vent:%.0fm/s deg:%.0f° visibilité:%dkm</string>
     <string name="weather_location_searching"> "Recherche d'emplacement"</string>
     <string name="memo_desc">"screenshot:%s audioText:%s photo:%s video:%s"</string>
-    <string name="setting_Locale">sélection de la langue</string>
+    <string name="setting_Locale">Sélection De La Langue</string>
     <string name="setting_Locale_ko">Coréen</string>
 
     <string name="biometric_desc">"Les mémos sécurisés doivent être authentifiés."</string>
@@ -96,4 +97,6 @@
     <string name="permission_rationale_msg">"Une autorisation est requise pour utiliser GisMemo sans restrictions fonctionnelles."</string>
     <string name="permission_setting_title">"les paramètres du système"</string>
     <string name="permission_setting_msg">"Veuillez définir les autorisations dans les informations sur l'application."</string>
+    <string name="search_radioBt_select">Sélectionner</string>
+    <string name="setting_Locale_pt">Portugais</string>
 </resources>

@@ -48,7 +48,8 @@ fun Context.findActivity(): Activity {
 val localeList =  listOf(
     Locale("ko"),
     Locale("en"),
-    Locale("fr")
+    Locale("fr"),
+    Locale("pt")
 )
 
 @Composable
@@ -103,7 +104,8 @@ fun SettingsView(navController: NavHostController){
     val localeOption =  listOf(
         context.resources.getString(R.string.setting_Locale_ko),
         context.resources.getString(R.string.setting_Locale_en),
-        context.resources.getString(R.string.setting_Locale_fr)
+        context.resources.getString(R.string.setting_Locale_fr),
+        context.resources.getString(R.string.setting_Locale_pt)
     )
 
 
@@ -241,6 +243,7 @@ fun SettingsView(navController: NavHostController){
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
+                        modifier = Modifier.padding(end = 10.dp),
                         imageVector = Icons.Outlined.Language,
                         contentDescription = "locale"
                     )

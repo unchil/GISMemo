@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">GIS Memo</string>
     <string name="show_message">Show Message</string>
+
+    <string name="showGotoSettingsDialog_title" >Setting</string>
+
     <string name="mainmenu_list">List</string>
     <string name="mainmenu_write">Write</string>
     <string name="mainmenu_map">Map</string>
@@ -24,10 +27,8 @@
     <string name="search_searchBar_placeholder">Enter a title to search for</string>
     <string name="search_radioBtGroup_marker">"Marker "</string>
     <string name="search_radioBtGroup_secret">"Secret "</string>
-    <string name="search_radioBt_secret">Secret</string>
     <string name="search_radioBt_none">None</string>
     <string name="search_radioBt_all">All</string>
-    <string name="search_radioBt_marker">Marker</string>
     <string name="search_hashTag">HashTag</string>
     <string name="search_period">Search Period</string>
     <string name="search_dateRangePicker_headline">Start Date - End Date</string>
@@ -78,13 +79,13 @@
     <string name="writeMemo_AlertDialog_Confirm">Confirm</string>
 
     <string name="weather_desc_sun"> "sunrise:%s sunset:%s"</string>
-    <string name="weather_desc_temp"> "temp:%,.0f°C  min:%,.0f°C  max:%,.0f°C"</string>
-    <string name="weather_desc_weather"> "pressure:%,.0fhPa humidity:%,.0f"</string>
-    <string name="weather_desc_wind">"wind:%,.0fm/s deg:%,.0f° visibility:%dkm"</string>
+    <string name="weather_desc_temp"> "temp:%.0f°C  min:%.0f°C  max:%.0f°C"</string>
+    <string name="weather_desc_weather"> "pressure:%,.0fhPa humidity:%.0f"</string>
+    <string name="weather_desc_wind">"wind:%.0fm/s deg:%.0f° visibility:%dkm"</string>
     <string name="weather_location_searching"> "Searching for location"</string>
 
     <string name="memo_desc">"screenshot:%s audioText:%s photo:%s video:%s"</string>
-    <string name="setting_Locale">language selection</string>
+    <string name="setting_Locale">Language Selection</string>
     <string name="setting_Locale_ko">Korean</string>
 
     <string name="biometric_desc"> "Secured memos must be authenticated."</string>
@@ -102,6 +103,8 @@
     <string name="permission_rationale_msg"> "Authorization is required to use GisMemo without functional restrictions."</string>
     <string name="permission_setting_title"> "System Settings"</string>
     <string name="permission_setting_msg"> "Please set permissions in App Info."</string>
+    <string name="search_radioBt_select">Select</string>
+    <string name="setting_Locale_pt">Portuguese</string>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.example.gismemo.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,8 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -124,9 +128,11 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier.clickable(false,null,null){}
+            modifier = Modifier
+                .clickable(false, null, null) {}
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
+             //   .background(color = MaterialTheme.colorScheme.background)
+                .background(color = Color.LightGray.copy(alpha = 0.1f))
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -215,20 +221,36 @@ fun WeatherView(
         ) {
 
 
-
+/*
             Icon (
             //    imageVector = Icons.Outlined.LightMode
                 painter = painterResource(id = getWeatherIcon(item.icon))
-                ,contentDescription = "clear sky"
+                ,contentDescription = "weather"
                 , modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .fillMaxWidth(0.3f)
                     .aspectRatio(1.5f)
-              //  , tint = Color(255, 165, 0)
+                , tint = Color(255, 165, 0)
             )
 
 
-            Column (modifier = Modifier.fillMaxWidth()){
+ */
+
+
+            Image(
+                painter =  painterResource(id = getWeatherIcon(item.icon)),
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                .aspectRatio(1.5f),
+                contentDescription = "weather",
+                contentScale = ContentScale.FillHeight,
+                alignment = Alignment.Center,
+            )
+
+
+
+
+            Column (modifier = Modifier){
                 WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context.resources::getString))
                 WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context.resources::getString))
                 WeatherItem(id = Icons.Outlined.WindPower, desc = item.toTextWind(context.resources::getString))
@@ -249,8 +271,8 @@ fun WeatherViewLandScape(
 ) {
     val context = LocalContext.current
     Column(
-        modifier = modifier
-            .padding(vertical = 20.dp),
+        modifier = modifier.fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -268,23 +290,37 @@ fun WeatherViewLandScape(
             style = MaterialTheme.typography.titleMedium
         )
 
-        Spacer(modifier = Modifier.padding(vertical = 10.dp))
-
+/*
         Icon (
         //    imageVector = Icons.Outlined.LightMode
             painter = painterResource(id = getWeatherIcon(item.icon))
-            ,contentDescription = "clear sky"
+            ,contentDescription = "weather"
             , modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .aspectRatio(1f)
-          //  , tint = Color(255, 165, 0)
+            , tint = Color(255, 165, 0)
         )
 
-        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+ */
+
+        Image(
+            painter =  painterResource(id = getWeatherIcon(item.icon)),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .aspectRatio(1.5f),
+            contentDescription = "weather",
+            contentScale = ContentScale.FillHeight,
+            alignment = Alignment.Center,
+
+            )
+
+
 
         Column (
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp),
+            horizontalAlignment = Alignment.Start
         ){
             WeatherItem(id =  Icons.Outlined.WbTwilight, desc = item.toTextSun(context.resources::getString))
             WeatherItem(id = Icons.Outlined.DeviceThermostat, desc = item.toTextTemp(context.resources::getString))

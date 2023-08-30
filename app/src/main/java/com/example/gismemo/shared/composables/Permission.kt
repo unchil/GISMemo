@@ -169,6 +169,9 @@ fun ShowGotoSettingsDialog(
     message: String,
     onSettingsTapped: () -> Unit,
 ) {
+
+    val context = LocalContext.current
+
     AlertDialog(
         onDismissRequest = {
 
@@ -195,7 +198,7 @@ fun ShowGotoSettingsDialog(
                 contentAlignment = Alignment.BottomEnd
             ) {
                 Text(
-                    text = "설정",
+                    text = context.resources.getString(R.string.showGotoSettingsDialog_title),
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                         .clickable { onSettingsTapped() },
@@ -226,7 +229,7 @@ fun PermissionRequiredCompose(
         val (id:Int, message:String ) = if ( viewType == null) {
             Pair(
                 PermissionRequiredComposeFuncName.Weather.getDrawable(),
-                "REQUEST PERMISSION"
+                "PERMISSION REQUEST"
             )
         } else {
             when (viewType) {
@@ -268,7 +271,7 @@ fun PermissionRequiredCompose(
                 .height(300.dp)
                 .fillMaxWidth()
                 .padding(10.dp)
-                .border(width = 1.dp, color = Color.Black, shape = ShapeDefaults.Small),
+                .border(width = 1.dp, color = MaterialTheme.colors.onSurface, shape = ShapeDefaults.Small),
             contentAlignment = Alignment.Center
         ) {
 
@@ -370,7 +373,7 @@ fun PermissionRequiredComposeFuncName.getTitle(): String {
         PermissionRequiredComposeFuncName.Weather.name -> {"REQUEST: LOCATION"}
         PermissionRequiredComposeFuncName.Camera.name -> {"REQUEST : CAMERA, RECORD_AUDIO"}
         PermissionRequiredComposeFuncName.MemoMap.name -> {"REQUEST : LOCATION"}
-        else -> {"REQUEST PERMISSION :"}
+        else -> {"PERMISSION REQUEST :"}
     }
 }
 

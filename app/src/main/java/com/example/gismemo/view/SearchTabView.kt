@@ -196,12 +196,12 @@ fun SearchView(
     val dateRangePickerState = rememberDateRangePickerState()
 
     val secretOption =  listOf(
-        context.resources.getString(R.string.search_radioBt_secret),
+        context.resources.getString(R.string.search_radioBt_select),
         context.resources.getString(R.string.search_radioBt_none),
         context.resources.getString(R.string.search_radioBt_all)
     )
     val markerOption =  listOf(
-        context.resources.getString(R.string.search_radioBt_marker),
+        context.resources.getString(R.string.search_radioBt_select),
         context.resources.getString(R.string.search_radioBt_none),
         context.resources.getString(R.string.search_radioBt_all)
     )
