@@ -327,7 +327,7 @@ fun WeatherViewLandScape(
 
         Image(
             painter =  painterResource(id = getWeatherIcon(item.icon)),
-            modifier = Modifier .clip(ShapeDefaults.Small)
+            modifier = Modifier.padding(vertical = 10.dp).clip(ShapeDefaults.Small)
                 .fillMaxWidth(0.5f),
             contentDescription = "weather",
             contentScale = ContentScale.Crop,
