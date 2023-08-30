@@ -300,7 +300,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .fillMaxWidth(),
+                            .width(500.dp),
                         contentAlignment = Alignment.Center
                     ) {
 
@@ -321,7 +321,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
                             Column(
                                 modifier = Modifier
-                                    .padding(horizontal = 2.dp)
+                                    .padding( all = 20.dp)
                                     .background(
                                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                                         shape = ShapeDefaults.ExtraSmall
@@ -334,7 +334,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                 weatherData.value?.let {
                                     WeatherView(
                                         modifier = Modifier
-                                            .width(400.dp)
+                                         //   .width(400.dp)
                                             .background(
                                                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                                     6.dp
@@ -345,13 +345,14 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                     )
                                 }
 
-                                Divider()
+                                Divider(modifier = Modifier.padding(bottom = 10.dp))
 
 
                                 Text(it.title)
                                 Text(it.desc)
                                 Text(text = snippets.value)
 
+                                Spacer(modifier = Modifier.padding(bottom = 10.dp))
 
                             }
                         }
@@ -658,10 +659,12 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                         hapticProcessing()
                                         snippets.value = ""
                                         selectedTags.value.clear()
+
                                         viewModel.onEvent(
                                             DetailMemoViewModel.Event.UpdateTagList(
                                                 id,
-                                                arrayListOf()
+                                                arrayListOf(),
+                                                snippets.value
                                             )
                                         )
                                     },
@@ -683,8 +686,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                         selectedTags.value.clear()
                                         tagInfoDataList.forEachIndexed { index, tagInfoData ->
                                             if (tagInfoData.isSet.value) {
-                                                snippets.value =
-                                                    "${snippets.value} #${tagInfoData.name}"
+                                            //    snippets.value =  "${snippets.value} #${tagInfoData.name}"
+                                                snippets.value = "${snippets.value } #${  context.resources.getString( tagInfoDataList[index].name)   }"
                                                 selectedTags.value.add(index)
                                             }
                                         }
@@ -692,7 +695,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                         viewModel.onEvent(
                                             DetailMemoViewModel.Event.UpdateTagList(
                                                 id,
-                                                selectedTags.value
+                                                selectedTags.value,
+                                                snippets.value
                                             )
                                         )
                                     },

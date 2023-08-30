@@ -38,15 +38,15 @@ class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
                 updateSecret(event.id, event.isSecret)
             }
             is Event.UpdateTagList ->{
-                updateTagList(event.id, event.selectTagList)
+                updateTagList(event.id, event.selectTagList, event.snippets)
             }
         }
 
     }
 
-    private fun updateTagList(id:Long, selectTagList:  ArrayList<Int>){
+    private fun updateTagList(id:Long, selectTagList:  ArrayList<Int>, snippets:String){
         viewModelScope.launch {
-            repository.updateTagList(id, selectTagList)
+            repository.updateTagList(id, selectTagList, snippets)
         }
     }
 
@@ -99,7 +99,7 @@ class DetailMemoViewModel (val repository: Repository, ) : ViewModel() {
         data class UpdateIsSecret(val id: Long, val isSecret:Boolean): Event()
         data class UpdateIsMark(val id: Long, val isMark:Boolean): Event()
 
-   data class UpdateTagList(val id:Long, val   selectTagList:ArrayList<Int>): Event()
+   data class UpdateTagList(val id:Long, val   selectTagList:ArrayList<Int>, val snippets:String): Event()
         data class ToRoute(val navController: NavController, val route:String) :Event()
     }
 

@@ -446,13 +446,16 @@ class Repository{
 
 
 
-    suspend fun updateTagList(id:Long, selectTagList: ArrayList< Int>){
+    suspend fun updateTagList(id:Long, selectTagList: ArrayList< Int>, snippets:String){
 
+        /*
         var snippets = ""
 
         selectTagList.forEach {
             snippets = "${snippets} #${tagInfoDataList[it].name}"
         }
+
+         */
 
 
 

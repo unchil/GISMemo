@@ -495,10 +495,9 @@ fun WriteMemoView(navController: NavController ){
             )
 
             var snippets = ""
-            selectedTagArray.value
             selectedTagArray.value.forEach {
                  snippets = "${snippets} #${  context.resources.getString( tagInfoDataList[it].name)   }"
-        }
+            }
 
 
             val id = System.currentTimeMillis()
