@@ -43,6 +43,9 @@ class Repository{
     val onChangeLocale: MutableStateFlow<Boolean>
             = MutableStateFlow(false)
 
+    val isFirstSetup:MutableStateFlow<Boolean>
+            = MutableStateFlow(true)
+
     val isUsableHaptic: MutableStateFlow<Boolean>
             = MutableStateFlow(true)
 

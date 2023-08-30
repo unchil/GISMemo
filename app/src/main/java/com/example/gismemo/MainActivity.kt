@@ -82,16 +82,24 @@ class MainActivity : ComponentActivity() {
 
     override fun attachBaseContext(context: Context?) {
 
-        if(context != null){
+        if(context != null ){
             context.let {
                 val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
                 val repository = RepositoryProvider.getRepository().apply { database = luckMemoDB }
-                val locale = localeList[repository.isChangeLocale.value]
-                Locale.setDefault(locale)
-                context.resources.configuration.setLayoutDirection(locale)
-                it.resources.configuration.setLocale(locale)
-                it.createConfigurationContext(it.resources.configuration)
-                super.attachBaseContext(it.createConfigurationContext(it.resources.configuration))
+
+                if(repository.isFirstSetup.value){
+                    repository.isFirstSetup.value = false
+                    val index = languageList.indexOf( Locale.getDefault().language)
+                    repository.isChangeLocale.value = if (index == -1 ) 0 else index
+                    super.attachBaseContext(context)
+                } else {
+                    val locale = Locale( languageList[    repository.isChangeLocale.value    ] )
+                    Locale.setDefault(locale)
+                    context.resources.configuration.setLayoutDirection(locale)
+                    it.resources.configuration.setLocale(locale)
+                    it.createConfigurationContext(it.resources.configuration)
+                    super.attachBaseContext(it.createConfigurationContext(it.resources.configuration))
+                }
             }
         }else {
             super.attachBaseContext(context)

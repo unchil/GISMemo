@@ -45,16 +45,17 @@ fun Context.findActivity(): Activity {
 }
 
 
-val localeList =  listOf(
-    Locale("ko"),
-    Locale("en"),
-    Locale("fr"),
-    Locale("pt")
+val languageList =  listOf(
+    "ko",
+    "en",
+    "fr",
+    "pt"
 )
 
 @Composable
 fun SettingsView(navController: NavHostController){
-    val LocalChangeLocaleCurrent = compositionLocalOf{ false }
+
+    val localeChange = LocalChangeLocale.current
     var context = LocalContext.current
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
@@ -110,14 +111,14 @@ fun SettingsView(navController: NavHostController){
 
 
 
-    val localeRadioGroupState = rememberSaveable {
-        mutableStateOf(0 )
+    val localeRadioGroupState = remember {
+        mutableStateOf( viewModel.repository.isChangeLocale.value )
     }
 
     LaunchedEffect(key1 = localeRadioGroupState.value ){
         isLocaleChange = !isLocaleChange
 
-        val locale = localeList[localeRadioGroupState.value]
+        val locale = Locale( languageList[localeRadioGroupState.value] )
         Locale.setDefault(locale)
 
         context.resources.configuration.setLocale(locale)
@@ -135,7 +136,6 @@ fun SettingsView(navController: NavHostController){
 
     }
 
-    CompositionLocalProvider(LocalChangeLocaleCurrent provides isLocaleChange) {
 
         Box(modifier = Modifier.fillMaxSize()) {
 
@@ -264,7 +264,7 @@ fun SettingsView(navController: NavHostController){
 
         }
 
-    }
+
 
 }
 
