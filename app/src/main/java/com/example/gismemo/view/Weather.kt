@@ -135,7 +135,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         Column(
             modifier = Modifier
                 .clickable(false, null, null) {}
-                .fillMaxWidth().padding(horizontal = 10.dp)
+                .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.background)
             ,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -253,7 +253,7 @@ fun WeatherView(
 
             Image(
                 painter =  painterResource(id = getWeatherIcon(item.icon)),
-                modifier = Modifier .clip(ShapeDefaults.Small)
+                modifier = Modifier.padding(horizontal = 10.dp).clip(ShapeDefaults.Small)
                     .fillMaxWidth(0.2f),
                 contentDescription = "weather",
                 contentScale = ContentScale.Crop,

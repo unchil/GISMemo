@@ -323,7 +323,7 @@ fun IntroView(
 
                                 if (isPortrait) {
                                     stickyHeader {
-                                        WeatherContent(){
+                                        WeatherContent{
                                             if(!it){
                                                 channel.trySend(snackbarChannelList.first {
                                                     it.channelType == SnackBarChannelType.LOCATION_SERVICE_DISABLE
