@@ -8,6 +8,10 @@
 This GISMemo is a memo program based on Google Map: [Google Maps Platform][googlelink].
 
 Weather information provided by OpenWeather: [OpenWeatherMap][openweatherlink]. 
+
+Gis Memo App supports the use of hot tack and night mode.
+
+Available languages include Korean, English, French, and Portuguese.
  
 Memos are basically saved as snapshots of weather information and maps at the time and location of the memo.
 
