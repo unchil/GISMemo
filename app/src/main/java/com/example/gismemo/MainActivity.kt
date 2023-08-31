@@ -12,6 +12,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -19,12 +21,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -537,18 +545,27 @@ fun ChkNetWork(
     onCheckState:()->Unit
 ){
 
+    val context = LocalContext.current
+
     val permissions = listOf(Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE)
     val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
     var isGranted by mutableStateOf(true)
 
+    val isUsableDarkMode = LocalUsableDarkMode.current
+    val colorFilter: ColorFilter? = if(isUsableDarkMode){
+        ColorFilter.tint(Color.LightGray, blendMode = BlendMode.Darken)
+    }else {
+        null
+    }
+
     permissions.forEach { chkPermission ->
         isGranted = isGranted && multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
             ?: false
     }
 
-    val  url = Uri.parse("android.resource://com.example.gismemo/" + R.drawable.baseline_wifi_off_black_48).toString().toUri()
+    //val  url = Uri.parse("android.resource://com.example.gismemo/" + R.drawable.baseline_wifi_off_black_48).toString().toUri()
 
     PermissionRequiredCompose(
         isGranted = isGranted,
@@ -557,9 +574,7 @@ fun ChkNetWork(
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize()
-                .padding(20.dp),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
 
@@ -569,12 +584,21 @@ fun ChkNetWork(
                     .align(Alignment.TopCenter)
                     .padding(top = 60.dp),
                 textAlign = TextAlign.Center,
-                style = TextStyle(color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 26.sp),
+                style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 text = "Gis Momo"
             )
 
-            ImageViewer(data = url, size = Size.ORIGINAL, isZoomable = false)
+        //    ImageViewer(data = url, size = Size.ORIGINAL, isZoomable = false)
 
+            Image(
+                painter =  painterResource(R.drawable.baseline_wifi_off_black_48),
+                modifier = Modifier.clip(ShapeDefaults.Medium)
+                    .width(160.dp).height(160.dp),
+                contentDescription = "not Connected",
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center,
+                colorFilter = colorFilter
+            )
 
 
             Button(
@@ -585,7 +609,7 @@ fun ChkNetWork(
                     onCheckState()
                 }
             ) {
-                Text("네트웍 연결을 확인해 주세요")
+                Text(context.resources.getString(R.string.chkNetWork_msg))
             }
 
 

@@ -3,6 +3,7 @@
     <string name="show_message">Show Message</string>
 
 
+    <string name="chkNetWork_msg" >네트웍 연결을 확인해 주세요</string>
     <string name="showGotoSettingsDialog_title" >설정</string>
 
     <string name="mainmenu_list">리스트</string>

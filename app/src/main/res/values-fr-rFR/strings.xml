@@ -3,6 +3,7 @@
     <string name="app_name">GIS Memo</string>
     <string name="show_message">Voir le message</string>
 
+    <string name="chkNetWork_msg">Veuillez vérifier votre connexion réseau</string>
     <string name="showGotoSettingsDialog_title" >Paramètre</string>
 
     <string name="mainmenu_list">Liste</string>
