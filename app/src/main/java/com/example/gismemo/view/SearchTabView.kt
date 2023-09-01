@@ -484,7 +484,7 @@ fun SearchView(
                         Text(context.resources.getString(R.string.search_hashTag))
                         Icon(
                             modifier = Modifier.scale(1.5f),
-                            imageVector = if (isTagBox) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowRight,
+                            imageVector = if (isTagBox) Icons.Outlined.ArrowDropDown else Icons.Outlined.ArrowRight,
                             contentDescription = "tag "
                         )
                     }
@@ -524,7 +524,7 @@ fun SearchView(
                         Text(context.resources.getString(R.string.search_period))
                         Icon(
                             modifier = Modifier.scale(1.5f),
-                            imageVector = if (isDateBox.value)  Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowRight,
+                            imageVector = if (isDateBox.value)  Icons.Outlined.ArrowDropDown else Icons.Outlined.ArrowRight,
                             contentDescription = "date "
                         )
                     }
