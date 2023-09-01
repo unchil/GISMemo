@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -217,8 +218,8 @@ fun SearchView(
 
 
 
-    var isTagBox by rememberSaveable{  mutableStateOf(true)}
-    val isDateBox = rememberSaveable{  mutableStateOf(true)}
+    var isTagBox by rememberSaveable{  mutableStateOf(false)}
+    val isDateBox = rememberSaveable{  mutableStateOf(false)}
 
     val selectedTagArray:MutableState<ArrayList<Int>> = rememberSaveable{ mutableStateOf(arrayListOf())  }
     val query_title = rememberSaveable { mutableStateOf("") }
@@ -482,8 +483,8 @@ fun SearchView(
                         )
                         Text(context.resources.getString(R.string.search_hashTag))
                         Icon(
-                            modifier = Modifier,
-                            imageVector = if (isTagBox) Icons.Outlined.UnfoldLess else Icons.Outlined.UnfoldMore,
+                            modifier = Modifier.scale(1.5f),
+                            imageVector = if (isTagBox) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowRight,
                             contentDescription = "tag "
                         )
                     }
@@ -522,8 +523,8 @@ fun SearchView(
                         )
                         Text(context.resources.getString(R.string.search_period))
                         Icon(
-                            modifier = Modifier,
-                            imageVector = if (isDateBox.value) Icons.Outlined.UnfoldLess else Icons.Outlined.UnfoldMore,
+                            modifier = Modifier.scale(1.5f),
+                            imageVector = if (isDateBox.value)  Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowRight,
                             contentDescription = "date "
                         )
                     }

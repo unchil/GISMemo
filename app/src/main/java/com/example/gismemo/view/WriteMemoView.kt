@@ -1045,7 +1045,7 @@ fun WriteMemoView(navController: NavController ){
 
                     Box(
                         modifier = Modifier
-                            .padding(2.dp)
+                            .padding(10.dp)
                             .background(
                                 color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                                 shape = ShapeDefaults.ExtraSmall)
