@@ -16,7 +16,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
+import androidx.compose.material3.NavigationBarDefaults.containerColor
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -47,6 +53,8 @@ import coil.size.Size
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.LuckMemoDB
+import com.example.gismemo.model.WriteMemoDataTypeList
+import com.example.gismemo.model.getDesc
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.navigation.mainScreens
 import com.example.gismemo.navigation.navigateTo
@@ -163,7 +171,7 @@ class MainActivity : ComponentActivity() {
                 }
                 else ->{
                     isPortrait = false
-                    gridWidth = 0.87f
+                    gridWidth = 0.9f
                 }
             }
 
@@ -210,6 +218,7 @@ class MainActivity : ComponentActivity() {
                                                         }
                                                     )
                                                 } else {
+
                                                     Column(
                                                         modifier = Modifier.fillMaxWidth(),
                                                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -218,7 +227,7 @@ class MainActivity : ComponentActivity() {
 
                                                         if (isPortrait) {
 
-
+/*
                                                             Row(
                                                                 modifier = Modifier
                                                                     .align(Alignment.CenterHorizontally)
@@ -288,7 +297,6 @@ class MainActivity : ComponentActivity() {
 
                                                                         }
 
-                                                                        //   item.name?.let { Text(text = it) }
                                                                         Text(
                                                                             text = context.resources.getString(
                                                                                 item.name
@@ -301,6 +309,47 @@ class MainActivity : ComponentActivity() {
                                                                 }
 
                                                             }
+
+ */
+
+                                                            BottomNavigation(
+                                                                modifier = Modifier
+                                                                    .fillMaxWidth()
+                                                                    .height(60.dp),
+                                                                backgroundColor = NavigationRailDefaults.ContainerColor,
+                                                                contentColor =  contentColorFor(containerColor),
+                                                                elevation = 10.dp
+                                                            ) {
+                                                                Spacer(modifier = Modifier.padding(horizontal = 20.dp))
+                                                                mainScreens.forEachIndexed { index, it ->
+
+                                                                    BottomNavigationItem(
+                                                                        icon = {
+                                                                            Icon(
+                                                                                imageVector = it.icon
+                                                                                    ?:  Icons.Outlined.Info,
+                                                                                contentDescription = context.resources.getString(   it.name) ,
+                                                                                tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                            )
+                                                                        },
+                                                                        label = { androidx.compose.material.Text( context.resources.getString(   it.name ))},
+                                                                        selected = selectedItem.value ==  index,
+                                                                        onClick = {
+                                                                            isPressed.value =  true
+                                                                            selectedItem.value =   index
+                                                                            navController.navigateTo(
+                                                                                mainScreens[index].route
+                                                                            )
+                                                                        },
+                                                                        selectedContentColor = Color.Red,
+                                                                        unselectedContentColor = MaterialTheme.colorScheme.secondary
+
+                                                                    )
+
+                                                                }
+                                                                Spacer(modifier = Modifier.padding(horizontal = 20.dp))
+                                                            }
+
 
                                                         }
 
@@ -323,7 +372,7 @@ class MainActivity : ComponentActivity() {
 
 
                                                             if (!isPortrait) {
-
+/*
                                                                 Box(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -408,6 +457,48 @@ class MainActivity : ComponentActivity() {
                                                                         }
                                                                     }
                                                                 }
+
+ */
+
+                                                                NavigationRail(
+                                                                    modifier = Modifier.width(80.dp),
+                                                                containerColor = NavigationRailDefaults.ContainerColor,
+                                                                contentColor = contentColorFor(containerColor),
+                                                                ) {
+                                                                    
+                                                                    Spacer(modifier = Modifier.padding(vertical = 20.dp))
+                                                                    mainScreens.forEachIndexed { index, it ->
+                                                                        NavigationRailItem(
+                                                                            icon = {
+                                                                                Icon(
+                                                                                    imageVector = it.icon
+                                                                                        ?:  Icons.Outlined.Info,
+                                                                                    contentDescription = context.resources.getString(   it.name) ,
+                                                                                    tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                                )
+                                                                                   },
+                                                                            label = {
+                                                                                Text(
+                                                                                    text = context.resources.getString(
+                                                                                        it.name
+                                                                                    ),
+                                                                                    color =if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                                )
+                                                                                    },
+                                                                            selected = selectedItem.value ==  index,
+                                                                            onClick = {
+                                                                                isPressed.value =  true
+                                                                                selectedItem.value =   index
+                                                                                navController.navigateTo(
+                                                                                    mainScreens[index].route
+                                                                                )
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                    Spacer(modifier = Modifier.padding(vertical = 20.dp))
+                                                                }
+
+
 
                                                             }
 
@@ -592,8 +683,10 @@ fun ChkNetWork(
 
             Image(
                 painter =  painterResource(R.drawable.baseline_wifi_off_black_48),
-                modifier = Modifier.clip(ShapeDefaults.Medium)
-                    .width(160.dp).height(160.dp),
+                modifier = Modifier
+                    .clip(ShapeDefaults.Medium)
+                    .width(160.dp)
+                    .height(160.dp),
                 contentDescription = "not Connected",
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center,
