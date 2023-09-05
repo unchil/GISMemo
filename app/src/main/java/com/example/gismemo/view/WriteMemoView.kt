@@ -541,7 +541,7 @@ fun WriteMemoView(navController: NavController ){
                 )
             },
             sheetShape = ShapeDefaults.Small,
-            sheetPeekHeight = 110.dp,
+            sheetPeekHeight = 90.dp,
             sheetDragHandle = {
                 Box(
                     modifier = Modifier.height(30.dp),
