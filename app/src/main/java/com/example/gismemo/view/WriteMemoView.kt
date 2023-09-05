@@ -542,6 +542,21 @@ fun WriteMemoView(navController: NavController ){
             },
             sheetShape = ShapeDefaults.Small,
             sheetPeekHeight = 110.dp,
+            sheetDragHandle = {
+                Box(
+                    modifier = Modifier.height(30.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+
+                    Icon(
+                        modifier = Modifier.scale(1f),
+                        imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
+                        contentDescription = "search",
+                    )
+                }
+            },
+
+
             sheetContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             sheetContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
             snackbarHost = {

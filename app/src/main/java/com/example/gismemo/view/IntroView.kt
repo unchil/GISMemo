@@ -264,16 +264,19 @@ fun IntroView(
                 sheetShape = ShapeDefaults.Small,
                 sheetDragHandle = {
                     Box(
-                        modifier = Modifier.height(40.dp),
+                        modifier = Modifier.height(30.dp),
                         contentAlignment = Alignment.Center
                     ) {
+
                         Icon(
                             modifier = Modifier.scale(1f),
-                            imageVector = Icons.Outlined.Search,
+                            imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                             contentDescription = "search",
                         )
                     }
                 },
+
+
                 sheetContent = {
                     if (isPortrait) {
                         Box(modifier = Modifier.fillMaxSize()) {
