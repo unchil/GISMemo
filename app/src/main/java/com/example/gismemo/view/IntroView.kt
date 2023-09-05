@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -127,7 +128,7 @@ fun IntroView(
             isPortrait = true
             gridWidth = 1f
             upButtonPaddingValue = 160.dp
-            sheetPeekHeightValue = 140.dp
+            sheetPeekHeightValue = 120.dp
             drawerSheetWidthValue = 0f
             listBottomPaddingValue = 130.dp
 
@@ -254,10 +255,13 @@ fun IntroView(
         },
         content = {
             BottomSheetScaffold(
-                modifier = Modifier.fillMaxSize().statusBarsPadding(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding(),
                 scaffoldState = scaffoldState,
                 snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                 sheetPeekHeight = sheetPeekHeightValue,
+                sheetShape = ShapeDefaults.Small,
                 sheetDragHandle = {
                     Box(
                         modifier = Modifier.height(40.dp),
@@ -317,7 +321,7 @@ fun IntroView(
                                 verticalArrangement = Arrangement.spacedBy(2.dp),
                                 contentPadding = PaddingValues(
                                     horizontal = 6.dp,
-                                    vertical = 10.dp
+                                    vertical = 1.dp
                                 )
                             ) {
 
@@ -588,15 +592,15 @@ fun MemoSwipeView(
                         .fillMaxWidth()
                         .height(SwipeBoxHeight)
                         .offset(x = dismissContentOffset)
-                        .background(androidx.compose.material3.MaterialTheme.colorScheme.inverseOnSurface)
+                        .background(androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
                     ,
 
                     contentAlignment = Alignment.Center
                 ) {
 
                     Row(
-                        modifier = Modifier
-                            .clickable(false,null,null){}
+                        modifier = Modifier.padding(horizontal = 6.dp)
+                            .clickable(false, null, null) {}
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
@@ -610,7 +614,7 @@ fun MemoSwipeView(
 
                         Column(
                             modifier = Modifier
-                                .fillMaxWidth(0.9f),
+                                .fillMaxWidth(0.8f),
                             verticalArrangement = Arrangement.SpaceAround,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -619,18 +623,21 @@ fun MemoSwipeView(
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 minLines =  1,
+                                style = androidx.compose.material3.MaterialTheme.typography.titleSmall
                             )
                             Text(
                                 text =   item.desc,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 minLines =  1,
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
                             )
                             Text(
                                 text =   item.snippets,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 minLines =  1,
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
                             )
                         }
 
@@ -663,15 +670,16 @@ private fun BackgroundContent(
 
     val color by animateColorAsState(
         when (dismissState.targetValue) {
-            DismissValue.Default -> SnackbarDefaults.backgroundColor.copy(alpha = 0.0f)
-            DismissValue.DismissedToEnd -> Color.Green.copy(alpha = 0.4f)
-            DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.5f)
+          //  DismissValue.Default -> SnackbarDefaults.backgroundColor.copy(alpha = 0.0f)
+            DismissValue.Default -> androidx.compose.material3.MaterialTheme.colorScheme.surface
+            DismissValue.DismissedToEnd -> Color.Blue.copy(alpha = 0.3f)
+            DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.3f)
         }
     )
     val scale by animateFloatAsState(
         when (dismissState.targetValue == DismissValue.Default) {
             true -> 1f
-            else -> 1.5f
+            else -> 1.3f
         }
     )
 
@@ -796,6 +804,7 @@ fun UpButton(
         FloatingActionButton(
             modifier = Modifier.then(modifier),
       //      interactionSource =  interactionSource,
+            elevation =  FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
             onClick = {
                 coroutineScope.launch {
                     listState.animateScrollToItem(0)

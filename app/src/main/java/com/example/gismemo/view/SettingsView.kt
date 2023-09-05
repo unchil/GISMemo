@@ -160,6 +160,7 @@ fun SettingsView(navController: NavHostController){
                     Text(
                         modifier = Modifier.fillMaxWidth(0.5f),
                         text = context.resources.getString(R.string.setting_UsableHaptic),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleSmall
                     )
 
                     Switch(
@@ -184,7 +185,8 @@ fun SettingsView(navController: NavHostController){
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(0.5f),
-                        text = context.resources.getString(R.string.setting_UsableDarkMode)
+                        text = context.resources.getString(R.string.setting_UsableDarkMode),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleSmall
                     )
 
                     Switch(
@@ -211,7 +213,8 @@ fun SettingsView(navController: NavHostController){
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(0.5f),
-                        text = context.resources.getString(R.string.setting_ClearAllMemo)
+                        text = context.resources.getString(R.string.setting_ClearAllMemo),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleSmall
                     )
 
                     IconButton(
@@ -243,11 +246,13 @@ fun SettingsView(navController: NavHostController){
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        modifier = Modifier.padding(end = 10.dp),
+                        modifier = Modifier,
                         imageVector = Icons.Outlined.Language,
                         contentDescription = "locale"
                     )
-                    Text(context.resources.getString(R.string.setting_Locale))
+                    Spacer(modifier = Modifier.padding(horizontal = 6.dp))
+                    Text(text = context.resources.getString(R.string.setting_Locale),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleSmall)
                 }
 
 

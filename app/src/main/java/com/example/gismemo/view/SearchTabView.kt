@@ -149,15 +149,18 @@ fun RadioButtonGroupView(
                         },
                         role = Role.RadioButton
                     ),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
                     selected = (it == selectedOption),
                     onClick = null
                 )
+                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                 Text(
                     text = it,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
         }
@@ -334,23 +337,31 @@ fun SearchView(
         verticalArrangement = Arrangement.Top
     ) {
 
+        Spacer(modifier = Modifier.padding(vertical = 2.dp))
+
             SearchBar(
                 query = query_title.value,
                 onQueryChange = {
                     query_title.value = it
                 },
+
                 onSearch = onSearch,
                 active = isVisible.value,
                 onActiveChange = {
                     isVisible.value = it
                 },
-                placeholder = { Text(context.resources.getString(R.string.search_searchBar_placeholder)) },
+                placeholder = {
+                    Text(
+                        text = context.resources.getString(R.string.search_searchBar_placeholder) ,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(horizontal = 10.dp)
-                    .padding(top = 10.dp)
-                    .clip(ShapeDefaults.Medium),
+                    .height(70.dp)
+                    .padding(horizontal = 6.dp)
+                    .padding(top = 0.dp)
+                    .clip(shape = ShapeDefaults.Small),
                 leadingIcon = {
 
 
@@ -409,14 +420,16 @@ fun SearchView(
 
 
                     }
-                }
+                },
+                //shape = ShapeDefaults.Medium,
+                tonalElevation = 6.dp,
             ) { }
 
 
             Divider(
                 Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(6.dp)
             )
 
 
@@ -430,9 +443,11 @@ fun SearchView(
                         imageVector = Icons.Outlined.Lock,
                         contentDescription = "Secret"
                     )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                     Text(
                         modifier = Modifier,
-                        text = context.resources.getString(R.string.search_radioBtGroup_secret)
+                        text = context.resources.getString(R.string.search_radioBtGroup_secret),
+                        style = MaterialTheme.typography.titleSmall
                     )
                 }
             }
@@ -440,7 +455,7 @@ fun SearchView(
             Divider(
                 Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(6.dp)
             )
 
             RadioButtonGroupView(
@@ -452,9 +467,11 @@ fun SearchView(
                         imageVector = Icons.Outlined.LocationOn,
                         contentDescription = "marker"
                     )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                     Text(
                         modifier = Modifier,
-                        text =  context.resources.getString(R.string.search_radioBtGroup_marker)
+                        text =  context.resources.getString(R.string.search_radioBtGroup_marker),
+                        style = MaterialTheme.typography.titleSmall
                     )
                 }
             }
@@ -462,7 +479,7 @@ fun SearchView(
             Divider(
                 Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(6.dp)
             )
 
 
@@ -475,15 +492,18 @@ fun SearchView(
                 content = {
                     Row(
                         modifier = Modifier,
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Class,
                             contentDescription = "tag"
                         )
-                        Text(context.resources.getString(R.string.search_hashTag))
+                        Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                        Text(text = context.resources.getString(R.string.search_hashTag),
+                            style = MaterialTheme.typography.titleSmall)
                         Icon(
-                            modifier = Modifier.scale(1.5f),
+                            modifier = Modifier.scale(1f),
                             imageVector = if (isTagBox) Icons.Outlined.ArrowDropDown else Icons.Outlined.ArrowRight,
                             contentDescription = "tag "
                         )
@@ -502,7 +522,7 @@ fun SearchView(
         Divider(
             Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(6.dp)
             )
 
 
@@ -521,9 +541,11 @@ fun SearchView(
                             imageVector = Icons.Outlined.CalendarMonth,
                             contentDescription = "date"
                         )
-                        Text(context.resources.getString(R.string.search_period))
+                        Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                        Text(text = context.resources.getString(R.string.search_period),
+                            style = MaterialTheme.typography.titleSmall)
                         Icon(
-                            modifier = Modifier.scale(1.5f),
+                            modifier = Modifier.scale(1f),
                             imageVector = if (isDateBox.value)  Icons.Outlined.ArrowDropDown else Icons.Outlined.ArrowRight,
                             contentDescription = "date "
                         )
@@ -536,15 +558,12 @@ fun SearchView(
                     state = dateRangePickerState,
                     modifier = Modifier
                         .height(420.dp),
-                    title = { Text("") },
+                    title = { Text(text = "", style = MaterialTheme.typography.bodySmall) },
                     headline = {
                         Text(
                             modifier = Modifier.padding(start = 10.dp),
                             text = context.resources.getString(R.string.search_dateRangePicker_headline),
-                            style = TextStyle(
-                                fontWeight = FontWeight.Light,
-                                fontSize = 16.sp
-                            )
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 )
@@ -607,19 +626,22 @@ fun AssistChipGroupView(
                 itemsIndexed(tagInfoDataList) { index, it ->
                     AssistChip(
                         modifier = itemModifier,
+                        shape = ShapeDefaults.ExtraSmall,
                         onClick = {
                             hapticProcessing()
                             it.isSet.value = !it.isSet.value
                             if (it.isSet.value)  setState.value.add(index) else   setState.value.remove(index)
                         },
                         label = {
-                            Row {
+                            Row (verticalAlignment = Alignment.CenterVertically){
                                 Icon(
                                     imageVector = it.icon,
                                     contentDescription = "",
                                     modifier = Modifier.size(AssistChipDefaults.IconSize)
                                 )
-                                Text(text = context.resources.getString(it.name))
+                                Text(
+                                    text = context.resources.getString(it.name),
+                                style = MaterialTheme.typography.labelMedium)
                             }
                         },
                         leadingIcon = {

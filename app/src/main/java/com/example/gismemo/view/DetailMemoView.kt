@@ -344,12 +344,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                 }
 
                                 Divider(modifier = Modifier.padding(bottom = 10.dp))
-
-
-                                Text(it.title)
-                                Text(it.desc)
-                                Text(text = snippets.value)
-
+                                Text(text = it.title, style = MaterialTheme.typography.titleSmall)
+                                Text(text = it.desc, style = MaterialTheme.typography.bodySmall)
+                                Text(text = snippets.value, style = MaterialTheme.typography.bodySmall)
                                 Spacer(modifier = Modifier.padding(bottom = 10.dp))
 
                             }

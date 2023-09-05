@@ -540,6 +540,7 @@ fun WriteMemoView(navController: NavController ){
                     channel = channel
                 )
             },
+            sheetShape = ShapeDefaults.Small,
             sheetPeekHeight = 110.dp,
             sheetContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             sheetContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
@@ -1235,10 +1236,10 @@ fun ConfirmDialog(
             ) {
 
                 Text(
-                    modifier = Modifier.padding(vertical = 10.dp),
+                    modifier = Modifier.padding(top = 20.dp),
                     text = context.resources.getString(R.string.writeMemo_AlertDialog_Title),
                     textAlign = TextAlign.Center,
-                    style =  androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+                    style =  androidx.compose.material3.MaterialTheme.typography.titleMedium,
                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                 )
 
@@ -1290,7 +1291,7 @@ fun ConfirmDialog(
 
                 Text(
                     text = context.resources.getString(R.string.writeMemo_AlertDialog_desc),
-                    style =  androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                    style =  androidx.compose.material3.MaterialTheme.typography.bodySmall,
                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
                 )
 

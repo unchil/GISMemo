@@ -26,6 +26,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
         }
     }
     compileOptions {
@@ -104,6 +105,7 @@ dependencies {
 
     implementation 'androidx.concurrent:concurrent-futures-ktx:1.2.0-alpha01'
     implementation 'com.google.android.material:material:1.9.0'
+    testImplementation 'junit:junit:4.12'
 
 
     kapt "androidx.room:room-compiler:2.5.2"
@@ -138,6 +140,15 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    // Optional -- Hamcrest library
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    // Optional -- UI testing with Espresso
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    // Optional -- UI testing with UI Automator
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
 /*
  implementation "com.kakao.sdk:v2-all:2.15.0"

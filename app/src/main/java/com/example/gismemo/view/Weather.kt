@@ -133,10 +133,11 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         val weatherData = viewModel._currentWeatheStaterFlow.collectAsState()
 
         Column(
-            modifier = Modifier
+            modifier = Modifier .clip(shape = ShapeDefaults.ExtraSmall)
                 .clickable(false, null, null) {}
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -219,13 +220,13 @@ fun WeatherView(
         Text( item.toTextHeadLine()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = MaterialTheme.typography.titleMedium
+            , style  = MaterialTheme.typography.titleSmall
         )
 
         Text(item.toTextWeatherDesc()
             , modifier = Modifier.fillMaxWidth()
             , textAlign = TextAlign.Center
-            , style  = MaterialTheme.typography.titleMedium
+            , style  = MaterialTheme.typography.titleSmall
         )
 
         Row(
@@ -302,14 +303,14 @@ fun WeatherViewLandScape(
             item.toTextHeadLine(),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleSmall
         )
 
         Text(
             item.toTextWeatherDesc(),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleSmall
         )
 
 /*
@@ -357,7 +358,7 @@ fun WeatherViewLandScape(
 @Composable
 fun WeatherItem(id: ImageVector, desc: String){
 
-    Row( modifier = Modifier) {
+    Row( modifier = Modifier, verticalAlignment = Alignment.CenterVertically) {
 
         Icon(  imageVector = id
             , contentDescription = "desc"
@@ -370,7 +371,7 @@ fun WeatherItem(id: ImageVector, desc: String){
         Text( desc
             , modifier = Modifier
             , textAlign = TextAlign.Start
-            , style  = TextStyle( fontWeight = FontWeight.Light)
+            , style  = MaterialTheme.typography.bodySmall
         )
     }
 

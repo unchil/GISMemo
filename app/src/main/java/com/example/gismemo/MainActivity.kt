@@ -233,7 +233,7 @@ class MainActivity : ComponentActivity() {
                                                                     .align(Alignment.CenterHorizontally)
                                                                     .fillMaxWidth()
                                                                     .height(90.dp)
-                                                                    .shadow(6.dp),
+                                                                    .shadow(2.dp),
                                                                 horizontalArrangement = Arrangement.Center,
                                                                 verticalAlignment = Alignment.CenterVertically
                                                             ) {
@@ -310,17 +310,19 @@ class MainActivity : ComponentActivity() {
 
                                                             }
 
- */
 
+ */
                                                             BottomNavigation(
                                                                 modifier = Modifier
                                                                     .fillMaxWidth()
-                                                                    .height(60.dp),
-                                                                backgroundColor = NavigationRailDefaults.ContainerColor,
-                                                                contentColor =  contentColorFor(containerColor),
-                                                                elevation = 10.dp
+                                                                    .height(80.dp).padding(6.dp),
+                                                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                        //        contentColor =  contentColorFor(containerColor),
+                                                               elevation = 6.dp
                                                             ) {
-                                                                Spacer(modifier = Modifier.padding(horizontal = 20.dp))
+
+                                                                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+
                                                                 mainScreens.forEachIndexed { index, it ->
 
                                                                     BottomNavigationItem(
@@ -329,7 +331,7 @@ class MainActivity : ComponentActivity() {
                                                                                 imageVector = it.icon
                                                                                     ?:  Icons.Outlined.Info,
                                                                                 contentDescription = context.resources.getString(   it.name) ,
-                                                                                tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                               tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
                                                                             )
                                                                         },
                                                                         label = { androidx.compose.material.Text( context.resources.getString(   it.name ))},
@@ -347,11 +349,14 @@ class MainActivity : ComponentActivity() {
                                                                     )
 
                                                                 }
-                                                                Spacer(modifier = Modifier.padding(horizontal = 20.dp))
+
+                                                                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                                                             }
 
-
                                                         }
+
+
+
 
                                                         Row(
                                                             modifier = Modifier.fillMaxWidth(),
@@ -372,7 +377,9 @@ class MainActivity : ComponentActivity() {
 
 
                                                             if (!isPortrait) {
-/*
+
+
+                                                                /*
                                                                 Box(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -382,8 +389,8 @@ class MainActivity : ComponentActivity() {
                                                                         modifier = Modifier
                                                                             .align(Alignment.Center)
                                                                             .fillMaxHeight()
-                                                                            .width(90.dp)
-                                                                            .shadow(6.dp),
+                                                                            .width(100.dp)
+                                                                            .shadow(2.dp),
                                                                         verticalArrangement = Arrangement.Center,
                                                                         horizontalAlignment = Alignment.CenterHorizontally
                                                                     ) {
@@ -458,7 +465,10 @@ class MainActivity : ComponentActivity() {
                                                                     }
                                                                 }
 
- */
+
+                                                                 */
+
+
 
                                                                 NavigationRail(
                                                                     modifier = Modifier.width(80.dp),
@@ -497,6 +507,8 @@ class MainActivity : ComponentActivity() {
                                                                     }
                                                                     Spacer(modifier = Modifier.padding(vertical = 20.dp))
                                                                 }
+
+
 
 
 
