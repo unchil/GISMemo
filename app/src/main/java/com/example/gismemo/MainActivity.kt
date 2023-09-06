@@ -447,7 +447,7 @@ class MainActivity : ComponentActivity() {
 
                                                                 NavigationRail(
                                                                     modifier = Modifier.shadow(elevation = 1.dp)
-                                                                        .width(70.dp),
+                                                                        .width(80.dp),
                                                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                                                 ) {
                                                                     

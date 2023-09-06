@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -128,9 +129,9 @@ fun IntroView(
             isPortrait = true
             gridWidth = 1f
             upButtonPaddingValue = 160.dp
-            sheetPeekHeightValue = 120.dp
+            sheetPeekHeightValue = 104.dp
             drawerSheetWidthValue = 0f
-            listBottomPaddingValue = 120.dp
+            listBottomPaddingValue = 104.dp
 
             if (drawerState.isOpen) {
                 coroutineScope.launch {
@@ -145,7 +146,7 @@ fun IntroView(
             upButtonPaddingValue = 10.dp
             sheetPeekHeightValue = 0.dp
             drawerSheetWidthValue = 0.5f
-            listBottomPaddingValue = 10.dp
+            listBottomPaddingValue = 2.dp
         }
     }
 
@@ -242,12 +243,14 @@ fun IntroView(
 
 
     ModalNavigationDrawer(
+        modifier = Modifier,
         drawerState = drawerState,
         drawerContent = {
             if (!isPortrait) {
                 ModalDrawerSheet(
                     modifier = Modifier.fillMaxWidth(drawerSheetWidthValue),
-                    drawerShape = ShapeDefaults.ExtraSmall
+                    drawerShape = ShapeDefaults.ExtraSmall,
+                    drawerTonalElevation = 2.dp
                 ) {
                     searchView()
                 }
