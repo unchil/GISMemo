@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,22 +12,17 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
-import androidx.compose.material3.NavigationBarDefaults.containerColor
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -39,11 +33,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -53,8 +45,6 @@ import coil.size.Size
 import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.db.LuckMemoDB
-import com.example.gismemo.model.WriteMemoDataTypeList
-import com.example.gismemo.model.getDesc
 import com.example.gismemo.navigation.GisMemoDestinations
 import com.example.gismemo.navigation.mainScreens
 import com.example.gismemo.navigation.navigateTo
@@ -67,7 +57,6 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
-
 
 
 val LocalChangeLocale = compositionLocalOf{ false }
@@ -226,7 +215,6 @@ class MainActivity : ComponentActivity() {
                                                     ) {
 
                                                         if (isPortrait) {
-
 /*
                                                             Row(
                                                                 modifier = Modifier
@@ -315,10 +303,9 @@ class MainActivity : ComponentActivity() {
                                                             BottomNavigation(
                                                                 modifier = Modifier
                                                                     .fillMaxWidth()
-                                                                    .height(80.dp).padding(6.dp),
+                                                                    .height(60.dp)
+                                                                    .shadow(elevation = 1.dp),
                                                                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                                        //        contentColor =  contentColorFor(containerColor),
-                                                               elevation = 6.dp
                                                             ) {
 
                                                                 Spacer(modifier = Modifier.padding(horizontal = 10.dp))
@@ -352,32 +339,22 @@ class MainActivity : ComponentActivity() {
 
                                                                 Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                                                             }
-
                                                         }
 
-
-
-
                                                         Row(
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            horizontalArrangement = Arrangement.spacedBy(
-                                                                0.dp
-                                                            ),
+                                                            modifier = Modifier,
+                                                            horizontalArrangement = Arrangement.SpaceEvenly,
                                                             verticalAlignment = Alignment.CenterVertically
-
                                                         ) {
 
                                                             Box(
-                                                                modifier = Modifier.fillMaxWidth(
-                                                                    gridWidth
-                                                                )
+                                                                modifier = Modifier.fillMaxWidth( gridWidth )
                                                             ) {
                                                                 GisMemoNavHost(navController)
                                                             }
 
 
                                                             if (!isPortrait) {
-
 
                                                                 /*
                                                                 Box(
@@ -468,12 +445,10 @@ class MainActivity : ComponentActivity() {
 
                                                                  */
 
-
-
                                                                 NavigationRail(
-                                                                    modifier = Modifier.width(80.dp),
-                                                                containerColor = NavigationRailDefaults.ContainerColor,
-                                                                contentColor = contentColorFor(containerColor),
+                                                                    modifier = Modifier.shadow(elevation = 1.dp)
+                                                                        .width(70.dp),
+                                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                                                 ) {
                                                                     
                                                                     Spacer(modifier = Modifier.padding(vertical = 20.dp))
@@ -507,10 +482,6 @@ class MainActivity : ComponentActivity() {
                                                                     }
                                                                     Spacer(modifier = Modifier.padding(vertical = 20.dp))
                                                                 }
-
-
-
-
 
                                                             }
 

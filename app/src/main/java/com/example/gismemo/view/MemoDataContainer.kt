@@ -358,7 +358,7 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
 
         if (defaultData.second > 0) {
             HorizontalPager(
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(horizontal = 0.dp)
                     .verticalScroll(state = scrollState)
                     .fillMaxSize()
                     .background(color = MaterialTheme.colorScheme.background),
@@ -372,8 +372,10 @@ fun PagerAudioTextView(item: MemoData.AudioText, onDelete:((page:Int) -> Unit)? 
 
             Box(
                 modifier = Modifier
-                    .height(220.dp)
-                    .fillMaxWidth(),
+                    .height(260.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 2.dp)
+                ,
                 contentAlignment = Alignment.Center
 
             ) {
@@ -489,7 +491,7 @@ fun PagerPhotoView(item: MemoData.Photo, onDelete:((page:Int) -> Unit)? = null, 
                 if (defaultData.second > 0) {
                     HorizontalPager(
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(horizontal = 0.dp)
                             .verticalScroll(state = scrollState)
                             .fillMaxSize()
                             .background(color = Color.White),
@@ -615,7 +617,7 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
 
             Box(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 0.dp)
                     .draggable(
                         state = draggableState,
                         orientation = Orientation.Horizontal,

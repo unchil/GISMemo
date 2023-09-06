@@ -130,7 +130,7 @@ fun IntroView(
             upButtonPaddingValue = 160.dp
             sheetPeekHeightValue = 120.dp
             drawerSheetWidthValue = 0f
-            listBottomPaddingValue = 130.dp
+            listBottomPaddingValue = 120.dp
 
             if (drawerState.isOpen) {
                 coroutineScope.launch {
@@ -275,11 +275,11 @@ fun IntroView(
                         )
                     }
                 },
-
-
                 sheetContent = {
                     if (isPortrait) {
-                        Box(modifier = Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             searchView()
                         }
                     }
@@ -294,13 +294,13 @@ fun IntroView(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(0.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
 
                     ) {
 
                         if (!isPortrait) {
-                            Box(modifier = Modifier.fillMaxWidth(0.4f)) {
+                            Box(modifier = Modifier.fillMaxWidth(0.4f).padding(vertical = 2.dp)) {
                                 WeatherContent{
                                     if(!it){
                                         channel.trySend(snackbarChannelList.first {
@@ -315,16 +315,19 @@ fun IntroView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .pullRefresh(state = pullRefreshState)
+
                         ) {
+
+
 
                             LazyColumn(
                                 modifier = Modifier.padding(bottom = listBottomPaddingValue),
                                 state = lazyListState,
                                 userScrollEnabled = true,
-                                verticalArrangement = Arrangement.spacedBy(2.dp),
+                                verticalArrangement = Arrangement.SpaceBetween,
                                 contentPadding = PaddingValues(
-                                    horizontal = 6.dp,
-                                    vertical = 1.dp
+                                    horizontal = 2.dp,
+                                    vertical = 2.dp
                                 )
                             ) {
 
@@ -369,6 +372,7 @@ fun IntroView(
                             )
 
                         }
+
                     }
                 }
             }
