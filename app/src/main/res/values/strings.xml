@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">GIS Memo</string>
-    <string name="show_message">Show Message</string>
 
 
     <string name="chkNetWork_msg" >네트웍 연결을 확인해 주세요</string>
@@ -72,7 +71,6 @@
     <string name="setting_Locale_en">영어</string>
     <string name="setting_Locale_fr">프랑스어</string>
     <string name="setting_Locale_pt">포르투갈어</string>
-    <string name="setting_Locale_apply">적용</string>
 
     <string name="dataContainer_Screenshot">스크린샷</string>
     <string name="dataContainer_AudioText">녹음 메모</string>

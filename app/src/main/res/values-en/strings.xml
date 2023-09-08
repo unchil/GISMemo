@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GIS Memo</string>
-    <string name="show_message">Show Message</string>
 
     <string name="chkNetWork_msg">Please check your network connection</string>
     <string name="showGotoSettingsDialog_title" >Setting</string>
@@ -66,7 +65,6 @@
 
     <string name="setting_Locale_en">English</string>
     <string name="setting_Locale_fr">French</string>
-    <string name="setting_Locale_apply">Apply</string>
 
     <string name="dataContainer_Screenshot">Screenshot</string>
     <string name="dataContainer_AudioText">AudioText</string>

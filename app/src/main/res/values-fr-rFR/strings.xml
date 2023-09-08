@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GIS Memo</string>
-    <string name="show_message">Voir le message</string>
 
     <string name="chkNetWork_msg">Veuillez vérifier votre connexion réseau</string>
     <string name="showGotoSettingsDialog_title" >Paramètre</string>
@@ -64,7 +63,6 @@
     <string name="setting_ClearAllMemo">Effacer tout le mémo</string>
     <string name="setting_Locale_en">Anglais</string>
     <string name="setting_Locale_fr">Français</string>
-    <string name="setting_Locale_apply">Appliquer</string>
     <string name="dataContainer_Screenshot">Capture d\'écran</string>
     <string name="dataContainer_AudioText">Texte Audio</string>
     <string name="dataContainer_Photo">Photo</string>
