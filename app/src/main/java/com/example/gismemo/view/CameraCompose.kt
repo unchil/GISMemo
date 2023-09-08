@@ -4,6 +4,7 @@ package com.example.gismemo.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.*
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.util.Consumer
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.example.gismemo.LocalUsableHaptic
@@ -51,6 +53,63 @@ import kotlin.coroutines.suspendCoroutine
 fun Long.fromNanoToSeconds() = (this / (1000 * 1000 * 1000)).toInt()
 
 
+suspend fun Context.createVideoCaptureUseCase(
+    lifecycleOwner: LifecycleOwner,
+    cameraSelector: CameraSelector,
+    previewView: PreviewView,
+    @ImageCapture.FlashMode  flashMode: Int = ImageCapture.FLASH_MODE_AUTO,
+    @TorchState.State  torchState: Int = TorchState.OFF,
+): Pair<VideoCapture<Recorder>, ImageCapture> {
+
+
+    val preview = androidx.camera.core.Preview.Builder().build()
+
+    val qualitySelector = QualitySelector.from( Quality.UHD, FallbackStrategy.lowerQualityOrHigherThan(
+        Quality.UHD)
+    )
+
+    val recorder = Recorder.Builder().setExecutor(mainExecutor)
+        .setQualitySelector(qualitySelector)
+        .build()
+
+    val videoCapture = VideoCapture.withOutput(recorder)
+
+    val imageCapture = ImageCapture.Builder()
+        .setFlashMode(flashMode)
+        .build()
+
+
+    getCameraProvider().let { cameraProvider ->
+        cameraProvider.unbindAll()
+        cameraProvider.bindToLifecycle(
+            lifecycleOwner,
+            cameraSelector,
+            preview,
+            videoCapture,
+            imageCapture
+        ).apply {
+            cameraControl.enableTorch(torchState == TorchState.ON)
+
+            preview.setSurfaceProvider(previewView.surfaceProvider)
+
+        }
+
+        return Pair(videoCapture, imageCapture)
+    }
+
+}
+
+suspend fun Context.getCameraProvider() : ProcessCameraProvider = suspendCoroutine{ continuation ->
+    ProcessCameraProvider.getInstance(this).also { listenableFuture ->
+        listenableFuture.addListener(
+            {continuation.resume(listenableFuture.get())},
+            mainExecutor
+        )
+    }
+}
+
+
+
 sealed class RecordingStatus {
     object Idle : RecordingStatus()
     object InProgress : RecordingStatus()
@@ -62,7 +121,6 @@ sealed class RecordingStatus {
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("RestrictedApi", "MissingPermission")
 @Composable
-
 fun CameraCompose( navController: NavController? = null   ) {
 
     val isUsableHaptic = LocalUsableHaptic.current
@@ -112,6 +170,31 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     var videoUri : String?  by remember{ mutableStateOf(null)}
 
+
+    lifecycleOwner.lifecycleScope.launch {
+
+        context.createVideoCaptureUseCase(
+            lifecycleOwner,
+            cameraSelector.value,
+            previewView,
+            flashMode.value,
+            torchState.value
+        ).let {
+            videoCapture.value = it.first
+            imageCapture.value = it.second
+        }
+
+        val cameraInfos = context.getCameraProvider().availableCameraInfos
+        isDualCamera.value = cameraInfos.size > 1
+        currentCameraInfo.value = cameraInfos.find { cameraInfo ->
+            cameraInfo.lensFacing == cameraSelector.value.lensFacing
+        }
+
+    }
+
+
+
+/*
     lifecycleOwner.lifecycleScope.launch {
 
         val preview = androidx.camera.core.Preview.Builder().build()
@@ -157,6 +240,7 @@ fun CameraCompose( navController: NavController? = null   ) {
         }
 
     }
+     */
 
 
     val currentPhotoList = viewModel._currentPhoto.collectAsState().value.toMutableList()
@@ -509,3 +593,6 @@ fun CameraComposePreview(){
         }
     }
 }
+
+
+
