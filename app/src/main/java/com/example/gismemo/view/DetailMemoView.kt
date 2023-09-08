@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -230,7 +231,17 @@ fun DetailMemoView(navController: NavController, id:Long) {
             ) {
 
                 Icon(
-                    modifier = Modifier.scale(1f),
+                    modifier = Modifier.scale(1f).clickable {
+                        coroutineScope.launch {
+                            if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
+                                || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded
+                            ) {
+                                scaffoldState.bottomSheetState.expand()
+                            } else {
+                                scaffoldState.bottomSheetState.hide()
+                            }
+                        }
+                    },
                     imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                     contentDescription = "search",
                 )

@@ -549,7 +549,17 @@ fun WriteMemoView(navController: NavController ){
                 ) {
 
                     Icon(
-                        modifier = Modifier.scale(1f),
+                        modifier = Modifier.scale(1f).clickable {
+                            coroutineScope.launch {
+                                if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
+                                    || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded
+                                ) {
+                                    scaffoldState.bottomSheetState.expand()
+                                } else {
+                                    scaffoldState.bottomSheetState.hide()
+                                }
+                            }
+                        },
                         imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                         contentDescription = "search",
                     )
