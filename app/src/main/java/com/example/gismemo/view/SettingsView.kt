@@ -3,6 +3,7 @@ package com.example.gismemo.view
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.Resources
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -45,18 +46,30 @@ fun Context.findActivity(): Activity {
 }
 
 
+fun Context.getLanguageArray():Array<String>{
+    return resources.getStringArray(R.array.Language_Array)
+}
+
+
+
 val languageList =  listOf(
     "ko",
     "en",
     "fr",
-    "pt"
+    "pt",
+    "es"
 )
 
 @Composable
 fun SettingsView(navController: NavHostController){
 
+
+
     val localeChange = LocalChangeLocale.current
     var context = LocalContext.current
+
+    val languageArray = context.getLanguageArray()
+
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
         SettingsViewModel(repository = RepositoryProvider.getRepository().apply { database = db }  )
@@ -106,7 +119,8 @@ fun SettingsView(navController: NavHostController){
         context.resources.getString(R.string.setting_Locale_ko),
         context.resources.getString(R.string.setting_Locale_en),
         context.resources.getString(R.string.setting_Locale_fr),
-        context.resources.getString(R.string.setting_Locale_pt)
+        context.resources.getString(R.string.setting_Locale_pt),
+        context.resources.getString(R.string.setting_Locale_es)
     )
 
 
@@ -118,7 +132,9 @@ fun SettingsView(navController: NavHostController){
     LaunchedEffect(key1 = localeRadioGroupState.value ){
         isLocaleChange = !isLocaleChange
 
-        val locale = Locale( languageList[localeRadioGroupState.value] )
+      //  val locale = Locale( languageList[localeRadioGroupState.value] )
+        val locale = Locale( languageArray[localeRadioGroupState.value] )
+
         Locale.setDefault(locale)
 
         context.resources.configuration.setLocale(locale)

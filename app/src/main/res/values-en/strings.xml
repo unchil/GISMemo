@@ -104,6 +104,7 @@
     <string name="permission_setting_msg"> "Please set permissions in App Info."</string>
     <string name="search_radioBt_select">Select</string>
     <string name="setting_Locale_pt">Portuguese</string>
+    <string name="setting_Locale_es">Spanish</string>
 
 
 </resources>

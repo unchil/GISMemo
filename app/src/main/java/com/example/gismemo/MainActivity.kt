@@ -94,11 +94,13 @@ class MainActivity : ComponentActivity() {
 
                 if(repository.isFirstSetup.value){
                     repository.isFirstSetup.value = false
-                    val index = languageList.indexOf( Locale.getDefault().language)
+                //    val index = languageList.indexOf( Locale.getDefault().language)
+                    val index = context.getLanguageArray().indexOf(Locale.getDefault().language)
                     repository.isChangeLocale.value = if (index == -1 ) 0 else index
                     super.attachBaseContext(context)
                 } else {
-                    val locale = Locale( languageList[    repository.isChangeLocale.value    ] )
+                 //   val locale = Locale( languageList[    repository.isChangeLocale.value    ] )
+                    val locale = Locale( context.getLanguageArray()[    repository.isChangeLocale.value    ] )
                     Locale.setDefault(locale)
                     context.resources.configuration.setLayoutDirection(locale)
                     it.resources.configuration.setLocale(locale)

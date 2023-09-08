@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="Language_Array">
+        <item>ko</item>
+        <item>en</item>
+        <item>fr</item>
+        <item>pt</item>
+        <item>es</item>
+    </string-array>
+
 
 </resources>

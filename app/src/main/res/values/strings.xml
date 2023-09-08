@@ -71,6 +71,7 @@
     <string name="setting_Locale_en">영어</string>
     <string name="setting_Locale_fr">프랑스어</string>
     <string name="setting_Locale_pt">포르투갈어</string>
+    <string name="setting_Locale_es">스페인어</string>
 
     <string name="dataContainer_Screenshot">스크린샷</string>
     <string name="dataContainer_AudioText">녹음 메모</string>
