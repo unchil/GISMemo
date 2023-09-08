@@ -3,6 +3,10 @@
 
 #### Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
 
+## Release
+
+Release GISMemo : [DownLoad][release]
+
 ## Description
 
 This GISMemo is a memo program based on Google Map: [Google Maps Platform][googlelink].
@@ -51,7 +55,7 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-
+[release]: https://github.com/unchil/GISMemo/git_release/gismemo.apk "release GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
 [compose-audiowaveform_link]: https://github.com/lincollincol/compose-audiowaveform "Go compose-audiowaveform"
