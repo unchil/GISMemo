@@ -55,7 +55,7 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-[release]: https://github.com/unchil/GISMemo/git_release/gismemo.apk "release GIS MEMO"
+[release]: https://github.com/unchil/GISMemo/blob/main/git_release/gismemo.apk "release GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
 [compose-audiowaveform_link]: https://github.com/lincollincol/compose-audiowaveform "Go compose-audiowaveform"
