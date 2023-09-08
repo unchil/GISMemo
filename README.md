@@ -3,6 +3,9 @@
 
 #### Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
 
+## Release GISMemo
+
+DownLoad GISMemo App: [Download][release].
 
 
 ## Description
@@ -53,7 +56,7 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-[release]: https://github.com/unchil/GISMemo/tree/main/git_release/gismemo.apk "release GIS MEMO"
+[release]: https://github.com/unchil/GISMemo/tree/main/download/app-release.apk "release GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
 [compose-audiowaveform_link]: https://github.com/lincollincol/compose-audiowaveform "Go compose-audiowaveform"
