@@ -2,10 +2,12 @@ package com.example.gismemo.view
 
 import android.app.Activity
 import android.speech.RecognizerIntent
+import android.widget.ListView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.staggeredgrid.*
@@ -108,7 +110,8 @@ sealed class SearchQueryDataValue {
 @Composable
 fun RadioButtonGroupView(
     state:MutableState<Int>,
-    items:List<String>,
+    data:List<String>,
+    layoutScopeType:String = "Row",
     content: @Composable (( ) -> Unit)? = null
 ){
 
@@ -123,8 +126,143 @@ fun RadioButtonGroupView(
         }
     }
 
-    val (selectedOption, onOptionSelected) = mutableStateOf(items[state.value])
+    val (selectedOption, onOptionSelected) = mutableStateOf(data[state.value])
 
+    if(layoutScopeType == "Column"){
+
+        /*
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .selectableGroup(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+
+            content?.let {
+                it()
+            }
+
+            data.forEachIndexed { index, it ->
+                Row(
+                    modifier = Modifier
+                        .selectable(
+                            selected = (it == selectedOption),
+                            onClick = {
+                                hapticProcessing()
+                                onOptionSelected( it )
+                                state.value = index
+                            },
+                            role = Role.RadioButton
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (it == selectedOption),
+                        onClick = null
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                    Text(
+                        text = it,
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
+
+         */
+
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+
+            itemsIndexed(data){index, it ->
+                Row(
+                    modifier = Modifier
+                        .selectable(
+                            selected = (it == selectedOption),
+                            onClick = {
+                                hapticProcessing()
+                                onOptionSelected( it )
+                                state.value = index
+                            },
+                            role = Role.RadioButton
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (it == selectedOption),
+                        onClick = null
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                    Text(
+                        text = it,
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+
+            }
+
+        }
+
+
+
+    } else {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .selectableGroup(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+
+            content?.let {
+                it()
+            }
+
+            data.forEachIndexed { index, it ->
+                Row(
+                    modifier = Modifier
+                        .selectable(
+                            selected = (it == selectedOption),
+                            onClick = {
+                                hapticProcessing()
+                                onOptionSelected( it )
+                                state.value = index
+                            },
+                            role = Role.RadioButton
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (it == selectedOption),
+                        onClick = null
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                    Text(
+                        text = it,
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
+
+
+    }
+
+    /*
     Row(
         modifier = Modifier
             .padding(vertical = 10.dp)
@@ -137,7 +275,7 @@ fun RadioButtonGroupView(
             it()
         }
 
-        items.forEachIndexed { index, it ->
+        data.forEachIndexed { index, it ->
             Row(
                 modifier = Modifier
                     .selectable(
@@ -165,6 +303,8 @@ fun RadioButtonGroupView(
             }
         }
     }
+
+     */
 
 }
 
@@ -436,7 +576,7 @@ fun SearchView(
 
             RadioButtonGroupView(
                 state = secretRadioGroupState,
-                items = secretOption
+                data = secretOption
             ) {
                 Row(modifier = Modifier) {
                     Icon(
@@ -460,7 +600,7 @@ fun SearchView(
 
             RadioButtonGroupView(
                 state = markerRadioGroupState,
-                items = markerOption
+                data = markerOption
             ) {
                 Row(modifier = Modifier) {
                     Icon(

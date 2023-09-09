@@ -54,6 +54,7 @@ fun Context.getLanguageArray():Array<String>{
 
 val languageList =  listOf(
     "ko",
+    "zh",
     "en",
     "fr",
     "pt",
@@ -119,6 +120,7 @@ fun SettingsView(navController: NavHostController){
         context.resources.getString(R.string.setting_Locale_ko),
         context.resources.getString(R.string.setting_Locale_en),
         context.resources.getString(R.string.setting_Locale_fr),
+        context.resources.getString(R.string.setting_Locale_zh),
         context.resources.getString(R.string.setting_Locale_pt),
         context.resources.getString(R.string.setting_Locale_es)
     )
@@ -274,7 +276,8 @@ fun SettingsView(navController: NavHostController){
 
                 RadioButtonGroupView(
                     state = localeRadioGroupState,
-                    items = localeOption
+                    data = localeOption,
+                    layoutScopeType = "Column"
                 )
 
 

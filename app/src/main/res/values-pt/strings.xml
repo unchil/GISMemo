@@ -95,4 +95,5 @@
     <string name="permission_setting_msg">Defina as permissões nas informações do aplicativo.</string>
     <string name="setting_Locale_pt">Português</string>
     <string name="setting_Locale_es">Espanhol</string>
+    <string name="setting_Locale_zh">Chinês</string>
 </resources>

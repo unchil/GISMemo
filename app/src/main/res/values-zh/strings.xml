@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GIS Memo</string>
+
+    <string name="chkNetWork_msg">请检查您的网络连接</string>
+    <string name="showGotoSettingsDialog_title" >环境</string>
+
+    <string name="mainmenu_list">列表</string>
+    <string name="mainmenu_write">写</string>
+    <string name="mainmenu_map">地图</string>
+    <string name="mainmenu_setting">环境</string>
+    <string name="snackbar_12">请检查您的密码和指纹的注册和使用情况。</string>
+    <string name="snackbar_11">位置信息服务不可用。</string>
+    <string name="snackbar_10">认证失败。</string>
+    <string name="snackbar_9">已删除。</string>
+    <string name="snackbar_8">备忘录已被删除。</string>
+    <string name="snackbar_700">将备忘录设置为标记。</string>
+    <string name="snackbar_7">备注标记设置已被取消。</string>
+    <string name="snackbar_600">该备忘录已被设为秘密。</string>
+    <string name="snackbar_6">取消了备忘录的安全设置。</string>
+    <string name="snackbar_5">被捕获。</string>
+    <string name="snackbar_4">书面备忘录已保存。</string>
+    <string name="snackbar_3">检索到的数据</string>
+    <string name="snackbar_2">搜索条件已清除。</string>
+    <string name="snackbar_1">清除正在写入的备忘录。</string>
+    <string name="snackbar_0">您想清除正在编写的备忘录吗？</string>
+    <string name="search_searchBar_placeholder">输入要搜索的标题</string>
+    <string name="search_radioBtGroup_marker">“标记”</string>
+    <string name="search_radioBtGroup_secret">“秘密 ”</string>
+    <string name="search_radioBt_none">没有任何</string>
+    <string name="search_radioBt_all">全部</string>
+    <string name="search_hashTag">HashTag</string>
+    <string name="search_period">检索期</string>
+    <string name="search_dateRangePicker_headline">开始日期 - 结束日期</string>
+    <string name="search_hashTag_ShoppingCart">购物车</string>
+    <string name="search_hashTag_AccountBalance">账户余额</string>
+    <string name="search_hashTag_Store">店铺</string>
+    <string name="search_hashTag_Theaters">剧院</string>
+    <string name="search_hashTag_FlightTakeoff">航班起飞</string>
+    <string name="search_hashTag_FlightLand">飞行乐园</string>
+    <string name="search_hashTag_Hotel">酒店</string>
+    <string name="search_hashTag_School">学校</string>
+    <string name="search_hashTag_Hiking">远足</string>
+    <string name="search_hashTag_DownhillSkiing">下坡滑雪</string>
+    <string name="search_hashTag_Kayaking">皮划艇</string>
+    <string name="search_hashTag_Skateboarding">滑板运动</string>
+    <string name="search_hashTag_Snowboarding">单板滑雪</string>
+    <string name="search_hashTag_ScubaDiving">水肺潜水</string>
+    <string name="search_hashTag_RollerSkating">轮滑</string>
+    <string name="search_hashTag_Photo">照片</string>
+    <string name="search_hashTag_Restaurant">餐厅</string>
+    <string name="search_hashTag_Park">公园</string>
+    <string name="search_hashTag_LocalCafe">当地咖啡馆</string>
+    <string name="search_hashTag_LocalTaxi">本地出租车</string>
+    <string name="search_hashTag_Forest">森林</string>
+    <string name="search_hashTag_EvStation">电动车站</string>
+    <string name="search_hashTag_FitnessCenter">健身中心</string>
+    <string name="search_hashTag_House">房子</string>
+    <string name="search_hashTag_Apartment">公寓</string>
+    <string name="search_hashTag_Cabin">舱</string>
+
+    <string name="setting_UsableHaptic">可用的触觉</string>
+    <string name="setting_UsableDarkMode">可用的深色模式</string>
+    <string name="setting_ClearAllMemo">清除所有备忘录</string>
+
+    <string name="setting_Locale_en">英语</string>
+    <string name="setting_Locale_fr">法语</string>
+
+    <string name="dataContainer_Screenshot">截屏</string>
+    <string name="dataContainer_AudioText">音频文本</string>
+    <string name="dataContainer_Photo">照片</string>
+    <string name="dataContainer_Video">视频</string>
+
+    <string name="writeMemo_AlertDialog_Title">备忘录保存</string>
+    <string name="writeMemo_AlertDialog_title_label">标题</string>
+    <string name="writeMemo_AlertDialog_desc">保存书面备忘录并清除屏幕。</string>
+    <string name="writeMemo_AlertDialog_Cancel">取消</string>
+    <string name="writeMemo_AlertDialog_Confirm">确认</string>
+
+    <string name="weather_desc_sun"> “日出：%s 日落：%s”</string>
+    <string name="weather_desc_temp">“温度：%.0f°C 最小值：%.0f°C 最大值：%.0f°C”</string>
+    <string name="weather_desc_weather"> “气压：%,.0fhPa 湿度：%.0f”</string>
+    <string name="weather_desc_wind">“风：%.0fm/s 度：%.0f° 能见度：%dkm”</string>
+    <string name="weather_location_searching"> “寻找地点”</string>
+
+    <string name="memo_desc">“屏幕截图：%s 音频文本：%s 照片：%s 视频：%s”</string>
+    <string name="setting_Locale">语言选择</string>
+    <string name="setting_Locale_ko">韩国语</string>
+
+    <string name="biometric_desc"> “受保护的备忘录必须经过验证。”</string>
+    <string name="biometric_err_msg"> “身份验证失败”</string>
+    <string name="biometric_prompt_detailview_title"> “查看备忘录”</string>
+    <string name="biometric_prompt_detailview_msg">“需要查看笔记。”</string>
+    <string name="biometric_prompt_share_title"> “分享笔记”</string>
+    <string name="biometric_prompt_share_msg"> “需要分享笔记。”</string>
+    <string name="biometric_prompt_delete_title"> “删除注释”</string>
+    <string name="biometric_prompt_delete_msg"> “需要删除笔记。”</string>
+
+
+
+    <string name="permission_rationale_title">“许可请求”</string>
+    <string name="permission_rationale_msg">“使用 GisMemo 需要授权，没有功能限制。”</string>
+    <string name="permission_setting_title"> “系统设置”</string>
+    <string name="permission_setting_msg"> “请在应用程序信息中设置权限。”</string>
+    <string name="search_radioBt_select">选择</string>
+    <string name="setting_Locale_pt">葡萄牙语</string>
+    <string name="setting_Locale_es">西班牙语</string>
+    <string name="setting_Locale_zh">中国语</string>
+
+
+</resources>

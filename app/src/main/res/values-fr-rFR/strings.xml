@@ -99,4 +99,5 @@
     <string name="search_radioBt_select">Sélectionner</string>
     <string name="setting_Locale_pt">Portugais</string>
     <string name="setting_Locale_es">Espagnol</string>
+    <string name="setting_Locale_zh">Chinois</string>
 </resources>

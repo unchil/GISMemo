@@ -68,6 +68,7 @@
     <string name="setting_ClearAllMemo">전체 메모 삭제</string>
     <string name="setting_Locale">언어 선택</string>
     <string name="setting_Locale_ko">한글</string>
+    <string name="setting_Locale_zh">중국어</string>
     <string name="setting_Locale_en">영어</string>
     <string name="setting_Locale_fr">프랑스어</string>
     <string name="setting_Locale_pt">포르투갈어</string>
