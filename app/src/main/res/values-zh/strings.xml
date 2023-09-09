@@ -25,8 +25,8 @@
     <string name="snackbar_1">清除正在写入的备忘录。</string>
     <string name="snackbar_0">您想清除正在编写的备忘录吗？</string>
     <string name="search_searchBar_placeholder">输入要搜索的标题</string>
-    <string name="search_radioBtGroup_marker">“标记”</string>
-    <string name="search_radioBtGroup_secret">“秘密 ”</string>
+    <string name="search_radioBtGroup_marker">标记</string>
+    <string name="search_radioBtGroup_secret">秘密</string>
     <string name="search_radioBt_none">没有任何</string>
     <string name="search_radioBt_all">全部</string>
     <string name="search_hashTag">HashTag</string>
@@ -77,31 +77,31 @@
     <string name="writeMemo_AlertDialog_Cancel">取消</string>
     <string name="writeMemo_AlertDialog_Confirm">确认</string>
 
-    <string name="weather_desc_sun"> “日出：%s 日落：%s”</string>
-    <string name="weather_desc_temp">“温度：%.0f°C 最小值：%.0f°C 最大值：%.0f°C”</string>
-    <string name="weather_desc_weather"> “气压：%,.0fhPa 湿度：%.0f”</string>
-    <string name="weather_desc_wind">“风：%.0fm/s 度：%.0f° 能见度：%dkm”</string>
-    <string name="weather_location_searching"> “寻找地点”</string>
+    <string name="weather_desc_sun">" 日出：%s 日落：%s"</string>
+    <string name="weather_desc_temp">温度：%.0f°C 最小值：%.0f°C 最大值：%.0f°C</string>
+    <string name="weather_desc_weather">" 气压：%,.0fhPa 湿度：%.0f"</string>
+    <string name="weather_desc_wind">风：%.0fm/s 度：%.0f° 能见度：%dkm</string>
+    <string name="weather_location_searching">寻找地点</string>
 
-    <string name="memo_desc">“屏幕截图：%s 音频文本：%s 照片：%s 视频：%s”</string>
+    <string name="memo_desc">屏幕截图：%s 音频文本：%s 照片：%s 视频：%s</string>
     <string name="setting_Locale">语言选择</string>
     <string name="setting_Locale_ko">韩国语</string>
 
-    <string name="biometric_desc"> “受保护的备忘录必须经过验证。”</string>
-    <string name="biometric_err_msg"> “身份验证失败”</string>
-    <string name="biometric_prompt_detailview_title"> “查看备忘录”</string>
-    <string name="biometric_prompt_detailview_msg">“需要查看笔记。”</string>
-    <string name="biometric_prompt_share_title"> “分享笔记”</string>
-    <string name="biometric_prompt_share_msg"> “需要分享笔记。”</string>
-    <string name="biometric_prompt_delete_title"> “删除注释”</string>
-    <string name="biometric_prompt_delete_msg"> “需要删除笔记。”</string>
+    <string name="biometric_desc">" 受保护的备忘录必须经过验证。"</string>
+    <string name="biometric_err_msg">" 身份验证失败"</string>
+    <string name="biometric_prompt_detailview_title">" 查看备忘录"</string>
+    <string name="biometric_prompt_detailview_msg">需要查看笔记。</string>
+    <string name="biometric_prompt_share_title">" 分享笔记"</string>
+    <string name="biometric_prompt_share_msg">" 需要分享笔记。"</string>
+    <string name="biometric_prompt_delete_title">" 删除注释"</string>
+    <string name="biometric_prompt_delete_msg">" 需要删除笔记。"</string>
 
 
 
-    <string name="permission_rationale_title">“许可请求”</string>
-    <string name="permission_rationale_msg">“使用 GisMemo 需要授权，没有功能限制。”</string>
-    <string name="permission_setting_title"> “系统设置”</string>
-    <string name="permission_setting_msg"> “请在应用程序信息中设置权限。”</string>
+    <string name="permission_rationale_title">许可请求</string>
+    <string name="permission_rationale_msg">使用 GisMemo 需要授权，没有功能限制。</string>
+    <string name="permission_setting_title">" 系统设置"</string>
+    <string name="permission_setting_msg">" 请在应用程序信息中设置权限。"</string>
     <string name="search_radioBt_select">选择</string>
     <string name="setting_Locale_pt">葡萄牙语</string>
     <string name="setting_Locale_es">西班牙语</string>

@@ -27,8 +27,8 @@
     <string name="snackbar_0">작성중인 메모를 클리어 하시겠습니까?</string>
 
     <string name="search_searchBar_placeholder">검색할 제목을 입력하세요.</string>
-    <string name="search_radioBtGroup_secret">"보안 "</string>
-    <string name="search_radioBtGroup_marker">"마커 "</string>
+    <string name="search_radioBtGroup_secret">보안</string>
+    <string name="search_radioBtGroup_marker">마커</string>
     <string name="search_radioBt_select">선택</string>
     <string name="search_radioBt_none">없음</string>
     <string name="search_radioBt_all">모두</string>

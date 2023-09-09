@@ -25,7 +25,7 @@
     <string name="snackbar_1">Effacement du mémo en cours de rédaction.</string>
     <string name="snackbar_0">Voulez-vous effacer le mémo que vous écrivez ?</string>
     <string name="search_searchBar_placeholder">Entrez un titre à rechercher</string>
-    <string name="search_radioBtGroup_marker">"Marker "</string>
+    <string name="search_radioBtGroup_marker">Marker</string>
     <string name="search_radioBtGroup_secret">Secrète</string>
     <string name="search_radioBt_none">None</string>
     <string name="search_radioBt_all">All</string>

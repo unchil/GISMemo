@@ -25,8 +25,8 @@
     <string name="snackbar_1">Cleared the memo being written.</string>
     <string name="snackbar_0">Do you want to clear the memo you are writing?</string>
     <string name="search_searchBar_placeholder">Enter a title to search for</string>
-    <string name="search_radioBtGroup_marker">"Marker "</string>
-    <string name="search_radioBtGroup_secret">"Secret "</string>
+    <string name="search_radioBtGroup_marker">Marker</string>
+    <string name="search_radioBtGroup_secret">Secret</string>
     <string name="search_radioBt_none">None</string>
     <string name="search_radioBt_all">All</string>
     <string name="search_hashTag">HashTag</string>
