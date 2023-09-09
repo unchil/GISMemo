@@ -148,7 +148,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
     val isLock = mutableStateOf(memo.value?.isSecret ?: false)
     val isMark = mutableStateOf(memo.value?.isPin ?: false)
     val snippets = mutableStateOf(memo.value?.snippets ?: "")
-    val selectedTags = mutableStateOf(selectedTagArray.value)
+
+    val selectedTags =  mutableStateOf(selectedTagArray.value)
+
     var isTitleBox by  rememberSaveable{  mutableStateOf(true)}
 
     val fusedLocationProviderClient = remember {
@@ -204,6 +206,27 @@ fun DetailMemoView(navController: NavController, id:Long) {
     }
 
 
+        val tagDialogDissmissHandler:() -> Unit = {
+
+            hapticProcessing()
+            selectedTags.value.clear()
+            var snippetsTemp = ""
+            tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                if (tagInfoData.isSet.value) {
+                    snippetsTemp = "${snippetsTemp } #${  context.resources.getString( tagInfoDataList[index].name)   }"
+                    selectedTags.value.add(index)
+                }
+            }
+            snippets.value = snippetsTemp
+            viewModel.onEvent(
+                DetailMemoViewModel.Event.UpdateTagList(
+                    id,
+                    selectedTags.value,
+                    snippets.value
+                )
+            )
+        }
+
     val checkEnableLocationService: () -> Unit = {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener(context.mainExecutor) { task ->
             if (!task.isSuccessful || task.result == null) {
@@ -231,17 +254,19 @@ fun DetailMemoView(navController: NavController, id:Long) {
             ) {
 
                 Icon(
-                    modifier = Modifier.scale(1f).clickable {
-                        coroutineScope.launch {
-                            if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
-                                || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded
-                            ) {
-                                scaffoldState.bottomSheetState.expand()
-                            } else {
-                                scaffoldState.bottomSheetState.hide()
+                    modifier = Modifier
+                        .scale(1f)
+                        .clickable {
+                            coroutineScope.launch {
+                                if (scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
+                                    || scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded
+                                ) {
+                                    scaffoldState.bottomSheetState.expand()
+                                } else {
+                                    scaffoldState.bottomSheetState.hide()
+                                }
                             }
-                        }
-                    },
+                        },
                     imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                     contentDescription = "search",
                 )
@@ -260,6 +285,12 @@ fun DetailMemoView(navController: NavController, id:Long) {
                 properties = mapProperties,
                 uiSettings = uiSettings,
                 onMapLongClick = {},
+                onMapClick = {
+                       if(isTagDialog)  {
+                           tagDialogDissmissHandler()
+                           isTagDialog = false
+                       }
+                },
                 onMyLocationButtonClick = {
                     checkEnableLocationService.invoke()
                     return@GoogleMap false
@@ -345,7 +376,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
                             Column(
                                 modifier = Modifier
-                                    .padding( all = 20.dp)
+                                    .padding(all = 20.dp)
                                     .background(
                                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
                                         shape = ShapeDefaults.ExtraSmall
@@ -356,7 +387,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
 
                                 weatherData.value?.let {
                                     WeatherView(
-                                        modifier = Modifier.padding(horizontal = 10.dp)
+                                        modifier = Modifier
+                                            .padding(horizontal = 10.dp)
                                             .background(
                                                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(
                                                     6.dp
@@ -421,7 +453,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     .padding(2.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                        shape =ShapeDefaults.ExtraSmall
+                        shape = ShapeDefaults.ExtraSmall
                     )
             ) {
 
@@ -585,6 +617,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                     }
                                     SettingMenu.TAG -> {
                                         isTagDialog = !isTagDialog
+                                        if(!isTagDialog){
+                                            tagDialogDissmissHandler.invoke()
+                                        }
                                     }
 
                                 }
@@ -642,7 +677,8 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     .padding(2.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                        shape =ShapeDefaults.ExtraSmall)
+                        shape = ShapeDefaults.ExtraSmall
+                    )
                     .align(Alignment.Center)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
@@ -655,7 +691,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                         isVisible = isTagDialog,
                         setState = selectedTags,
                     ) {
-
+/*
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -686,6 +722,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                                 snippets.value
                                             )
                                         )
+
                                     },
                                     content = {
                                         Icon(
@@ -695,6 +732,9 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                         )
                                     }
                                 )
+
+
+
 
                                 IconButton(
                                     modifier = Modifier,
@@ -732,10 +772,14 @@ fun DetailMemoView(navController: NavController, id:Long) {
                                 )
 
 
+
+
                             }
 
 
                         }
+
+ */
                     }
 
 

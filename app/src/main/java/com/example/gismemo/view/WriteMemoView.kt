@@ -316,10 +316,6 @@ fun WriteMemoView(navController: NavController ){
             skipHiddenState = false
         )
 
-
-
-
-
         val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
         var isTagDialog by rememberSaveable { mutableStateOf(false) }
         val isAlertDialog = rememberSaveable { mutableStateOf(false) }
@@ -331,6 +327,7 @@ fun WriteMemoView(navController: NavController ){
 
         val selectedTagArray: MutableState<ArrayList<Int>> =
             rememberSaveable { mutableStateOf(arrayListOf()) }
+
         var isLock by rememberSaveable { mutableStateOf(false) }
         var isMark by rememberSaveable { mutableStateOf(false) }
 
@@ -476,6 +473,17 @@ fun WriteMemoView(navController: NavController ){
             mutableStateOf(false)
         }
 
+        val tagDialogDissmissHandler:() -> Unit = {
+
+                hapticProcessing()
+                selectedTagArray.value.clear()
+                tagInfoDataList.forEachIndexed { index, tagInfoData ->
+                    if (tagInfoData.isSet.value) {
+                        selectedTagArray.value.add(index)
+                    }
+                }
+        }
+
         val checkEnableLocationService:()-> Unit = {
             fusedLocationProviderClient.lastLocation.addOnCompleteListener(context.mainExecutor) { task ->
                 if (!task.isSuccessful || task.result == null) {
@@ -583,6 +591,12 @@ fun WriteMemoView(navController: NavController ){
                     properties = mapProperties,
                     uiSettings = uiSettings,
                     onMapLongClick = onMapLongClickHandler,
+                    onMapClick = {
+                        if(isTagDialog) {
+                            tagDialogDissmissHandler.invoke()
+                            isTagDialog = false
+                        }
+                    },
                     onMyLocationButtonClick = {
                         checkEnableLocationService.invoke()
                         return@GoogleMap false
@@ -978,6 +992,9 @@ fun WriteMemoView(navController: NavController ){
                                         }
                                         SettingMenu.TAG -> {
                                             isTagDialog = !isTagDialog
+                                            if(!isTagDialog) {
+                                                tagDialogDissmissHandler.invoke()
+                                            }
 
                                         }
                                     }
@@ -1087,6 +1104,7 @@ fun WriteMemoView(navController: NavController ){
                                 setState = selectedTagArray,
                             ) {
 
+                              /*
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -1142,6 +1160,7 @@ fun WriteMemoView(navController: NavController ){
 
                                     }
                                 }
+                                */
                             }
 
                         }

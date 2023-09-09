@@ -38,6 +38,7 @@ import com.example.gismemo.R
 import com.example.gismemo.shared.composables.LocalPermissionsManager
 import com.example.gismemo.shared.composables.PermissionsManager
 import com.example.gismemo.ui.theme.GISMemoTheme
+import com.example.gismemo.viewmodel.DetailMemoViewModel
 import com.example.gismemo.viewmodel.ListViewModel
 import kotlinx.coroutines.launch
 
@@ -805,11 +806,100 @@ fun AssistChipGroupView(
 
 
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AssistChipGroupViewNew(
+    modifier: Modifier = Modifier,
+    isVisible:Boolean =true,
+    setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
+    content: @Composable (( ) -> Unit)? = null
+){
+
+    val context = LocalContext.current
+
+    tagInfoDataList.clear()
+    setState.value.forEach {
+        tagInfoDataList[it].isSet.value = true
+    }
+
+    val  lazyStaggeredGridState = rememberLazyStaggeredGridState()
+    val itemModifier = Modifier.wrapContentSize()
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+    fun hapticProcessing(){
+        if(isUsableHaptic){
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+    AnimatedVisibility(visible = isVisible) {
+        Column (
+            modifier = Modifier.then(modifier)
+        ){
+            LazyHorizontalStaggeredGrid(
+                rows =  StaggeredGridCells.Fixed(4),
+                modifier  = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .height(200.dp),
+                state = lazyStaggeredGridState,
+                contentPadding =  PaddingValues(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalItemSpacing = 6.dp,
+                userScrollEnabled = true,
+            ){
+                itemsIndexed(tagInfoDataList) { index, it ->
+                    AssistChip(
+                        modifier = itemModifier,
+                        shape = ShapeDefaults.ExtraSmall,
+                        onClick = {
+                            hapticProcessing()
+                            it.isSet.value = !it.isSet.value
+                            if (it.isSet.value)  setState.value.add(index) else   setState.value.remove(index)
+                        },
+                        label = {
+                            Row (verticalAlignment = Alignment.CenterVertically){
+                                Icon(
+                                    imageVector = it.icon,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(AssistChipDefaults.IconSize)
+                                )
+                                Text(
+                                    text = context.resources.getString(it.name),
+                                    style = MaterialTheme.typography.labelMedium)
+                            }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector =   if (it.isSet.value) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
+                                contentDescription = "",
+                                modifier = Modifier.size(AssistChipDefaults.IconSize),
+
+                                )
+                        },
+                    )
+                } // itemsIndexed
+            }
+            content?.let {
+                it()
+            }
+        }
+    }
+}
+
+
+
+
 @Preview
 @Composable
 private fun PrevSearchView(
     modifier: Modifier = Modifier,
 ){
+
+    val selectedTags = mutableStateOf( arrayListOf<Int>() )
 
     val permissionsManager = PermissionsManager()
     CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
@@ -820,7 +910,43 @@ private fun PrevSearchView(
                 modifier = Modifier.background(color = Color.White)
             ) {
 
-                AssistChipGroupView(  )
+                AssistChipGroupViewNew(
+                    setState = selectedTags
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+
+                    ) {
+
+                        Divider()
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+
+                            IconButton(
+                                modifier = Modifier,
+                                onClick = {
+                                    selectedTags.value.clear()
+                                },
+                                content = {
+                                    Icon(
+                                        modifier = Modifier,
+                                        imageVector = Icons.Outlined.Replay,
+                                        contentDescription = "Clear"
+                                    )
+                                }
+                            )
+
+                        }
+
+
+                    }
+                }
 
             }
         }
