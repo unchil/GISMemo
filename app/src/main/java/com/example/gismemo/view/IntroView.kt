@@ -126,9 +126,9 @@ fun IntroView(
             isPortrait = true
             gridWidth = 1f
             upButtonPaddingValue = 160.dp
-            sheetPeekHeightValue = 104.dp
+            sheetPeekHeightValue = 110.dp
             drawerSheetWidthValue = 0f
-            listBottomPaddingValue = 104.dp
+            listBottomPaddingValue = 110.dp
 
             if (drawerState.isOpen) {
                 coroutineScope.launch {
@@ -269,7 +269,16 @@ fun IntroView(
                     ) {
 
                         Icon(
-                            modifier = Modifier.scale(1f),
+                            modifier = Modifier.scale(1f)
+                                .clickable {
+                                coroutineScope.launch {
+                                    if (scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded ) {
+                                        scaffoldState.bottomSheetState.expand()
+                                    } else {
+                                        scaffoldState.bottomSheetState.partialExpand()
+                                    }
+                                }
+                            },
                             imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                             contentDescription = "search",
                         )
