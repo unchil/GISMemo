@@ -5,27 +5,37 @@ package com.example.gismemo.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
+import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.video.*
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.util.Consumer
@@ -126,6 +136,26 @@ fun CameraCompose( navController: NavController? = null   ) {
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
+    val configuration = LocalConfiguration.current
+
+
+    val prevViewBottomPaddingValue: Dp
+    val deleteBottomPaddingValue:Dp
+    var alignment = Alignment.BottomCenter
+
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> {
+            alignment =  Alignment.BottomCenter
+            prevViewBottomPaddingValue = 80.dp
+            deleteBottomPaddingValue = 60.dp
+        }
+        else -> {
+            alignment =  Alignment.CenterEnd
+            prevViewBottomPaddingValue = 10.dp
+            deleteBottomPaddingValue = 10.dp
+        }
+    }
+
 
     fun hapticProcessing(){
         if(isUsableHaptic){
@@ -162,13 +192,12 @@ fun CameraCompose( navController: NavController? = null   ) {
     val flashMode: MutableState<Int> = remember { mutableStateOf(ImageCapture.FLASH_MODE_OFF) }
     val recordingStatus: MutableState<RecordingStatus> = remember {  mutableStateOf(RecordingStatus.Idle) }
     var recordingLength: Int by mutableStateOf(0)
+
     var photoPreviewData: Any by rememberSaveable { mutableStateOf(R.drawable.outline_perm_media_black_48) }
 
     val isDualCamera: MutableState<Boolean> = remember { mutableStateOf(true) }
 
     val isVideoRecording = remember{ mutableStateOf(false)}
-
-    var videoUri : String?  by remember{ mutableStateOf(null)}
 
 
     lifecycleOwner.lifecycleScope.launch {
@@ -248,10 +277,14 @@ fun CameraCompose( navController: NavController? = null   ) {
     val photoList:MutableList<Uri>
             =  rememberSaveable { currentPhotoList }
 
+
     val currentVideoList = viewModel._currentVideo.collectAsState().value.toMutableList()
 
     val videoList:MutableList<Uri>
             =  rememberSaveable { currentVideoList }
+
+    val findVideoList
+            =  rememberSaveable { mutableListOf<Boolean>() }
 
 
     val imageCaptureListener =  object : ImageCapture.OnImageSavedCallback {
@@ -261,6 +294,10 @@ fun CameraCompose( navController: NavController? = null   ) {
                 outputFileResults.savedUri?.let {uri ->
                     photoPreviewData = uri
                     photoList.add(uri)
+
+                    findVideoList.add(isVideoRecording.value)
+
+
                 }
             }
         }
@@ -280,12 +317,17 @@ fun CameraCompose( navController: NavController? = null   ) {
         when (event) {
             is VideoRecordEvent.Finalize -> {
                 if (!event.hasError()) {
-                    videoUri = event.outputResults.outputUri.encodedPath
+
+
                     videoList.add( event.outputResults.outputUri)
+
                     recordingLength = 0
                     videoRecording = null
-                    takePicture()
+
+
                     isVideoRecording.value = true
+                    takePicture()
+
                 }
             }
             is VideoRecordEvent.Status -> {
@@ -314,8 +356,15 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     val backStack = {
 
-        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(photoList, videoList))
+        findVideoList.forEachIndexed { index, isVideo ->
+            if(isVideo){
+                photoList.removeAt(index)
+            }
+        }
 
+
+
+        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(photoList, videoList))
         navController?.popBackStack()
     }
 
@@ -332,11 +381,7 @@ fun CameraCompose( navController: NavController? = null   ) {
         viewType = PermissionRequiredComposeFuncName.Camera,
     ) {
 
-
-
         Box(modifier = Modifier.fillMaxSize()) {
-
-
 
                 AndroidView(
                     factory = { previewView },
@@ -346,15 +391,11 @@ fun CameraCompose( navController: NavController? = null   ) {
                     }
                 )
 
-
-
-
             if (videoRecording == null) {
-                VideoCameraHeader(
+
+                androidx.compose.material.IconButton(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    showFlashIcon = currentCameraInfo.value?.hasFlashUnit() ?: false,
-                    torchState = torchState.value,
-                    onFlashTapped = {
+                    onClick = {
                         hapticProcessing()
                         torchState.value = when (torchState.value) {
                             TorchState.OFF -> TorchState.ON
@@ -365,23 +406,145 @@ fun CameraCompose( navController: NavController? = null   ) {
                             ImageCapture.FLASH_MODE_ON -> ImageCapture.FLASH_MODE_OFF
                             else -> ImageCapture.FLASH_MODE_OFF
                         }
-
                     },
+                    content = {
+
+                        val imageVector = when (torchState.value) {
+                            TorchState.ON -> {
+                                Icons.Outlined.FlashOn
+                            }
+                            else -> {
+                                Icons.Outlined.FlashOff
+                            }
+                        }
+                        Icon(
+                            imageVector = imageVector,
+                            contentDescription = "flash_mode"
+                        )
+                    }
                 )
+
+
             } else {
                 if (recordingStarted.value) {
-                    Timer(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        seconds = recordingLength
-                    )
+
+                    if (recordingLength > 0) {
+
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .padding(vertical = 30.dp)
+                                .clip(ShapeDefaults.Small)
+                        ) {
+                            Text(
+                                text = DateUtils.formatElapsedTime(recordingLength.toLong()),
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = Color.White,
+                                modifier = Modifier
+                                    .background(color = Color.Red.copy(alpha = 0.3f))
+                                    .padding(horizontal = 6.dp)
+                            )
+                        }
+
+                    }
+
+
                 }
             }
 
 
+                when(photoPreviewData){
+                    is Int -> { }
+                    else -> {
+
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .padding(start = 10.dp, bottom =prevViewBottomPaddingValue)
+                        ) {
+
+                            AnimatedVisibility(findVideoList.size > 0) {
+
+                                    PhotoPreview(
+                                        data = photoPreviewData,
+                                        onPhotoPreviewTapped = {
+
+                                            hapticProcessing()
+
+                                            when (it) {
+                                                is Int -> {}
+                                                else -> {
+
+                                                    if(findVideoList.last()) {
+                                                        videoList.last().encodedPath?.let {videoUri ->
+                                                            navController?.navigate(
+                                                                GisMemoDestinations.ExoPlayerView.createRoute(
+                                                                    videoUri
+                                                                )
+                                                            )
+                                                        }
+                                                    } else {
+                                                        navController?.navigate(
+                                                            GisMemoDestinations.PhotoPreview.createRoute(
+                                                                it
+                                                            )
+                                                        )
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    )
+
+
+
+                                IconButton(
+                                    modifier = Modifier
+                                        .scale(1f)
+                                        .align(Alignment.BottomStart),
+                                    onClick = {
+
+                                        if(findVideoList.last()) {
+                                            videoList.removeAt(videoList.lastIndex)
+                                            photoList.removeAt(photoList.lastIndex)
+                                        }else{
+                                            photoList.removeAt(photoList.lastIndex)
+                                        }
+                                        findVideoList.removeAt(findVideoList.lastIndex)
+
+
+                                        photoPreviewData = if( findVideoList.isEmpty() ) {
+                                            mutableStateOf(R.drawable.outline_perm_media_black_48)
+                                       } else {
+                                           photoList.last()
+                                        }
+
+
+
+                                    },
+                                    content = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.RemoveCircle,
+                                            contentDescription = "Delete"
+                                        )
+                                    }
+                                )
+
+
+
+                            }
+
+                        }
+                    }
+                }
+
+
+
+
+
 
             VideoCameraFooter(
-                photoPrevData = photoPreviewData,
-                modifier = Modifier.align(Alignment.BottomStart),
+                modifier = Modifier.align(alignment),
                 recordingStatus = recordingStatus.value,
                 showFlipIcon = isDualCamera.value,
                 onRecordTapped = {
@@ -415,27 +578,9 @@ fun CameraCompose( navController: NavController? = null   ) {
                 },
                 onCaptureTapped = {
                     hapticProcessing()
+
                     isVideoRecording.value = false
                     takePicture()
-                }  ,
-                onPhotoPreviewTapped = { it ->
-                    hapticProcessing()
-                    when(it){
-                        is Int -> { }
-                        else -> {
-
-                            when(isVideoRecording.value){
-                                true -> {
-                                    videoUri?.let {
-                                        navController?.navigate(GisMemoDestinations.ExoPlayerView.createRoute( it))  }
-                                }
-                                false -> {
-                                    navController?.navigate(GisMemoDestinations.PhotoPreview.createRoute(it))
-                                }
-                            }
-
-                        }
-                    }
                 }
             )
 
@@ -445,36 +590,16 @@ fun CameraCompose( navController: NavController? = null   ) {
     }
 
     BackHandler {
+
         backStack()
     }
 
 }
 
 
-@Composable
-fun VideoCameraHeader(
-    modifier: Modifier = Modifier,
-    showFlashIcon: Boolean,
-    torchState: Int,
-    onFlashTapped: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(8.dp)
-            .then(modifier)
-    ) {
-        if (showFlashIcon) {
-            CameraTorchIcon(modifier = modifier, torchState = torchState, onTapped = onFlashTapped)
-        }
-
-    }
-}
 
 @Composable
 fun VideoCameraFooter(
-    photoPrevData: Any,
     modifier: Modifier = Modifier,
     recordingStatus: RecordingStatus,
     showFlipIcon: Boolean,
@@ -484,89 +609,253 @@ fun VideoCameraFooter(
     onResumeTapped: () -> Unit,
     onFlipTapped: () -> Unit,
     onCaptureTapped: () -> Unit,
-    onPhotoPreviewTapped: (Any) -> Unit
 ) {
 
-    Row(
-        modifier = Modifier
-            .background(color = Color.White.copy(alpha = 0.2f))
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = 24.dp)
-            .then(modifier),
-        horizontalArrangement =  Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
 
-    ) {
+    val configuration = LocalConfiguration.current
+
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_PORTRAIT -> {
+
+            Row(
+                modifier = Modifier
+                    .background(color = Color.White.copy(alpha = 0.2f))
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(vertical = 10.dp)
+                    .then(modifier),
+                horizontalArrangement =  Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
 
 
-        when(photoPrevData){
-            is Int -> { }
-            else -> {
-                PhotoPreview(
-                    data = photoPrevData,
-                    onPhotoPreviewTapped = onPhotoPreviewTapped
+                when (recordingStatus) {
+
+                    RecordingStatus.Idle -> {
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = {onRecordTapped()} ,
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.Videocam,
+                                    contentDescription = "videocam"
+                                )
+                            })
+                    }
+
+                    RecordingStatus.InProgress -> {
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onPauseTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.PauseCircle,
+                                    contentDescription = "PauseCircle"
+                                )
+                            }
+                        )
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onStopTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.StopCircle,
+                                    contentDescription = "StopCircle"
+                                )
+                            }
+                        )
+                    }
+
+
+                    RecordingStatus.Paused -> {
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onResumeTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.PlayCircle,
+                                    contentDescription = "PlayCircle"
+                                )
+                            }
+                        )
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onStopTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.StopCircle,
+                                    contentDescription = "StopCircle"
+                                )
+                            }
+                        )
+
+                    }
+                }
+
+                androidx.compose.material.IconButton(
+                    modifier = Modifier.scale(1.5f),
+                    onClick = { onCaptureTapped() },
+                    content = {
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = Icons.Outlined.Camera,
+                            contentDescription = "capture"
+                        )
+                    }
                 )
-                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+
+                if (showFlipIcon && recordingStatus == RecordingStatus.Idle) {
+
+                    androidx.compose.material.IconButton(
+                        modifier = Modifier.scale(1.5f),
+                        onClick = { onFlipTapped() },
+                        content = {
+                            Icon(
+                                modifier = Modifier,
+                                imageVector = Icons.Outlined.FlipCameraIos,
+                                contentDescription = "camera_flip"
+                            )
+                        }
+                    )
+                }
+
             }
+
         }
+        else -> {
+            Column(
+                modifier = Modifier
+                    .background(color = Color.White.copy(alpha = 0.2f))
+                    .fillMaxHeight()
+                    .wrapContentWidth()
+                    .padding(horizontal = 10.dp)
+                    .then(modifier),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
 
-        when (recordingStatus) {
+            ) {
 
-            RecordingStatus.Idle -> {
-                CameraRecordIcon(
-                    iconModifier = Modifier.size(40.dp),
-                    onTapped = onRecordTapped
+
+                when (recordingStatus) {
+
+                    RecordingStatus.Idle -> {
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = {onRecordTapped()} ,
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.Videocam,
+                                    contentDescription = "videocam"
+                                )
+                            })
+                    }
+
+                    RecordingStatus.InProgress -> {
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onPauseTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.PauseCircle,
+                                    contentDescription = "PauseCircle"
+                                )
+                            }
+                        )
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onStopTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.StopCircle,
+                                    contentDescription = "StopCircle"
+                                )
+                            }
+                        )
+                    }
+
+                    RecordingStatus.Paused -> {
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onResumeTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.PlayCircle,
+                                    contentDescription = "PlayCircle"
+                                )
+                            }
+                        )
+
+                        androidx.compose.material.IconButton(
+                            modifier = Modifier.scale(1.5f),
+                            onClick = { onStopTapped() },
+                            content = {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Icons.Outlined.StopCircle,
+                                    contentDescription = "StopCircle"
+                                )
+                            }
+                        )
+
+                    }
+                }
+
+                androidx.compose.material.IconButton(
+                    modifier = Modifier.scale(1.5f),
+                    onClick = { onCaptureTapped() },
+                    content = {
+                        Icon(
+                            modifier = Modifier,
+                            imageVector = Icons.Outlined.Camera,
+                            contentDescription = "capture"
+                        )
+                    }
                 )
+
+                if (showFlipIcon && recordingStatus == RecordingStatus.Idle) {
+
+                    androidx.compose.material.IconButton(
+                        modifier = Modifier.scale(1.5f),
+                        onClick = { onFlipTapped() },
+                        content = {
+                            Icon(
+                                modifier = Modifier,
+                                imageVector = Icons.Outlined.FlipCameraIos,
+                                contentDescription = "camera_flip"
+                            )
+                        }
+                    )
+
+                }
+
             }
-            RecordingStatus.InProgress -> {
-                CameraPauseIcon(
-                    iconModifier = Modifier.size(40.dp),
-                    onTapped = onPauseTapped,
-                )
-
-                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-
-                CameraStopIcon(
-                    iconModifier = Modifier.size(40.dp),
-                    onTapped = onStopTapped
-                )
-            }
-            RecordingStatus.Paused -> {
-                CameraPlayIcon(
-                    iconModifier = Modifier.size(40.dp),
-                    onTapped = onResumeTapped,
-                )
-
-                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-
-                CameraStopIcon(
-                    iconModifier = Modifier.size(40.dp),
-                    onTapped = onStopTapped
-                )
-            }
-        }
-
-
-        Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-
-        CameraCaptureIcon(
-            iconModifier = Modifier.size(40.dp),
-            onTapped = onCaptureTapped
-        )
-
-
-        Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-
-        if (showFlipIcon && recordingStatus == RecordingStatus.Idle) {
-
-            CameraFlipIcon(
-                iconModifier = Modifier.size(40.dp),
-                onTapped = onFlipTapped
-            )
 
         }
     }
+
+
+
+
+
+
 }
 
 
