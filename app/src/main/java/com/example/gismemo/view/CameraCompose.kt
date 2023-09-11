@@ -355,22 +355,13 @@ fun CameraCompose( navController: NavController? = null   ) {
     }
 
     val backStack = {
-
         val tempList = mutableListOf<Uri>()
-
         findVideoList.forEachIndexed { index, isVideo ->
-            if(isVideo){
+            if(!isVideo){
                 tempList.add(photoList[index] )
             }
         }
-
-        tempList.forEach {
-            photoList.remove(it)
-        }
-
-
-
-        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(photoList, videoList))
+        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(tempList, videoList))
         navController?.popBackStack()
     }
 
