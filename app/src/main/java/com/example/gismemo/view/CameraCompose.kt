@@ -140,19 +140,23 @@ fun CameraCompose( navController: NavController? = null   ) {
 
 
     val prevViewBottomPaddingValue: Dp
+    val prevViewStartPaddingValue: Dp
     val deleteBottomPaddingValue:Dp
+    val deleteStartPaddingValue:Dp
     var alignment = Alignment.BottomCenter
 
     when (configuration.orientation) {
         Configuration.ORIENTATION_PORTRAIT -> {
             alignment =  Alignment.BottomCenter
             prevViewBottomPaddingValue = 80.dp
-            deleteBottomPaddingValue = 60.dp
+            prevViewStartPaddingValue = 10.dp
+            deleteStartPaddingValue = 110.dp
         }
         else -> {
             alignment =  Alignment.CenterEnd
             prevViewBottomPaddingValue = 10.dp
-            deleteBottomPaddingValue = 10.dp
+            prevViewStartPaddingValue = 10.dp
+            deleteStartPaddingValue = 110.dp
         }
     }
 
@@ -221,8 +225,6 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     }
 
-
-
 /*
     lifecycleOwner.lifecycleScope.launch {
 
@@ -271,12 +273,10 @@ fun CameraCompose( navController: NavController? = null   ) {
     }
      */
 
-
     val currentPhotoList = viewModel._currentPhoto.collectAsState().value.toMutableList()
 
     val photoList:MutableList<Uri>
             =  rememberSaveable { currentPhotoList }
-
 
     val currentVideoList = viewModel._currentVideo.collectAsState().value.toMutableList()
 
@@ -393,8 +393,12 @@ fun CameraCompose( navController: NavController? = null   ) {
 
             if (videoRecording == null) {
 
-                androidx.compose.material.IconButton(
+                IconButton(
                     modifier = Modifier.align(Alignment.TopCenter),
+                    colors = IconButtonDefaults.outlinedIconButtonColors(
+                        containerColor = Color.Gray.copy(alpha = 0.7f) ,
+                        contentColor = Color.Black
+                    ),
                     onClick = {
                         hapticProcessing()
                         torchState.value = when (torchState.value) {
@@ -458,83 +462,97 @@ fun CameraCompose( navController: NavController? = null   ) {
                     else -> {
 
                         Box(
-                            modifier = Modifier
+                            modifier = Modifier.fillMaxWidth()
                                 .align(Alignment.BottomStart)
-                                .padding(start = 10.dp, bottom =prevViewBottomPaddingValue)
+                                .padding(
+                                    start = prevViewStartPaddingValue,
+                                    bottom = prevViewBottomPaddingValue
+                                )
                         ) {
-
                             AnimatedVisibility(findVideoList.size > 0) {
 
-                                    PhotoPreview(
-                                        data = photoPreviewData,
-                                        onPhotoPreviewTapped = {
+                                PhotoPreview(
+                                    modifier = Modifier.align(Alignment.BottomStart),
+                                    data = photoPreviewData,
+                                    onPhotoPreviewTapped = {
 
-                                            hapticProcessing()
+                                        hapticProcessing()
 
-                                            when (it) {
-                                                is Int -> {}
-                                                else -> {
+                                        when (it) {
+                                            is Int -> {}
+                                            else -> {
 
-                                                    if(findVideoList.last()) {
-                                                        videoList.last().encodedPath?.let {videoUri ->
-                                                            navController?.navigate(
-                                                                GisMemoDestinations.ExoPlayerView.createRoute(
-                                                                    videoUri
-                                                                )
-                                                            )
-                                                        }
-                                                    } else {
+                                                if(findVideoList.last()) {
+                                                    videoList.last().encodedPath?.let {videoUri ->
                                                         navController?.navigate(
-                                                            GisMemoDestinations.PhotoPreview.createRoute(
-                                                                it
+                                                            GisMemoDestinations.ExoPlayerView.createRoute(
+                                                                videoUri
                                                             )
                                                         )
                                                     }
-
+                                                } else {
+                                                    navController?.navigate(
+                                                        GisMemoDestinations.PhotoPreview.createRoute(
+                                                            it
+                                                        )
+                                                    )
                                                 }
+
                                             }
                                         }
-                                    )
-
+                                    }
+                                )
 
 
                                 IconButton(
                                     modifier = Modifier
                                         .scale(1f)
-                                        .align(Alignment.BottomStart),
+                                        .align(Alignment.BottomEnd)
+                                        .padding(
+                                            start = deleteStartPaddingValue,
+                                        ),
+                                    colors = IconButtonDefaults.outlinedIconButtonColors(
+                                        containerColor = Color.Gray.copy(alpha = 0.7f) ,
+                                        contentColor = Color.Black
+                                    ),
                                     onClick = {
 
-                                        if(findVideoList.last()) {
+                                        if (findVideoList.last()) {
                                             videoList.removeAt(videoList.lastIndex)
                                             photoList.removeAt(photoList.lastIndex)
-                                        }else{
+                                        } else {
                                             photoList.removeAt(photoList.lastIndex)
                                         }
                                         findVideoList.removeAt(findVideoList.lastIndex)
 
 
-                                        photoPreviewData = if( findVideoList.isEmpty() ) {
+                                        photoPreviewData = if (findVideoList.isEmpty()) {
                                             mutableStateOf(R.drawable.outline_perm_media_black_48)
-                                       } else {
-                                           photoList.last()
+                                        } else {
+                                            photoList.last()
                                         }
-
 
 
                                     },
                                     content = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.RemoveCircle,
-                                            contentDescription = "Delete"
-                                        )
+
+                                            Icon(
+                                                imageVector = Icons.Outlined.Delete,
+                                                contentDescription = "Delete"
+                                            )
+
                                     }
                                 )
 
 
 
                             }
-
                         }
+
+
+
+
+
                     }
                 }
 
