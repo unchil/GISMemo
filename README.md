@@ -37,14 +37,22 @@ local.properties
 }
 ```
 
+
+###  Video
+|Write|Detail|Map|Setting|
+|:-:|:-:|:-:|:-:|
+|[<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write_portrait.png" width="100%"  title="Write" alt="Write"></img>](https://youtube.com/shorts/uM2O647Z7TE?feature=share)| [<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/detail_portrait.png" width="100%"  title="Detail" alt="Detail"></img>](https://youtu.be/kVP62ui4bNU?feature=share)|[<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_portrait.png" width="100%"  title="Map" alt="Map"></img>](https://youtube.com/shorts/-yUi1thvrrw?feature=share) | [<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/setting_portrait.png" width="100%"  title="Setting" alt="Setting"></img>](https://youtube.com/shorts/jxyRPqcp3BE?feature=share)|
+
+
+###  Screen Shot
 |     |                                          Portrait                                          |                                                                                                                                                        Landscape                                                                                                                                                        |
 |:---:|:------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |**List**|  ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_portrait.png)  |                                                  ```It is a list screen of created memos, and features such as search, share, delete, and view details are provided.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_landscape.png)</img>                                                  |
 |**Write**| ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write_portrait.png)  |  ```This screen is for writing notes. It provides functions such as screenshots of pictures drawn on maps, texts using voice recognition, photos, and videos, and it is possible to set security, markers, and hashtags.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write_landscape.png)   |                                                             
-|**Markers**|  ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_portrait.png)   | ```The location of the memo with the marker set is displayed.If you touch the information window of the marker, a brief screen of the memo is displayed, and if you touch the screen, you move to the detailed view screen.``` ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_landscape.png) | 
+|**Map**|  ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_portrait.png)   | ```The location of the memo with the marker set is displayed.If you touch the information window of the marker, a brief screen of the memo is displayed, and if you touch the screen, you move to the detailed view screen.``` ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_landscape.png) | 
 |**Search**| ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/search_portrait.png) |                                                                ```Memos can be searched by title, creation date, hashtag, security, and marker conditions.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/search_landscape.png)                                                                |   
 |**Detail**| ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/detail_portrait.png) |                               ```This is the screen that appears when you tap an item in the list or tap an item in the entire map. Can check the detailed information of the written memo.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/detail_landscape.png)                               |   
-
+|**Setting**| ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/setting_portrait.png) |                               ```This GISMEMO can set the following functions.  Haptic, night mode, delete all notes, select language (Korean, English, French, Portuguese, Spanish, Chinese)```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/setting_landscape.png)        
 
 ##  License
 **SPDX-License-Identifier: MIT**
