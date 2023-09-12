@@ -56,4 +56,3 @@ local.properties
 [release]: https://github.com/unchil/GISMemo/tree/main/download/app-release.apk "release GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
-[compose-audiowaveform_link]: https://github.com/lincollincol/compose-audiowaveform "Go compose-audiowaveform"
