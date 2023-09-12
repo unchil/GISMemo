@@ -37,12 +37,6 @@ local.properties
 }
 ```
 
-caption
-:-:
-<video src='https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write.mp4' width=180/>
-
-
-
 |     |                                          Portrait                                          |                                                                                                                                                        Landscape                                                                                                                                                        |
 |:---:|:------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |**List**|  ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_portrait.png)  |                                                  ```It is a list screen of created memos, and features such as search, share, delete, and view details are provided.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_landscape.png)</img>                                                  |
