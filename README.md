@@ -37,8 +37,6 @@ local.properties
 }
 ```
 
-
-
 |     |                                          Portrait                                          |                                                                                                                                                        Landscape                                                                                                                                                        |
 |:---:|:------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 |**List**|  ![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_portrait.png)  |                                                  ```It is a list screen of created memos, and features such as search, share, delete, and view details are provided.```![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/list_landscape.png)</img>                                                  |
@@ -55,4 +53,3 @@ local.properties
 [release]: https://github.com/unchil/GISMemo/tree/main/download/app-release.apk "release GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
-[compose-audiowaveform_link]: https://github.com/lincollincol/compose-audiowaveform "Go compose-audiowaveform"
