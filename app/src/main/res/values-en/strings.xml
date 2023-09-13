@@ -107,6 +107,9 @@
     <string name="setting_Locale_es">Spanish</string>
     <string name="setting_Locale_zh">Chinese</string>
     <string name="setting_UsableDynamicColor">Dynamic Color Mode</string>
+    <string name="setting_DeleteAlertDialog_Title">Delete All Notes</string>
+    <string name="setting_DeleteAlertDialog_Confirm">Confirm</string>
+    <string name="snackbar_13">All data has been deleted.</string>
 
 
 </resources>

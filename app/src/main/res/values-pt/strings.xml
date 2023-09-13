@@ -97,4 +97,7 @@
     <string name="setting_Locale_es">Espanhol</string>
     <string name="setting_Locale_zh">Chinês</string>
     <string name="setting_UsableDynamicColor">Modo de cor dinâmica</string>
+    <string name="setting_DeleteAlertDialog_Title">Excluir todas as notas</string>
+    <string name="setting_DeleteAlertDialog_Confirm">Confirme</string>
+    <string name="snackbar_13">Todos os dados foram excluídos.</string>
 </resources>

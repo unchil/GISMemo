@@ -107,6 +107,9 @@
     <string name="setting_Locale_es">西班牙语</string>
     <string name="setting_Locale_zh">中国语</string>
     <string name="setting_UsableDynamicColor">动态色彩模式</string>
+    <string name="setting_DeleteAlertDialog_Title">删除所有笔记</string>
+    <string name="setting_DeleteAlertDialog_Confirm">确认</string>
+    <string name="snackbar_13">所有数据已被删除。</string>
 
 
 </resources>

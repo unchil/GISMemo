@@ -95,4 +95,6 @@
     <string name="setting_Locale_es">Español</string>
     <string name="setting_Locale_zh">Chino</string>
     <string name="setting_UsableDynamicColor">Modo de color dinámico</string>
+    <string name="setting_DeleteAlertDialog_Title">Supprimer toutes les notes</string>
+    <string name="setting_DeleteAlertDialog_Confirm">Confirmar</string>
 </resources>

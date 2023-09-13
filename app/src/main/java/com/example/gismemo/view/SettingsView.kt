@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -16,11 +18,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,8 +35,13 @@ import com.example.gismemo.data.RepositoryProvider
 import com.example.gismemo.db.LocalLuckMemoDB
 import com.example.gismemo.shared.composables.LocalPermissionsManager
 import com.example.gismemo.shared.composables.PermissionsManager
+import com.example.gismemo.shared.utils.SnackBarChannelType
+import com.example.gismemo.shared.utils.snackbarChannelList
 import com.example.gismemo.ui.theme.GISMemoTheme
+import com.example.gismemo.viewmodel.ListViewModel
 import com.example.gismemo.viewmodel.SettingsViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -50,16 +59,6 @@ fun Context.getLanguageArray():Array<String>{
     return resources.getStringArray(R.array.Language_Array)
 }
 
-
-
-val languageList =  listOf(
-    "ko",
-    "zh",
-    "en",
-    "fr",
-    "pt",
-    "es"
-)
 
 @Composable
 fun SettingsView(navController: NavHostController){
@@ -86,6 +85,8 @@ fun SettingsView(navController: NavHostController){
     var checkedIsDynamicColor by remember { mutableStateOf(isUsableDynamicColor) }
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
+
+    val isAlertDialog = rememberSaveable { mutableStateOf(false) }
 
     fun hapticProcessing(){
         if(isUsableHaptic){
@@ -125,9 +126,6 @@ fun SettingsView(navController: NavHostController){
         }
     } else {    null }
 
-    var isAlertDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
 
     val localeOption =  listOf(
         context.resources.getString(R.string.setting_Locale_ko),
@@ -147,27 +145,59 @@ fun SettingsView(navController: NavHostController){
     LaunchedEffect(key1 = localeRadioGroupState.value ){
         isLocaleChange = !isLocaleChange
 
-      //  val locale = Locale( languageList[localeRadioGroupState.value] )
         val locale = Locale( languageArray[localeRadioGroupState.value] )
 
         Locale.setDefault(locale)
 
         context.resources.configuration.setLocale(locale)
         context.resources.configuration.setLayoutDirection(locale)
-    //    context.createConfigurationContext(context.resources.configuration)
        context.resources.updateConfiguration( context.resources.configuration, context.resources.displayMetrics)
         viewModel.onEvent(SettingsViewModel.Event.UpdateOnChangeLocale(isLocaleChange))
         viewModel.onEvent(SettingsViewModel.Event.UpdateIsChangeLocale(localeRadioGroupState.value))
-
-/*
-        if(isLocaleChange) {
-            context.findActivity().recreate()
-        }
- */
-
     }
 
 
+    val snackBarHostState = remember { SnackbarHostState() }
+    val channel = remember { Channel<Int>(Channel.CONFLATED) }
+
+    LaunchedEffect(channel) {
+        channel.receiveAsFlow().collect { index ->
+            val channelData = snackbarChannelList.first {
+                it.channel == index
+            }
+
+            val result = snackBarHostState.showSnackbar(
+                message =   context.resources.getString( channelData.message),
+                actionLabel = channelData.actionLabel,
+                withDismissAction = channelData.withDismissAction,
+                duration = channelData.duration
+            )
+            when (result) {
+                SnackbarResult.ActionPerformed -> {
+                    hapticProcessing()
+                    //----------
+                    when (channelData.channelType) {
+
+                        else -> {}
+                    }
+                    //----------
+                }
+                SnackbarResult.Dismissed -> {
+                    hapticProcessing()
+                }
+            }
+        }
+    }
+
+
+
+    Scaffold(
+        snackbarHost ={
+            SnackbarHost(hostState = snackBarHostState)
+        },
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+        contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+    ) {
         Box(modifier = Modifier.fillMaxSize()) {
 
             Column(
@@ -282,7 +312,7 @@ fun SettingsView(navController: NavHostController){
                             .fillMaxWidth(0.5f),
                         onClick = {
                             hapticProcessing()
-                            isAlertDialog = true
+                            isAlertDialog.value = true
 
                         },
                         content = {
@@ -327,11 +357,102 @@ fun SettingsView(navController: NavHostController){
 
             }
 
+
+            if( isAlertDialog.value) {
+                DeleteConfirmDialog(isAlertDialog){
+                    viewModel.onEvent(SettingsViewModel.Event.clearAllMemo)
+
+                    channel.trySend(snackbarChannelList.first {
+                        it.channelType == SnackBarChannelType.ALL_DATA_DELETE
+                    }.channel)
+                }
+
+            }
+
+        }
+    }
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteConfirmDialog(
+    isAlertDialog: MutableState<Boolean>,
+    event: (()-> Unit)? = null
+){
+
+    val context = LocalContext.current
+    val isUsableHaptic = LocalUsableHaptic.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun hapticProcessing() {
+        if (isUsableHaptic) {
+            coroutineScope.launch {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = {
+            isAlertDialog.value = false
+        }
+    ) {
+
+
+        Column(
+            modifier = Modifier
+                .background(
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        6.dp
+                    ),
+                    shape = ShapeDefaults.ExtraSmall
+                )
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .padding(horizontal = 20.dp, vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+
+
+            androidx.compose.material.Text(
+                modifier = Modifier,
+                text = context.resources.getString(R.string.setting_DeleteAlertDialog_Title),
+                textAlign = TextAlign.Center,
+                style = androidx.compose.material3.MaterialTheme.typography.headlineLarge,
+                color = Color.Red
+            )
+
+
+            TextButton(
+
+                onClick = {
+                    hapticProcessing()
+                    isAlertDialog.value = false
+                    //event(SettingsViewModel.Event.clearAllMemo)
+                    event?.invoke()
+                }
+            ) {
+                androidx.compose.material.Text(
+                    context.resources.getString(R.string.setting_DeleteAlertDialog_Confirm),
+                    textAlign = TextAlign.Center,
+                    style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+                    color = Color.Red
+                )
+            }
+
         }
 
 
 
+    }
+
+
 }
+
 
 
 

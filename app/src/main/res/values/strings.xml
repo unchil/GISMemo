@@ -10,6 +10,7 @@
     <string name="mainmenu_map" >지도</string>
     <string name="mainmenu_setting" >설정</string>
 
+    <string name="snackbar_13">모든 데이터를 삭제 하였습니다.</string>
     <string name="snackbar_12">비밀번호, 지문 등의 등록 및 사용을 확인해 주세요.</string>
     <string name="snackbar_11">위치정보 서비스를 이용할수 없습니다.</string>
     <string name="snackbar_10">인증에 실패 하였습니다.</string>
@@ -85,6 +86,9 @@
     <string name="writeMemo_AlertDialog_desc">작성한 메모를 저장하고 화면을 지웁니다.</string>
     <string name="writeMemo_AlertDialog_Cancel">취소</string>
     <string name="writeMemo_AlertDialog_Confirm">확인</string>
+
+    <string name="setting_DeleteAlertDialog_Title">전체 메모 삭제</string>
+    <string name="setting_DeleteAlertDialog_Confirm">확인</string>
 
 
     <string name="weather_desc_sun"> "일출:%s 일몰:%s"</string>
