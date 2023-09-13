@@ -106,6 +106,7 @@
     <string name="setting_Locale_pt">Portuguese</string>
     <string name="setting_Locale_es">Spanish</string>
     <string name="setting_Locale_zh">Chinese</string>
+    <string name="setting_UsableDynamicColor">Dynamic Color Mode</string>
 
 
 </resources>

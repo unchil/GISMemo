@@ -78,9 +78,12 @@ fun SettingsView(navController: NavHostController){
 
     val isUsableHaptic = LocalUsableHaptic.current
     val isUsableDarkMode = LocalUsableDarkMode.current
+    val isUsableDynamicColor= LocalUsableDynamicColor.current
+
     var isLocaleChange by rememberSaveable { mutableStateOf(false) }
     var checkedIsUsableHaptic by remember { mutableStateOf(isUsableHaptic) }
     var checkedIsDarkMode by remember { mutableStateOf(isUsableDarkMode) }
+    var checkedIsDynamicColor by remember { mutableStateOf(isUsableDynamicColor) }
     val hapticFeedback = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -103,6 +106,16 @@ fun SettingsView(navController: NavHostController){
     } else {  null  }
 
     val iconIsDarkMode: (@Composable () -> Unit)? = if (checkedIsDarkMode) {
+        {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+    } else {    null }
+
+    val iconIsDynamicColor: (@Composable () -> Unit)? = if (checkedIsDynamicColor) {
         {
             Icon(
                 imageVector = Icons.Filled.Check,
@@ -222,6 +235,34 @@ fun SettingsView(navController: NavHostController){
                         thumbContent = iconIsDarkMode
                     )
                 }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        text = context.resources.getString(R.string.setting_UsableDynamicColor),
+                        style = androidx.compose.material3.MaterialTheme.typography.titleSmall
+                    )
+
+                    Switch(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .semantics {
+                                contentDescription = "IS Usable DynamicColor "
+                            },
+                        checked = checkedIsDynamicColor,
+                        onCheckedChange = {
+                            hapticProcessing()
+                            checkedIsDynamicColor = it
+                            viewModel.onEvent(SettingsViewModel.Event.UpdateIsDynamicColor(it))
+                        },
+                        thumbContent = iconIsDynamicColor
+                    )
+                }
+
 
 
                 Row(

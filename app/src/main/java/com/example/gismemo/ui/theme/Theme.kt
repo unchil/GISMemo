@@ -82,13 +82,19 @@ private val DarkColors = darkColorScheme(
 fun GISMemoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
 
+    val colorScheme = if(dynamicColor){
+        if(darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    }else {
+        if (darkTheme) DarkColors  else LightColors
+    }
+
    //val colorScheme = if(darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-    val colorScheme =  if (darkTheme) DarkColors  else LightColors
+   // val colorScheme =  if (darkTheme) DarkColors  else LightColors
 
     val view = LocalView.current
     if (!view.isInEditMode) {

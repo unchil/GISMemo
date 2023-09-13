@@ -94,4 +94,5 @@
     <string name="permission_setting_msg">Configure los permisos en Información de la aplicación.</string>
     <string name="setting_Locale_es">Español</string>
     <string name="setting_Locale_zh">Chino</string>
+    <string name="setting_UsableDynamicColor">Modo de color dinámico</string>
 </resources>

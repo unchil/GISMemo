@@ -65,6 +65,7 @@
 
     <string name="setting_UsableHaptic">햅틱 사용</string>
     <string name="setting_UsableDarkMode">야간모드 사용</string>
+    <string name="setting_UsableDynamicColor">동적 색상 모드</string>
     <string name="setting_ClearAllMemo">전체 메모 삭제</string>
     <string name="setting_Locale">언어 선택</string>
     <string name="setting_Locale_ko">한글</string>

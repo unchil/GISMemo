@@ -52,6 +52,9 @@ class Repository{
     val isUsableDarkMode: MutableStateFlow<Boolean>
             = MutableStateFlow(false)
 
+    val isUsableDynamicColor: MutableStateFlow<Boolean>
+            = MutableStateFlow(false)
+
     val currentIsDrawing: MutableStateFlow<Boolean>
             = MutableStateFlow(false)
 
@@ -88,6 +91,10 @@ class Repository{
 
     fun updateIsUsableDarkMode(value:Boolean){
         isUsableDarkMode.value = value
+    }
+
+    fun updateIsUsableDynamicColor(value:Boolean){
+        isUsableDynamicColor.value = value
     }
 
     fun updateOnChangeLocale(value:Boolean){

@@ -62,6 +62,7 @@ import java.util.*
 val LocalChangeLocale = compositionLocalOf{ false }
 val LocalUsableHaptic = compositionLocalOf{ true }
 val LocalUsableDarkMode = compositionLocalOf{ false }
+val LocalUsableDynamicColor = compositionLocalOf{ false }
 
 class MainActivity : ComponentActivity() {
 
@@ -132,6 +133,7 @@ class MainActivity : ComponentActivity() {
             val onChangeLocale = repository.onChangeLocale.collectAsState()
             val isUsableHaptic = repository.isUsableHaptic.collectAsState()
             val isUsableDarkMode = repository.isUsableDarkMode.collectAsState()
+            val isUsableDynamicColor = repository.isUsableDynamicColor.collectAsState()
             val hapticFeedback = LocalHapticFeedback.current
             val isPressed = remember { mutableStateOf(false) }
 
@@ -184,39 +186,41 @@ class MainActivity : ComponentActivity() {
             }
 
 
-                GISMemoTheme(darkTheme = isUsableDarkMode.value) {
+                GISMemoTheme(darkTheme = isUsableDarkMode.value,
+                    dynamicColor = isUsableDynamicColor.value
+                ) {
 
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.surface
                     ) {
                         CompositionLocalProvider(LocalChangeLocale provides onChangeLocale.value) {
-
                             CompositionLocalProvider(LocalUsableDarkMode provides isUsableDarkMode.value) {
-                                CompositionLocalProvider(LocalUsableHaptic provides isUsableHaptic.value) {
-                                    CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
-                                        CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
+                                CompositionLocalProvider(LocalUsableDynamicColor provides isUsableDynamicColor.value) {
+                                    CompositionLocalProvider(LocalUsableHaptic provides isUsableHaptic.value) {
+                                        CompositionLocalProvider(LocalLuckMemoDB provides luckMemoDB) {
+                                            CompositionLocalProvider(LocalPermissionsManager provides permissionsManager) {
 
 
-                                            Box(modifier = Modifier.fillMaxSize()) {
-                                                if (!isConnect.value) {
-                                                    ChkNetWork(
-                                                        onCheckState = {
-                                                            coroutineScope.launch {
-                                                                isConnect.value =
-                                                                    checkInternetConnected()
+                                                Box(modifier = Modifier.fillMaxSize()) {
+                                                    if (!isConnect.value) {
+                                                        ChkNetWork(
+                                                            onCheckState = {
+                                                                coroutineScope.launch {
+                                                                    isConnect.value =
+                                                                        checkInternetConnected()
+                                                                }
                                                             }
-                                                        }
-                                                    )
-                                                } else {
+                                                        )
+                                                    } else {
 
-                                                    Column(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                                        verticalArrangement = Arrangement.Top
-                                                    ) {
+                                                        Column(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                                            verticalArrangement = Arrangement.Top
+                                                        ) {
 
-                                                        if (isPortrait) {
+                                                            if (isPortrait) {
 /*
                                                             Row(
                                                                 modifier = Modifier
@@ -302,63 +306,83 @@ class MainActivity : ComponentActivity() {
 
 
  */
-                                                            BottomNavigation(
-                                                                modifier = Modifier
-                                                                    .fillMaxWidth()
-                                                                    .height(60.dp)
-                                                                    .shadow(elevation = 1.dp),
-                                                                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                                                            ) {
+                                                                BottomNavigation(
+                                                                    modifier = Modifier
+                                                                        .fillMaxWidth()
+                                                                        .height(60.dp)
+                                                                        .shadow(elevation = 1.dp),
+                                                                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                                ) {
 
-                                                                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-
-                                                                mainScreens.forEachIndexed { index, it ->
-
-                                                                    BottomNavigationItem(
-                                                                        icon = {
-                                                                            Icon(
-                                                                                imageVector = it.icon
-                                                                                    ?:  Icons.Outlined.Info,
-                                                                                contentDescription = context.resources.getString(   it.name) ,
-                                                                               tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
-                                                                            )
-                                                                        },
-                                                                        label = { androidx.compose.material.Text( context.resources.getString(   it.name ))},
-                                                                        selected = selectedItem.value ==  index,
-                                                                        onClick = {
-                                                                            isPressed.value =  true
-                                                                            selectedItem.value =   index
-                                                                            navController.navigateTo(
-                                                                                mainScreens[index].route
-                                                                            )
-                                                                        },
-                                                                        selectedContentColor = Color.Red,
-                                                                        unselectedContentColor = MaterialTheme.colorScheme.secondary
-
+                                                                    Spacer(
+                                                                        modifier = Modifier.padding(
+                                                                            horizontal = 10.dp
+                                                                        )
                                                                     )
 
+                                                                    mainScreens.forEachIndexed { index, it ->
+
+                                                                        BottomNavigationItem(
+                                                                            icon = {
+                                                                                Icon(
+                                                                                    imageVector = it.icon
+                                                                                        ?: Icons.Outlined.Info,
+                                                                                    contentDescription = context.resources.getString(
+                                                                                        it.name
+                                                                                    ),
+                                                                                    tint = if (selectedItem.value == index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                                )
+                                                                            },
+                                                                            label = {
+                                                                                androidx.compose.material.Text(
+                                                                                    context.resources.getString(
+                                                                                        it.name
+                                                                                    )
+                                                                                )
+                                                                            },
+                                                                            selected = selectedItem.value == index,
+                                                                            onClick = {
+                                                                                isPressed.value =
+                                                                                    true
+                                                                                selectedItem.value =
+                                                                                    index
+                                                                                navController.navigateTo(
+                                                                                    mainScreens[index].route
+                                                                                )
+                                                                            },
+                                                                            selectedContentColor = Color.Red,
+                                                                            unselectedContentColor = MaterialTheme.colorScheme.secondary
+
+                                                                        )
+
+                                                                    }
+
+                                                                    Spacer(
+                                                                        modifier = Modifier.padding(
+                                                                            horizontal = 10.dp
+                                                                        )
+                                                                    )
+                                                                }
+                                                            }
+
+                                                            Row(
+                                                                modifier = Modifier,
+                                                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                                                verticalAlignment = Alignment.CenterVertically
+                                                            ) {
+
+                                                                Box(
+                                                                    modifier = Modifier.fillMaxWidth(
+                                                                        gridWidth
+                                                                    )
+                                                                ) {
+                                                                    GisMemoNavHost(navController)
                                                                 }
 
-                                                                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-                                                            }
-                                                        }
 
-                                                        Row(
-                                                            modifier = Modifier,
-                                                            horizontalArrangement = Arrangement.SpaceEvenly,
-                                                            verticalAlignment = Alignment.CenterVertically
-                                                        ) {
+                                                                if (!isPortrait) {
 
-                                                            Box(
-                                                                modifier = Modifier.fillMaxWidth( gridWidth )
-                                                            ) {
-                                                                GisMemoNavHost(navController)
-                                                            }
-
-
-                                                            if (!isPortrait) {
-
-                                                                /*
+                                                                    /*
                                                                 Box(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -447,48 +471,63 @@ class MainActivity : ComponentActivity() {
 
                                                                  */
 
-                                                                NavigationRail(
-                                                                    modifier = Modifier.shadow(elevation = 1.dp)
-                                                                        .width(80.dp),
-                                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                                                ) {
-                                                                    
-                                                                    Spacer(modifier = Modifier.padding(vertical = 20.dp))
-                                                                    mainScreens.forEachIndexed { index, it ->
-                                                                        NavigationRailItem(
-                                                                            icon = {
-                                                                                Icon(
-                                                                                    imageVector = it.icon
-                                                                                        ?:  Icons.Outlined.Info,
-                                                                                    contentDescription = context.resources.getString(   it.name) ,
-                                                                                    tint = if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
-                                                                                )
-                                                                                   },
-                                                                            label = {
-                                                                                Text(
-                                                                                    text = context.resources.getString(
-                                                                                        it.name
-                                                                                    ),
-                                                                                    color =if ( selectedItem.value ==  index) Color.Red else MaterialTheme.colorScheme.secondary
-                                                                                )
-                                                                                    },
-                                                                            selected = selectedItem.value ==  index,
-                                                                            onClick = {
-                                                                                isPressed.value =  true
-                                                                                selectedItem.value =   index
-                                                                                navController.navigateTo(
-                                                                                    mainScreens[index].route
-                                                                                )
-                                                                            }
+                                                                    NavigationRail(
+                                                                        modifier = Modifier.shadow(
+                                                                            elevation = 1.dp
+                                                                        )
+                                                                            .width(80.dp),
+                                                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                                    ) {
+
+                                                                        Spacer(
+                                                                            modifier = Modifier.padding(
+                                                                                vertical = 20.dp
+                                                                            )
+                                                                        )
+                                                                        mainScreens.forEachIndexed { index, it ->
+                                                                            NavigationRailItem(
+                                                                                icon = {
+                                                                                    Icon(
+                                                                                        imageVector = it.icon
+                                                                                            ?: Icons.Outlined.Info,
+                                                                                        contentDescription = context.resources.getString(
+                                                                                            it.name
+                                                                                        ),
+                                                                                        tint = if (selectedItem.value == index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                                    )
+                                                                                },
+                                                                                label = {
+                                                                                    Text(
+                                                                                        text = context.resources.getString(
+                                                                                            it.name
+                                                                                        ),
+                                                                                        color = if (selectedItem.value == index) Color.Red else MaterialTheme.colorScheme.secondary
+                                                                                    )
+                                                                                },
+                                                                                selected = selectedItem.value == index,
+                                                                                onClick = {
+                                                                                    isPressed.value =
+                                                                                        true
+                                                                                    selectedItem.value =
+                                                                                        index
+                                                                                    navController.navigateTo(
+                                                                                        mainScreens[index].route
+                                                                                    )
+                                                                                }
+                                                                            )
+                                                                        }
+                                                                        Spacer(
+                                                                            modifier = Modifier.padding(
+                                                                                vertical = 20.dp
+                                                                            )
                                                                         )
                                                                     }
-                                                                    Spacer(modifier = Modifier.padding(vertical = 20.dp))
+
                                                                 }
 
                                                             }
 
                                                         }
-
                                                     }
                                                 }
                                             }
@@ -496,7 +535,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-
                         }
                     }
 

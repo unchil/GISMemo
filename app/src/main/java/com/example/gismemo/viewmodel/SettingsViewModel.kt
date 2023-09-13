@@ -17,6 +17,9 @@ class SettingsViewModel ( val repository: Repository) : ViewModel() {
             is Event.UpdateIsUsableDarkMode -> {
                 updateIsUsableDarkMode(event.isUsableDarkMode)
             }
+            is Event.UpdateIsDynamicColor -> {
+                updateIsDynamicColor(event.isUsableDynamicColor)
+            }
             is Event.UpdateOnChangeLocale -> {
                 updateOnChangeLocale(event.onChnageLocale)
             }
@@ -44,6 +47,11 @@ class SettingsViewModel ( val repository: Repository) : ViewModel() {
         repository.updateIsUsableDarkMode(isUsableDarkMode)
     }
 
+    private fun updateIsDynamicColor (isUsableDynamicColor:Boolean) {
+        repository.updateIsUsableDynamicColor(isUsableDynamicColor)
+    }
+
+
     private fun updateOnChangeLocale (onChangeLocale:Boolean) {
         repository.updateOnChangeLocale(onChangeLocale)
     }
@@ -56,6 +64,8 @@ class SettingsViewModel ( val repository: Repository) : ViewModel() {
         data class UpdateIsUsableHaptic(val isUsable:Boolean): Event()
 
         data class UpdateIsUsableDarkMode(val isUsableDarkMode:Boolean): Event()
+
+        data class UpdateIsDynamicColor(val isUsableDynamicColor:Boolean): Event()
 
         data class UpdateOnChangeLocale(val onChnageLocale:Boolean): Event()
 

@@ -106,6 +106,7 @@
     <string name="setting_Locale_pt">葡萄牙语</string>
     <string name="setting_Locale_es">西班牙语</string>
     <string name="setting_Locale_zh">中国语</string>
+    <string name="setting_UsableDynamicColor">动态色彩模式</string>
 
 
 </resources>
