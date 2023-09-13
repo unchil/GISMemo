@@ -41,7 +41,7 @@ local.properties
 ###  Video
 |Write|Detail|Map|Setting|
 |:-:|:-:|:-:|:-:|
-|[<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write_portrait.png" width="100%"  title="Write" alt="Write"></img>](https://youtube.com/shorts/uM2O647Z7TE?feature=share)| [<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/detail_portrait.png" width="100%"  title="Detail" alt="Detail"></img>](https://youtu.be/kVP62ui4bNU?feature=share)|[<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_portrait.png" width="100%"  title="Map" alt="Map"></img>](https://youtube.com/shorts/-yUi1thvrrw?feature=share) | [<img src="https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/setting_portrait.png" width="100%"  title="Setting" alt="Setting"></img>](https://youtube.com/shorts/jxyRPqcp3BE?feature=share)|
+|[![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/write_portrait.png)](https://youtube.com/shorts/uM2O647Z7TE?feature=share)|[![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/detail_portrait.png)](https://youtube.com/shorts/5z5QSPmNzvQ?si=7DvLyimANKWn2uQ4)|[![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/map_portrait.png)](https://youtube.com/shorts/-yUi1thvrrw?feature=share)|[![Alt text](https://github.com/unchil/GISMemo/blob/main/app/src/main/assets/setting_portrait.png)](https://youtube.com/shorts/jxyRPqcp3BE?feature=share)|
 
 
 ###  Screen Shot
