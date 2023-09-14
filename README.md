@@ -5,7 +5,7 @@
 
 ## Download
 
-Internal Test Program: [Gis Memo][release].
+Internal Test Program: [GISMemo][release].
 
 ## Description
 
