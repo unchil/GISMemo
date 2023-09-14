@@ -3,6 +3,9 @@
 
 #### Kotlin Compose RoomDatabase Flow Paging Retrofit Coil Exoplayer SpeechRecognizer Camera GoogleMap OpenWeather
 
+## Download
+
+Internal Test Program: [Gis Memo][release].
 
 ## Description
 
@@ -58,6 +61,6 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-[release]: https://github.com/unchil/GISMemo/tree/main/download/app-release.apk "release GIS MEMO"
+[release]: https://play.google.com/store/apps/details?id=com.unchil.gismemo&hl=en-US&ah=UUqJyf_DBPlY20SCwZYf8-5ECII "GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
