@@ -23,7 +23,8 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/gismemo_icon"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.GISMemo"
@@ -77,7 +78,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.gismemo.fileprovider"
+            android:authorities="com.unchil.gismemo.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -26,11 +26,11 @@ android {
         }
     }
 
-    namespace 'com.example.gismemo'
+    namespace 'com.unchil.gismemo'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.gismemo"
+        applicationId "com.unchil.gismemo"
         minSdk 30
         targetSdk 33
         versionCode 1
