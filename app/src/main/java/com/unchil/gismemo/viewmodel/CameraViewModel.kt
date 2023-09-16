@@ -30,8 +30,26 @@ class CameraViewModel  ( val repository: Repository) : ViewModel(){
 
     private fun setPhotoVideo(photoList:List<Uri>, videoList:List<Uri>){
         viewModelScope.launch {
+
             repository.currentPhoto.emit(photoList)
             repository.currentVideo.emit(videoList)
+
+             /*
+
+            val newCurrentPhoto = repository.currentPhoto.value.toMutableList()
+            photoList.forEach {
+                newCurrentPhoto.add(it)
+            }
+
+            val newCurrentVideo = repository.currentVideo.value.toMutableList()
+            videoList.forEach {
+                newCurrentVideo.add(it)
+            }
+
+            repository.currentPhoto.emit(newCurrentPhoto)
+            repository.currentVideo.emit(newCurrentVideo)
+
+              */
 
         }
     }

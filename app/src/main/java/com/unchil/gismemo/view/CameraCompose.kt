@@ -273,14 +273,24 @@ fun CameraCompose( navController: NavController? = null   ) {
      */
 
     val currentPhotoList = viewModel._currentPhoto.collectAsState().value.toMutableList()
-
+/*
     val photoList:MutableList<Uri>
             =  rememberSaveable { currentPhotoList }
 
+ */
+
+    val photoList:MutableList<Uri>
+            =  rememberSaveable { mutableListOf() }
+
     val currentVideoList = viewModel._currentVideo.collectAsState().value.toMutableList()
 
+    /*
     val videoList:MutableList<Uri>
             =  rememberSaveable { currentVideoList }
+
+     */
+    val videoList:MutableList<Uri>
+            =  rememberSaveable { mutableListOf()  }
 
     val findVideoList
             =  rememberSaveable { mutableListOf<Boolean>() }
@@ -354,13 +364,21 @@ fun CameraCompose( navController: NavController? = null   ) {
     }
 
     val backStack = {
-        val tempList = mutableListOf<Uri>()
+
+     //   val tempList = mutableListOf<Uri>()
         findVideoList.forEachIndexed { index, isVideo ->
             if(!isVideo){
-                tempList.add(photoList[index] )
+              //  tempList.add(photoList[index] )
+                currentPhotoList.add(photoList[index] )
             }
         }
-        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(tempList, videoList))
+
+        videoList.forEach {
+            currentVideoList.add(it)
+        }
+
+       // viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(tempList, videoList))
+        viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(currentPhotoList, currentVideoList))
         navController?.popBackStack()
     }
 
