@@ -624,6 +624,12 @@ fun MemoSwipeView(
 
                         Icon(
                             modifier = Modifier.scale(1f),
+                            imageVector =  Icons.Outlined.MoreVert,
+                            contentDescription = "MoreVert",
+                        )
+
+                        Icon(
+                            modifier = Modifier.scale(1f),
                             imageVector = if (item.isSecret) Icons.Outlined.Lock else Icons.Outlined.LockOpen,
                             contentDescription = "Lock",
                         )
@@ -662,7 +668,11 @@ fun MemoSwipeView(
                             imageVector = if (item.isPin) Icons.Outlined.LocationOn else Icons.Outlined.LocationOff,
                             contentDescription = "Mark",
                         )
-
+                        Icon(
+                            modifier = Modifier.scale(1f),
+                            imageVector =  Icons.Outlined.MoreVert,
+                            contentDescription = "MoreVert",
+                        )
 
                     }
                 }
