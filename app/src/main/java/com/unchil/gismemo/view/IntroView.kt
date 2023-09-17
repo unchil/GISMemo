@@ -269,16 +269,17 @@ fun IntroView(
                     ) {
 
                         Icon(
-                            modifier = Modifier.scale(1f)
+                            modifier = Modifier
+                                .scale(1f)
                                 .clickable {
-                                coroutineScope.launch {
-                                    if (scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded ) {
-                                        scaffoldState.bottomSheetState.expand()
-                                    } else {
-                                        scaffoldState.bottomSheetState.partialExpand()
+                                    coroutineScope.launch {
+                                        if (scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded) {
+                                            scaffoldState.bottomSheetState.expand()
+                                        } else {
+                                            scaffoldState.bottomSheetState.partialExpand()
+                                        }
                                     }
-                                }
-                            },
+                                },
                             imageVector = if (scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded)   Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                             contentDescription = "search",
                         )
@@ -309,7 +310,9 @@ fun IntroView(
                     ) {
 
                         if (!isPortrait) {
-                            Box(modifier = Modifier.fillMaxWidth(0.4f).padding(vertical = 2.dp)) {
+                            Box(modifier = Modifier
+                                .fillMaxWidth(0.4f)
+                                .padding(vertical = 2.dp)) {
                                 WeatherContent{
                                     if(!it){
                                         channel.trySend(snackbarChannelList.first {
@@ -489,6 +492,9 @@ fun MemoSwipeView(
     val isAnchor = remember { mutableStateOf(false) }
     val isToStart = remember { mutableStateOf(false) }
 
+    val isStart = remember { mutableStateOf(false) }
+    val isEnd = remember { mutableStateOf(false) }
+
     val dismissState = rememberDismissState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
@@ -510,9 +516,10 @@ fun MemoSwipeView(
         }
     )
 
-    val dismissContentOffset = if ( isAnchor.value )  {
+    var dismissContentOffset by   mutableStateOf( if ( isAnchor.value )  {
         if(isToStart.value) -ANCHOR_OFFSET.dp else  ANCHOR_OFFSET.dp
     } else {  0.dp  }
+    )
 
     val checkBiometricSupport: (() -> Unit) = {
         val biometricManager = BiometricManager.from(context)
@@ -615,18 +622,33 @@ fun MemoSwipeView(
                 ) {
 
                     Row(
-                        modifier = Modifier.padding(horizontal = 6.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
                             .clickable(false, null, null) {}
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
 
-                        Icon(
-                            modifier = Modifier.scale(1f),
-                            imageVector =  Icons.Outlined.MoreVert,
-                            contentDescription = "MoreVert",
-                        )
+                        IconButton(onClick = {
+
+                            if(isAnchor.value){
+                                isStart.value = false
+                                isAnchor.value = false
+                            } else {
+                                isStart.value = !isStart.value
+                            }
+
+                            dismissContentOffset =if(isStart.value) ANCHOR_OFFSET.dp else 0.dp
+
+                        }) {
+                            Icon(
+                                modifier = Modifier.scale(1f),
+                                imageVector =  Icons.Outlined.MoreVert,
+                                contentDescription = "MoreVert",
+                            )
+                        }
+
 
                         Icon(
                             modifier = Modifier.scale(1f),
@@ -668,11 +690,27 @@ fun MemoSwipeView(
                             imageVector = if (item.isPin) Icons.Outlined.LocationOn else Icons.Outlined.LocationOff,
                             contentDescription = "Mark",
                         )
-                        Icon(
-                            modifier = Modifier.scale(1f),
-                            imageVector =  Icons.Outlined.MoreVert,
-                            contentDescription = "MoreVert",
-                        )
+
+
+                        IconButton(onClick = {
+
+                            if(isAnchor.value){
+                                isEnd.value = false
+                                isAnchor.value = false
+                            } else {
+                                isEnd.value = !isEnd.value
+                            }
+
+                            dismissContentOffset =if(isEnd.value) -ANCHOR_OFFSET.dp else 0.dp
+
+                        }) {
+                            Icon(
+                                modifier = Modifier.scale(1f),
+                                imageVector =  Icons.Outlined.MoreVert,
+                                contentDescription = "MoreVert",
+                            )
+                        }
+
 
                     }
                 }
@@ -696,7 +734,6 @@ private fun BackgroundContent(
 
     val color by animateColorAsState(
         when (dismissState.targetValue) {
-          //  DismissValue.Default -> SnackbarDefaults.backgroundColor.copy(alpha = 0.0f)
             DismissValue.Default -> androidx.compose.material3.MaterialTheme.colorScheme.surface
             DismissValue.DismissedToEnd -> Color.Blue.copy(alpha = 0.3f)
             DismissValue.DismissedToStart -> Color.Red.copy(alpha = 0.3f)
