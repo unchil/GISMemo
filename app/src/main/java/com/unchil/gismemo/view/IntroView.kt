@@ -421,8 +421,6 @@ fun MemoSwipeView(
     }
 
 
-
-
     val permissions = listOf(
         Manifest.permission.USE_BIOMETRIC,
     )
@@ -434,11 +432,6 @@ fun MemoSwipeView(
         isGranted =  isGranted && multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
             ?: false
     }
-
-
-
-
-
 
 
     val onResult: (isSucceeded:Boolean, bioMetricCheckType: BiometricCheckType, errorMsg:String? ) -> Unit =
@@ -492,8 +485,8 @@ fun MemoSwipeView(
     val isAnchor = remember { mutableStateOf(false) }
     val isToStart = remember { mutableStateOf(false) }
 
-    val isStart = remember { mutableStateOf(false) }
-    val isEnd = remember { mutableStateOf(false) }
+ //   val isStart = remember { mutableStateOf(false) }
+  //  val isEnd = remember { mutableStateOf(false) }
 
     val dismissState = rememberDismissState(
         confirmValueChange = { dismissValue ->
@@ -630,25 +623,6 @@ fun MemoSwipeView(
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
 
-                        IconButton(onClick = {
-
-                            if(isAnchor.value){
-                                isStart.value = false
-                                isAnchor.value = false
-                            } else {
-                                isStart.value = !isStart.value
-                            }
-
-                            dismissContentOffset =if(isStart.value) ANCHOR_OFFSET.dp else 0.dp
-
-                        }) {
-                            Icon(
-                                modifier = Modifier.scale(1f),
-                                imageVector =  Icons.Outlined.MoreVert,
-                                contentDescription = "MoreVert",
-                            )
-                        }
-
 
                         Icon(
                             modifier = Modifier.scale(1f),
@@ -690,26 +664,6 @@ fun MemoSwipeView(
                             imageVector = if (item.isPin) Icons.Outlined.LocationOn else Icons.Outlined.LocationOff,
                             contentDescription = "Mark",
                         )
-
-
-                        IconButton(onClick = {
-
-                            if(isAnchor.value){
-                                isEnd.value = false
-                                isAnchor.value = false
-                            } else {
-                                isEnd.value = !isEnd.value
-                            }
-
-                            dismissContentOffset =if(isEnd.value) -ANCHOR_OFFSET.dp else 0.dp
-
-                        }) {
-                            Icon(
-                                modifier = Modifier.scale(1f),
-                                imageVector =  Icons.Outlined.MoreVert,
-                                contentDescription = "MoreVert",
-                            )
-                        }
 
 
                     }
