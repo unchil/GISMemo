@@ -61,6 +61,6 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-[release]: https://play.google.com/store/apps/details?id=com.unchil.gismemo "GIS MEMO"
+[release]: https://play.google.com/store/apps/details?id=com.unchil.gismemo&pcampaignid=web_share "GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
