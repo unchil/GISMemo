@@ -1,6 +1,7 @@
 package com.unchil.gismemo.ui.theme
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -80,13 +81,12 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun GISMemoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-
-    val colorScheme = if(dynamicColor){
+    // Dynamic color is available on Android 12+
+    val colorScheme = if(dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
         if(darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     }else {
         if (darkTheme) DarkColors  else LightColors

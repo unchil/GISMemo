@@ -69,7 +69,8 @@ data class Sys (
 )
 
 fun CurrentWeather.toCURRENTWEATHER_TBL(): CURRENTWEATHER_TBL {
-    return CURRENTWEATHER_TBL(
+
+    val currentWeatherTbl = CURRENTWEATHER_TBL(
         dt = this.dt,
         base = this.base,
         visibility = this.visibility,
@@ -95,4 +96,6 @@ fun CurrentWeather.toCURRENTWEATHER_TBL(): CURRENTWEATHER_TBL {
         sunrise = this.sys.sunrise,
         sunset = this.sys.sunset
     )
+
+    return currentWeatherTbl
 }
