@@ -2,8 +2,11 @@ package com.unchil.gismemo.shared
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.biometric.BiometricManager
 
 import androidx.core.content.FileProvider
@@ -12,6 +15,25 @@ import com.unchil.gismemo.db.LuckMemoDB
 import com.unchil.gismemo.db.entity.MEMO_TBL
 
 import java.io.File
+
+
+
+fun Context.checkInternetConnected() :Boolean  {
+    ( applicationContext.getSystemService(ComponentActivity.CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
+        activeNetwork?.let {network ->
+            getNetworkCapabilities(network)?.let {networkCapabilities ->
+                return when {
+                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> { false }
+                }
+            }
+        }
+        return false
+    }
+}
+
 
 
 fun launchIntent_Biometric_Enroll(context: Context){

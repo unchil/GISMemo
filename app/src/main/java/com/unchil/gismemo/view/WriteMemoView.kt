@@ -7,9 +7,12 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.view.MotionEvent
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -68,7 +71,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 import com.google.maps.android.compose.widgets.ScaleBar
+import com.unchil.gismemo.ChkNetWork
+import com.unchil.gismemo.shared.checkInternetConnected
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
@@ -409,6 +415,35 @@ fun WriteMemoView(navController: NavController ){
             }
         }
 
+        /*
+        fun checkInternetConnected() :Boolean  {
+            ( context.applicationContext.getSystemService(ComponentActivity.CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
+                activeNetwork?.let {network ->
+                    getNetworkCapabilities(network)?.let {networkCapabilities ->
+                        return when {
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                            else -> { false }
+                        }
+                    }
+                }
+                return false
+            }
+        }
+
+         */
+
+
+        var isConnect  by mutableStateOf(context.checkInternetConnected())
+
+        LaunchedEffect(key1 = isConnect ){
+            while(!isConnect) {
+                delay(500)
+                isConnect = context.checkInternetConnected()
+
+            }
+        }
 
 
 
@@ -554,8 +589,6 @@ fun WriteMemoView(navController: NavController ){
                     )
                 }
             },
-
-
             sheetContainerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             sheetContentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
             snackbarHost = {
@@ -708,19 +741,21 @@ fun WriteMemoView(navController: NavController ){
                                             }.channel)
                                         }
                                         SaveMenu.SAVE -> {
-
                                             if (snapShotList.isEmpty()) {
                                                 isSnapShot = true
                                                 isDefaultSnapShot = true
                                             }
+                                            isConnect  = context.checkInternetConnected()
 
+                                            if(isConnect){
                                                 viewModel.onEvent(
-                                                    WriteMemoViewModel.Event.SearchWeather(currentLocation)
+                                                    WriteMemoViewModel.Event.SearchWeather(
+                                                        currentLocation
+                                                    )
                                                 )
+                                                isAlertDialog.value = true
+                                            }
 
-
-
-                                            isAlertDialog.value = true
                                         }
                                     }
                                 }
@@ -733,7 +768,6 @@ fun WriteMemoView(navController: NavController ){
 
                         }
                     }
-
 
                 }
 
@@ -1150,11 +1184,6 @@ fun WriteMemoView(navController: NavController ){
 
 
 
-
-
-
-
-
                 if (isAlertDialog.value) {
                     ConfirmDialog(
                         isAlertDialog = isAlertDialog,
@@ -1170,6 +1199,18 @@ fun WriteMemoView(navController: NavController ){
                         onEvent = saveHandler
                     )
                 }
+
+                if (!isConnect) {
+                    ChkNetWork(
+                        onCheckState = {
+                            coroutineScope.launch {
+                                isConnect =  context.checkInternetConnected()
+                            }
+                        }
+                    )
+                }
+
+
 
             }// Box
 

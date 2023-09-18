@@ -54,6 +54,7 @@ import com.unchil.gismemo.view.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.unchil.gismemo.shared.checkInternetConnected
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsManager = PermissionsManager()
 
-
+/*
     fun checkInternetConnected() :Boolean  {
         ( applicationContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
             activeNetwork?.let {network ->
@@ -84,6 +85,8 @@ class MainActivity : ComponentActivity() {
             return false
         }
     }
+
+ */
 
 
     override fun attachBaseContext(context: Context?) {
@@ -176,12 +179,12 @@ class MainActivity : ComponentActivity() {
                 selectedItem.value =  mainScreens.indexOf(currentScreen)
             }
 
-            val isConnect  = mutableStateOf(checkInternetConnected())
+            val isConnect  = mutableStateOf(context.checkInternetConnected())
 
             LaunchedEffect(key1 = isConnect ){
                 while(!isConnect.value) {
                     delay(500)
-                    isConnect.value = checkInternetConnected()
+                    isConnect.value = context.checkInternetConnected()
                 }
             }
 
