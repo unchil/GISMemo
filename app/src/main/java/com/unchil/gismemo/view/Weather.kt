@@ -39,6 +39,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
+import com.unchil.gismemo.ChkNetWork
+import com.unchil.gismemo.shared.checkInternetConnected
+import com.unchil.gismemo.viewmodel.WriteMemoViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 private fun getWeatherIcon(type:String):Int {
@@ -91,6 +96,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
 
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+        val coroutineScope = rememberCoroutineScope()
 
     val db = LocalLuckMemoDB.current
     val viewModel = remember {
@@ -105,18 +111,36 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         var isSuccessfulTask by remember { mutableStateOf( false ) }
         var checkCurrentLocation by remember { mutableStateOf(true) }
 
+        var isConnect  by mutableStateOf(context.checkInternetConnected())
 
-        LaunchedEffect(key1 =  checkCurrentLocation){
+        LaunchedEffect(key1 = isConnect ){
+            while(!isConnect) {
+                delay(500)
+                isConnect = context.checkInternetConnected()
+
+                if(isConnect && !checkCurrentLocation){
+                    checkCurrentLocation = true
+                }
+            }
+        }
+
+
+        isConnect  = context.checkInternetConnected()
+
+        LaunchedEffect(key1 =  checkCurrentLocation, key2 = isConnect){
             if(checkCurrentLocation) {
                 checkCurrentLocation = false
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener( context.mainExecutor) { task ->
                     if (task.isSuccessful && task.result != null ) {
                         isSuccessfulTask = true
-                        viewModel.searchWeather(task.result.toLatLng())
+
+                        if(isConnect) {
+                            viewModel.searchWeather(task.result.toLatLng())
+                        }
+
                     } else {
                         onCheckLocationService?.let {
                             it(false)
-
                         }
                     }
                 }
@@ -177,6 +201,16 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
                         }
                     }
                 }
+            }
+
+            if (!isConnect) {
+                ChkNetWork(
+                    onCheckState = {
+                        coroutineScope.launch {
+                            isConnect =  context.checkInternetConnected()
+                        }
+                    }
+                )
             }
 
 
