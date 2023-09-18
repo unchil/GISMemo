@@ -5,7 +5,7 @@
 
 ## Download
 
-Internal Test Program: [GISMemo][release].
+Test Program: [GISMemo][release].
 
 ## Description
 
@@ -61,6 +61,6 @@ local.properties
 **SPDX-License-Identifier: MIT**
 
 
-[release]: https://play.google.com/store/apps/details?id=com.unchil.gismemo&hl=en-US&ah=UUqJyf_DBPlY20SCwZYf8-5ECII "GIS MEMO"
+[release]: https://play.google.com/store/apps/details?id=com.unchil.gismemo "GIS MEMO"
 [googlelink]: https://developers.google.com/maps "Go GoogleMap"
 [openweatherlink]: https://openweathermap.org/ "Go OpenWeatherMap"
