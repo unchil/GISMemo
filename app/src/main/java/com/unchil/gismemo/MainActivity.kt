@@ -3,8 +3,6 @@ package com.unchil.gismemo
 import android.Manifest
 import android.content.Context
 import android.content.res.Configuration
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity

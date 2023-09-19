@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.unchil.gismemo.ui.theme.GISMemoTheme
 import com.google.accompanist.web.*
 import com.unchil.gismemo.R
-
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ImageWebViewer( url:String ) {

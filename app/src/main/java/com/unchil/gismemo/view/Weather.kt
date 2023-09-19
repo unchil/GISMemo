@@ -41,7 +41,6 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import com.unchil.gismemo.ChkNetWork
 import com.unchil.gismemo.shared.checkInternetConnected
-import com.unchil.gismemo.viewmodel.WriteMemoViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

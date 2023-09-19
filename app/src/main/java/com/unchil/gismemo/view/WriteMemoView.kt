@@ -7,12 +7,9 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.location.Location
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.speech.RecognizerIntent
 import android.view.MotionEvent
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
