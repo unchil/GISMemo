@@ -5,7 +5,7 @@
 
 ## Download
 
-Test Program: [GISMemo][release].
+Production App: [GISMemo][release].
 
 ## Description
 
