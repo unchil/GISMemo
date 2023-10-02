@@ -277,7 +277,6 @@ fun WriteMemoView(navController: NavController ){
         var mapProperties by remember {
             mutableStateOf(
                 MapProperties(
-               //     mapType = MapType.NORMAL,
                     mapType =    MapType.values().first { mapType ->
                         mapType.name == MapTypeMenuList[mapTypeIndex].name
                     },
@@ -411,26 +410,6 @@ fun WriteMemoView(navController: NavController ){
                 }
             }
         }
-
-        /*
-        fun checkInternetConnected() :Boolean  {
-            ( context.applicationContext.getSystemService(ComponentActivity.CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
-                activeNetwork?.let {network ->
-                    getNetworkCapabilities(network)?.let {networkCapabilities ->
-                        return when {
-                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                            else -> { false }
-                        }
-                    }
-                }
-                return false
-            }
-        }
-
-         */
-
 
         var isConnect  by mutableStateOf(context.checkInternetConnected())
 
@@ -1116,63 +1095,6 @@ fun WriteMemoView(navController: NavController ){
                                 setState = selectedTagArray,
                             ) {
 
-                              /*
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.Center)
-                                ) {
-
-                                    Divider()
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-
-                                        IconButton(
-                                            modifier = Modifier,
-                                            onClick = {
-                                                isTagDialog = false
-                                                hapticProcessing()
-                                                selectedTagArray.value.clear()
-                                            },
-                                            content = {
-                                                Icon(
-                                                    modifier = Modifier,
-                                                    imageVector = Icons.Outlined.Replay,
-                                                    contentDescription = "Clear"
-                                                )
-                                            }
-                                        )
-
-
-                                        IconButton(
-                                            modifier = Modifier,
-                                            onClick = {
-                                                hapticProcessing()
-                                                isTagDialog = false
-                                                selectedTagArray.value.clear()
-                                                tagInfoDataList.forEachIndexed { index, tagInfoData ->
-                                                    if (tagInfoData.isSet.value) {
-                                                        selectedTagArray.value.add(index)
-                                                    }
-                                                }
-
-
-                                            },
-                                            content = {
-                                                Icon(
-                                                    modifier = Modifier,
-                                                    imageVector = Icons.Outlined.PublishedWithChanges,
-                                                    contentDescription = "Save"
-                                                )
-                                            }
-                                        )
-
-                                    }
-                                }
-                                */
                             }
 
                         }
@@ -1264,7 +1186,6 @@ fun ConfirmDialog(
         }
     }
 
-    // .background( color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
 
     AlertDialog(
         onDismissRequest = {
@@ -1272,20 +1193,6 @@ fun ConfirmDialog(
             cancelSnapShot.invoke()
         }
     ) {
-/*
-        Surface(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
-            shape = ShapeDefaults.Large,
-            tonalElevation = AlertDialogDefaults.TonalElevation
-        ) {
-
- */
-
-
 
             Column(
                 modifier = Modifier
@@ -1400,8 +1307,6 @@ fun ConfirmDialog(
 
                 }
             }
-
-    //    }
 
     }
 
