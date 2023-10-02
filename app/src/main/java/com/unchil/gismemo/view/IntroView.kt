@@ -485,9 +485,6 @@ fun MemoSwipeView(
     val isAnchor = remember { mutableStateOf(false) }
     val isToStart = remember { mutableStateOf(false) }
 
- //   val isStart = remember { mutableStateOf(false) }
-  //  val isEnd = remember { mutableStateOf(false) }
-
     val dismissState = rememberDismissState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
@@ -783,7 +780,6 @@ fun SearchingProgressIndicator(
     if(isVisibility) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
-           //     color = Color.Gray,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -820,7 +816,6 @@ fun UpButton(
     if( showButton) {
         FloatingActionButton(
             modifier = Modifier.then(modifier),
-      //      interactionSource =  interactionSource,
             elevation =  FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
             onClick = {
                 coroutineScope.launch {

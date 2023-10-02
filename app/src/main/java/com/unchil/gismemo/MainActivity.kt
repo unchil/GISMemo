@@ -67,26 +67,6 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsManager = PermissionsManager()
 
-/*
-    fun checkInternetConnected() :Boolean  {
-        ( applicationContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).apply {
-            activeNetwork?.let {network ->
-                getNetworkCapabilities(network)?.let {networkCapabilities ->
-                    return when {
-                        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                        networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                        else -> { false }
-                    }
-                }
-            }
-            return false
-        }
-    }
-
- */
-
-
     override fun attachBaseContext(context: Context?) {
 
         if(context != null ){
@@ -96,12 +76,10 @@ class MainActivity : ComponentActivity() {
 
                 if(repository.isFirstSetup.value){
                     repository.isFirstSetup.value = false
-                //    val index = languageList.indexOf( Locale.getDefault().language)
                     val index = context.getLanguageArray().indexOf(Locale.getDefault().language)
                     repository.isChangeLocale.value = if (index == -1 ) 0 else index
                     super.attachBaseContext(context)
                 } else {
-                 //   val locale = Locale( languageList[    repository.isChangeLocale.value    ] )
                     val locale = Locale( context.getLanguageArray()[    repository.isChangeLocale.value    ] )
                     Locale.setDefault(locale)
                     context.resources.configuration.setLayoutDirection(locale)
@@ -121,12 +99,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
     //    KakaoSdk.init(this, BuildConfig.KAKAO_KEY_KEY)
 
         setContent {
-
 
             val context = LocalContext.current
             val luckMemoDB = LuckMemoDB.getInstance(context.applicationContext)
@@ -222,91 +197,7 @@ class MainActivity : ComponentActivity() {
                                                         ) {
 
                                                             if (isPortrait) {
-/*
-                                                            Row(
-                                                                modifier = Modifier
-                                                                    .align(Alignment.CenterHorizontally)
-                                                                    .fillMaxWidth()
-                                                                    .height(90.dp)
-                                                                    .shadow(2.dp),
-                                                                horizontalArrangement = Arrangement.Center,
-                                                                verticalAlignment = Alignment.CenterVertically
-                                                            ) {
 
-                                                                mainScreens.forEachIndexed { index, item ->
-
-
-                                                                    Column(
-                                                                        modifier = Modifier.padding(
-                                                                            horizontal = 10.dp
-                                                                        ),
-                                                                        verticalArrangement = Arrangement.Center,
-                                                                        horizontalAlignment = Alignment.CenterHorizontally
-                                                                    ) {
-
-                                                                        Box(modifier = Modifier) {
-
-                                                                            IconButton(
-                                                                                modifier = Modifier,
-
-                                                                                onClick = {
-                                                                                    isPressed.value =
-                                                                                        true
-                                                                                    selectedItem.value =
-                                                                                        index
-                                                                                    navController.navigateTo(
-                                                                                        mainScreens[index].route
-                                                                                    )
-                                                                                },
-                                                                                content = {
-                                                                                    item.icon?.let {
-                                                                                        Icon(
-                                                                                            modifier = Modifier,
-                                                                                            imageVector = it,
-                                                                                            contentDescription = context.resources.getString(
-                                                                                                item.name
-                                                                                            )
-                                                                                        )
-                                                                                    }
-                                                                                }
-                                                                            )
-
-                                                                            if (selectedItem.value == index) {
-                                                                                Box(
-                                                                                    modifier = Modifier
-                                                                                        .align(
-                                                                                            Alignment.Center
-                                                                                        )
-                                                                                        .width(40.dp)
-                                                                                        .height(40.dp)
-                                                                                        .border(
-                                                                                            width = 25.dp,
-                                                                                            color = MaterialTheme.colorScheme.surfaceTint.copy(
-                                                                                                alpha = 0.6f
-                                                                                            ),
-                                                                                            shape = ShapeDefaults.Large
-                                                                                        )
-                                                                                )
-
-                                                                            }
-
-                                                                        }
-
-                                                                        Text(
-                                                                            text = context.resources.getString(
-                                                                                item.name
-                                                                            )
-                                                                        )
-
-                                                                    }
-
-
-                                                                }
-
-                                                            }
-
-
- */
                                                                 BottomNavigation(
                                                                     modifier = Modifier
                                                                         .fillMaxWidth()
@@ -382,95 +273,6 @@ class MainActivity : ComponentActivity() {
 
 
                                                                 if (!isPortrait) {
-
-                                                                    /*
-                                                                Box(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(vertical = 2.dp)
-                                                                ) {
-                                                                    Column(
-                                                                        modifier = Modifier
-                                                                            .align(Alignment.Center)
-                                                                            .fillMaxHeight()
-                                                                            .width(100.dp)
-                                                                            .shadow(2.dp),
-                                                                        verticalArrangement = Arrangement.Center,
-                                                                        horizontalAlignment = Alignment.CenterHorizontally
-                                                                    ) {
-
-                                                                        mainScreens.forEachIndexed { index, item ->
-
-                                                                            Column(
-                                                                                modifier = Modifier.padding(
-                                                                                    vertical = 0.dp
-                                                                                ),
-                                                                                verticalArrangement = Arrangement.Center,
-                                                                                horizontalAlignment = Alignment.CenterHorizontally
-                                                                            ) {
-
-                                                                                Box(modifier = Modifier) {
-                                                                                    IconButton(
-                                                                                        modifier = Modifier,
-                                                                                        onClick = {
-                                                                                            isPressed.value =
-                                                                                                true
-                                                                                            selectedItem.value =
-                                                                                                index
-                                                                                            navController.navigateTo(
-                                                                                                mainScreens[index].route
-                                                                                            )
-                                                                                        },
-                                                                                        content = {
-                                                                                            item.icon?.let {
-                                                                                                Icon(
-                                                                                                    modifier = Modifier,
-                                                                                                    imageVector = it,
-                                                                                                    contentDescription = context.resources.getString(
-                                                                                                        item.name
-                                                                                                    )
-                                                                                                )
-                                                                                            }
-                                                                                        }
-                                                                                    )
-
-                                                                                    if (selectedItem.value == index) {
-                                                                                        Box(
-                                                                                            modifier = Modifier
-                                                                                                .align(
-                                                                                                    Alignment.Center
-                                                                                                )
-                                                                                                .width(
-                                                                                                    40.dp
-                                                                                                )
-                                                                                                .height(
-                                                                                                    40.dp
-                                                                                                )
-                                                                                                .border(
-                                                                                                    width = 25.dp,
-                                                                                                    color = MaterialTheme.colorScheme.surfaceTint.copy(
-                                                                                                        alpha = 0.6f
-                                                                                                    ),
-                                                                                                    shape = ShapeDefaults.Large
-                                                                                                )
-                                                                                        )
-                                                                                    }
-                                                                                }
-
-                                                                                Text(
-                                                                                    text = context.resources.getString(
-                                                                                        item.name
-                                                                                    )
-                                                                                )
-
-                                                                            }
-
-                                                                        }
-                                                                    }
-                                                                }
-
-
-                                                                 */
 
                                                                     NavigationRail(
                                                                         modifier = Modifier.shadow(
@@ -680,8 +482,6 @@ fun ChkNetWork(
             ?: false
     }
 
-    //val  url = Uri.parse("android.resource://com.example.gismemo/" + R.drawable.baseline_wifi_off_black_48).toString().toUri()
-
     PermissionRequiredCompose(
         isGranted = isGranted,
         multiplePermissions = permissions
@@ -702,8 +502,6 @@ fun ChkNetWork(
                 style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                 text = "Gis Momo"
             )
-
-        //    ImageViewer(data = url, size = Size.ORIGINAL, isZoomable = false)
 
             Image(
                 painter =  painterResource(R.drawable.baseline_wifi_off_black_48),
