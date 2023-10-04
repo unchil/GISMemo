@@ -1,6 +1,7 @@
 package com.unchil.gismemo
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -152,12 +153,12 @@ class MainActivity : ComponentActivity() {
                 selectedItem.value =  mainScreens.indexOf(currentScreen)
             }
 
-            val isConnect  = mutableStateOf(context.checkInternetConnected())
+            var isConnect  by remember { mutableStateOf(context.checkInternetConnected()) }
 
             LaunchedEffect(key1 = isConnect ){
-                while(!isConnect.value) {
+                while(!isConnect) {
                     delay(500)
-                    isConnect.value = context.checkInternetConnected()
+                    isConnect = context.checkInternetConnected()
                 }
             }
 
@@ -179,11 +180,11 @@ class MainActivity : ComponentActivity() {
 
 
                                                 Box(modifier = Modifier.fillMaxSize()) {
-                                                    if (!isConnect.value) {
+                                                    if (!isConnect) {
                                                         ChkNetWork(
                                                             onCheckState = {
                                                                 coroutineScope.launch {
-                                                                    isConnect.value =
+                                                                    isConnect =
                                                                         checkInternetConnected()
                                                                 }
                                                             }
@@ -456,6 +457,7 @@ fun GisMemoNavHost(
 
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ChkNetWork(

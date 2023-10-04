@@ -70,7 +70,7 @@ private fun getWeatherIcon(type:String):Int {
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
-@SuppressLint("MissingPermission", "SuspiciousIndentation")
+@SuppressLint("MissingPermission", "SuspiciousIndentation", "UnrememberedMutableState")
 @Composable
 fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)->Unit)? = null){
 
@@ -110,7 +110,7 @@ fun WeatherContent(isSticky:Boolean = false , onCheckLocationService:((Boolean)-
         var isSuccessfulTask by remember { mutableStateOf( false ) }
         var checkCurrentLocation by remember { mutableStateOf(true) }
 
-        var isConnect  by mutableStateOf(context.checkInternetConnected())
+        var isConnect  by  remember { mutableStateOf(context.checkInternetConnected()) }
 
         LaunchedEffect(key1 = isConnect ){
             while(!isConnect) {

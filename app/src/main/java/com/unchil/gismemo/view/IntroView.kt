@@ -116,36 +116,37 @@ fun IntroView(
 
     var gridWidth by remember { mutableStateOf(1f) }
 
-    val upButtonPaddingValue: Dp
-    val sheetPeekHeightValue: Dp
-    val drawerSheetWidthValue: Float
-    val listBottomPaddingValue:Dp
+    var upButtonPaddingValue  by remember {  mutableStateOf ( 10.dp ) }
+    var sheetPeekHeightValue  by remember { mutableStateOf ( 0.dp ) }
+    var drawerSheetWidthValue  by remember { mutableStateOf ( 0.5f) }
+    var listBottomPaddingValue by remember { mutableStateOf (  2.dp) }
 
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_PORTRAIT -> {
-            isPortrait = true
-            gridWidth = 1f
-            upButtonPaddingValue = 160.dp
-            sheetPeekHeightValue = 110.dp
-            drawerSheetWidthValue = 0f
-            listBottomPaddingValue = 110.dp
+    LaunchedEffect(key1 = configuration.orientation ){
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                isPortrait = true
+                gridWidth = 1f
+                upButtonPaddingValue = 160.dp
+                sheetPeekHeightValue = 110.dp
+                drawerSheetWidthValue = 0f
+                listBottomPaddingValue = 110.dp
 
-            if (drawerState.isOpen) {
-                coroutineScope.launch {
-                    drawerState.close()
+                if (drawerState.isOpen) {
+                        drawerState.close()
                 }
-            }
 
-        }
-        else -> {
-            isPortrait = false
-            gridWidth = 0.8f
-            upButtonPaddingValue = 10.dp
-            sheetPeekHeightValue = 0.dp
-            drawerSheetWidthValue = 0.5f
-            listBottomPaddingValue = 2.dp
+            }
+            else -> {
+                isPortrait = false
+                gridWidth = 0.8f
+                upButtonPaddingValue = 10.dp
+                sheetPeekHeightValue = 0.dp
+                drawerSheetWidthValue = 0.5f
+                listBottomPaddingValue = 2.dp
+            }
         }
     }
+
 
     val isUsableHaptic = LocalUsableHaptic.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -427,7 +428,7 @@ fun MemoSwipeView(
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
 
 
-    var isGranted by mutableStateOf(true)
+    var isGranted by remember { mutableStateOf(true) }
     permissions.forEach { chkPermission ->
         isGranted =  isGranted && multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
             ?: false
@@ -506,10 +507,15 @@ fun MemoSwipeView(
         }
     )
 
-    var dismissContentOffset by   mutableStateOf( if ( isAnchor.value )  {
-        if(isToStart.value) -ANCHOR_OFFSET.dp else  ANCHOR_OFFSET.dp
-    } else {  0.dp  }
-    )
+    val dismissContentOffset by  remember {
+        mutableStateOf(
+            if (isAnchor.value) {
+                if (isToStart.value) -ANCHOR_OFFSET.dp else ANCHOR_OFFSET.dp
+            } else {
+                0.dp
+            }
+        )
+    }
 
     val checkBiometricSupport: (() -> Unit) = {
         val biometricManager = BiometricManager.from(context)

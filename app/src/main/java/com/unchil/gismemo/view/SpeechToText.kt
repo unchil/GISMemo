@@ -1,6 +1,7 @@
 package com.unchil.gismemo.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -135,6 +136,7 @@ fun AudioTextView(data: Pair<String, List<Uri>>){
 }
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SpeechRecognizerCompose(navController: NavController   ) {

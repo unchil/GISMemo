@@ -194,7 +194,7 @@ fun SettingsView(navController: NavHostController){
         },
         containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
         contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
-    ) {
+    ) { _ ->
         Box(modifier = Modifier.fillMaxSize()) {
 
             Column(

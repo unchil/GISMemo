@@ -62,8 +62,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 
-private const val TAG = "GoogleMap"
-
 fun Location.toLatLng():LatLng{
     return LatLng(this.latitude, this.longitude)
 }
@@ -253,6 +251,7 @@ Button(
 }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalPermissionsApi::class)
 @Preview
 @Composable
@@ -305,7 +304,7 @@ fun PrevViewMap(){
 
 }
 
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission", "UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class,
     MapsComposeExperimentalApi::class
 )
@@ -762,6 +761,7 @@ fun MemoMapView(navController: NavController){
 typealias DrawingPolyline = List<LatLng>
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class,
     ExperimentalPermissionsApi::class
 )

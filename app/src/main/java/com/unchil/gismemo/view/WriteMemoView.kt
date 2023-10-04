@@ -203,7 +203,7 @@ fun CreateMenu.getDesc():Pair<ImageVector, String?>{
 }
 
 
-@SuppressLint("SuspiciousIndentation", "MissingPermission")
+@SuppressLint("SuspiciousIndentation", "MissingPermission", "UnrememberedMutableState")
 @OptIn(
     ExperimentalMaterial3Api::class,
     MapsComposeExperimentalApi::class, ExperimentalComposeUiApi::class,
@@ -221,7 +221,7 @@ fun WriteMemoView(navController: NavController ){
     val multiplePermissionsState = rememberMultiplePermissionsState( permissions)
     CheckPermission(multiplePermissionsState = multiplePermissionsState)
 
-    var isGranted by mutableStateOf(true)
+    var isGranted   by mutableStateOf(true)
     permissions.forEach { chkPermission ->
         isGranted =  isGranted && multiplePermissionsState.permissions.find { it.permission == chkPermission }?.status?.isGranted
             ?: false
@@ -305,7 +305,10 @@ fun WriteMemoView(navController: NavController ){
         var isSnapShot by remember { mutableStateOf(false) }
         var isDefaultSnapShot by rememberSaveable { mutableStateOf(false) }
         var isMapClear by remember { mutableStateOf(false) }
-        val currentPolyline = mutableStateListOf<LatLng>()
+
+        val currentPolyline = remember { mutableStateListOf<LatLng>() }
+
+
         var isDrawing by rememberSaveable { mutableStateOf(false) }
 
         val selectedTagArray: MutableState<ArrayList<Int>> =
@@ -317,40 +320,49 @@ fun WriteMemoView(navController: NavController ){
 
 // Not recompose rememberSaveable 에 mutableStatelist 는
 
-        val polylineList: SnapshotStateList<List<LatLng>>
+
         val polylineListR: MutableList<DrawingPolyline> = rememberSaveable { mutableListOf() }
+        var polylineList: SnapshotStateList<List<LatLng>>  =  polylineListR.toMutableStateList()
+
         val snapShotList: MutableList<Uri> = rememberSaveable { mutableListOf() }
 
-        val alignmentSaveMenuList: Alignment
-        val alignmentMyLocation: Alignment
-        val alignmentCreateMenuList: Alignment
-        val alignmentSettingMenuList: Alignment
-        val alignmentDrawingMenuList: Alignment
-        val alignmentMapTypeMenuList: Alignment
+        var alignmentSaveMenuList: Alignment   by remember {  mutableStateOf (Alignment.TopCenter)}
+        var alignmentMyLocation: Alignment   by remember {  mutableStateOf ( Alignment.TopStart)}
+        var alignmentCreateMenuList: Alignment by remember {  mutableStateOf ( Alignment.BottomStart)}
+        var alignmentSettingMenuList: Alignment by remember {  mutableStateOf (Alignment.BottomStart)}
+            var alignmentDrawingMenuList: Alignment by remember {  mutableStateOf ( Alignment.BottomEnd)}
+        var alignmentMapTypeMenuList: Alignment by remember { mutableStateOf ( Alignment.CenterEnd)}
 
         val configuration = LocalConfiguration.current
-        when (configuration.orientation) {
 
-            Configuration.ORIENTATION_PORTRAIT -> {
-                polylineList = polylineListR.toMutableStateList()
-                alignmentSaveMenuList = Alignment.TopCenter
-                alignmentMyLocation = Alignment.TopStart
-                alignmentCreateMenuList = Alignment.CenterStart
-                alignmentSettingMenuList = Alignment.BottomStart
-                alignmentDrawingMenuList = Alignment.BottomEnd
-                alignmentMapTypeMenuList = Alignment.CenterEnd
 
+        LaunchedEffect(key1 = configuration.orientation ){
+
+            when (configuration.orientation) {
+
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    polylineList = polylineListR.toMutableStateList()
+                    alignmentSaveMenuList = Alignment.TopCenter
+                    alignmentMyLocation = Alignment.TopStart
+                    alignmentCreateMenuList = Alignment.CenterStart
+                    alignmentSettingMenuList = Alignment.BottomStart
+                    alignmentDrawingMenuList = Alignment.BottomEnd
+                    alignmentMapTypeMenuList = Alignment.CenterEnd
+
+                }
+                else -> {
+                    polylineList = polylineListR.toMutableStateList()
+                    alignmentSaveMenuList = Alignment.TopCenter
+                    alignmentMyLocation = Alignment.TopStart
+                    alignmentCreateMenuList = Alignment.CenterStart
+                    alignmentSettingMenuList = Alignment.BottomStart
+                    alignmentDrawingMenuList = Alignment.BottomEnd
+                    alignmentMapTypeMenuList = Alignment.CenterEnd
+                }
             }
-            else -> {
-                polylineList = polylineListR.toMutableStateList()
-                alignmentSaveMenuList = Alignment.TopCenter
-                alignmentMyLocation = Alignment.TopStart
-                alignmentCreateMenuList = Alignment.CenterStart
-                alignmentSettingMenuList = Alignment.BottomStart
-                alignmentDrawingMenuList = Alignment.BottomEnd
-                alignmentMapTypeMenuList = Alignment.CenterEnd
-            }
+
         }
+
 
 
         val snackbarHostState = remember { SnackbarHostState() }
@@ -411,7 +423,7 @@ fun WriteMemoView(navController: NavController ){
             }
         }
 
-        var isConnect  by mutableStateOf(context.checkInternetConnected())
+        var isConnect by   remember { mutableStateOf(context.checkInternetConnected()) }
 
         LaunchedEffect(key1 = isConnect ){
             while(!isConnect) {

@@ -275,11 +275,9 @@ fun PermissionRequiredCompose(
             contentAlignment = Alignment.Center
         ) {
 
-            //    Image(painter = painterResource(id = id), contentDescription = "")
             ImageViewer(data = id, size = Size.ORIGINAL)
             Button(
                 onClick = {
-                    //onClickEvent()
                     permissionsManager.getPermissionActionNew(multiplePermissionsState, coroutineScope)
                 }
             ){
@@ -291,76 +289,6 @@ fun PermissionRequiredCompose(
 
     }
 }
-
-
-@Composable
-fun PermissionRequiredComposeNew(
-    isGranted : Boolean,
-    viewType:PermissionRequiredComposeFuncName,
-    onClickEvent: () -> Unit,
-    content: @Composable () -> Unit) {
-
-
-    val (id:Int, message:String ) = when(viewType){
-
-        PermissionRequiredComposeFuncName.SpeechToText -> {
-            Pair(
-                PermissionRequiredComposeFuncName.SpeechToText.getDrawable() ,
-                PermissionRequiredComposeFuncName.SpeechToText.getTitle()
-            )
-        }
-        PermissionRequiredComposeFuncName.Weather -> {
-            Pair(
-                PermissionRequiredComposeFuncName.Weather.getDrawable(),
-                PermissionRequiredComposeFuncName.Weather.getTitle()
-            )
-        }
-        PermissionRequiredComposeFuncName.Camera ->  {
-            Pair(
-                PermissionRequiredComposeFuncName.Camera.getDrawable(),
-                PermissionRequiredComposeFuncName.Camera.getTitle()
-            )
-        }
-
-        PermissionRequiredComposeFuncName.MemoMap ->  {
-            Pair(
-                PermissionRequiredComposeFuncName.MemoMap.getDrawable(),
-                PermissionRequiredComposeFuncName.MemoMap.getTitle()
-            )
-        }
-
-    }
-
-
-    if(isGranted){
-        content()
-    }else{
-
-        Box(
-            modifier = Modifier
-                .height(300.dp)
-                .fillMaxWidth()
-                .padding(10.dp)
-                .border(width = 1.dp, color = Color.Black, shape = ShapeDefaults.Small),
-            contentAlignment = Alignment.Center
-        ) {
-
-            //    Image(painter = painterResource(id = id), contentDescription = "")
-            ImageViewer(data = id, size = Size.ORIGINAL)
-            Button( onClick = {
-                onClickEvent()}    ){
-                Text(text = message)
-            }
-        }
-
-
-
-    }
-}
-
-
-
-
 
 
 enum class PermissionRequiredComposeFuncName {

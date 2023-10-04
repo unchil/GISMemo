@@ -1,5 +1,6 @@
 package com.unchil.gismemo.view
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -125,53 +126,6 @@ fun RadioButtonGroupView(
 
     if(layoutScopeType == "Column"){
 
-        /*
-        val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(vertical = 10.dp)
-                .fillMaxWidth()
-                .selectableGroup(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ) {
-
-            content?.let {
-                it()
-            }
-
-            data.forEachIndexed { index, it ->
-                Row(
-                    modifier = Modifier
-                        .selectable(
-                            selected = (it == selectedOption),
-                            onClick = {
-                                hapticProcessing()
-                                onOptionSelected( it )
-                                state.value = index
-                            },
-                            role = Role.RadioButton
-                        ),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = (it == selectedOption),
-                        onClick = null
-                    )
-                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                    Text(
-                        text = it,
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
-            }
-        }
-
-         */
-
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -257,49 +211,6 @@ fun RadioButtonGroupView(
 
     }
 
-    /*
-    Row(
-        modifier = Modifier
-            .padding(vertical = 10.dp)
-            .fillMaxWidth()
-            .selectableGroup(),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-
-        content?.let {
-            it()
-        }
-
-        data.forEachIndexed { index, it ->
-            Row(
-                modifier = Modifier
-                    .selectable(
-                        selected = (it == selectedOption),
-                        onClick = {
-                            hapticProcessing()
-                            onOptionSelected( it )
-                           state.value = index
-                        },
-                        role = Role.RadioButton
-                    ),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = (it == selectedOption),
-                    onClick = null
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                Text(
-                    text = it,
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-        }
-    }
-
-     */
 
 }
 
@@ -330,7 +241,7 @@ fun SearchView(
 
 
 
-    val isVisible:MutableState<Boolean> = mutableStateOf(true)
+    val isVisible:MutableState<Boolean> = remember { mutableStateOf(true) }
 
     val dateRangePickerState = rememberDateRangePickerState()
 
@@ -718,7 +629,7 @@ fun SearchView(
 fun AssistChipGroupView(
     modifier: Modifier = Modifier,
     isVisible:Boolean =true,
-    setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
+    @SuppressLint("MutableCollectionMutableState") setState:MutableState<ArrayList<Int>> = mutableStateOf( arrayListOf()),
     content: @Composable (( ) -> Unit)? = null
 ){
 
@@ -887,6 +798,7 @@ fun AssistChipGroupViewNew(
 
 
 
+@SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @Preview
 @Composable
 private fun PrevSearchView(

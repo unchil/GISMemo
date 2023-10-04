@@ -128,7 +128,9 @@ sealed class RecordingStatus {
 
 
 @OptIn(ExperimentalPermissionsApi::class)
-@SuppressLint("RestrictedApi", "MissingPermission")
+@SuppressLint("RestrictedApi", "MissingPermission", "UnrememberedMutableState",
+    "CoroutineCreationDuringComposition"
+)
 @Composable
 fun CameraCompose( navController: NavController? = null   ) {
 
@@ -140,7 +142,6 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     val prevViewBottomPaddingValue: Dp
     val prevViewStartPaddingValue: Dp
-    val deleteBottomPaddingValue:Dp
     val deleteStartPaddingValue:Dp
     var alignment = Alignment.BottomCenter
 
@@ -224,71 +225,13 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     }
 
-/*
-    lifecycleOwner.lifecycleScope.launch {
-
-        val preview = androidx.camera.core.Preview.Builder().build()
-
-        val qualitySelector = QualitySelector.from(
-            Quality.UHD, FallbackStrategy.lowerQualityOrHigherThan( Quality.UHD )
-        )
-
-        val recorder = Recorder.Builder().setExecutor(context.mainExecutor)
-            .setQualitySelector(qualitySelector)
-            .build()
-
-        videoCapture.value = VideoCapture.withOutput(recorder)
-        imageCapture.value = ImageCapture.Builder()
-            .setFlashMode(flashMode.value)
-            .build()
-
-        val cameraProvider: ProcessCameraProvider = suspendCoroutine { continuation ->
-            ProcessCameraProvider.getInstance(context).also { listenableFuture ->
-                listenableFuture.addListener(
-                    { continuation.resume(listenableFuture.get()) },
-                    context.mainExecutor
-                )
-            }
-        }.apply {
-            unbindAll()
-            bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector.value,
-                preview,
-                videoCapture.value,
-                imageCapture.value
-            ).apply {
-                cameraControl.enableTorch(torchState.value == TorchState.ON)
-                preview.setSurfaceProvider(previewView.surfaceProvider)
-            }
-        }
-
-        val cameraInfos = cameraProvider.availableCameraInfos
-        isDualCamera.value = cameraInfos.size > 1
-        currentCameraInfo.value = cameraInfos.find { cameraInfo ->
-            cameraInfo.lensFacing == cameraSelector.value.lensFacing
-        }
-
-    }
-     */
-
     val currentPhotoList = viewModel._currentPhoto.collectAsState().value.toMutableList()
-/*
-    val photoList:MutableList<Uri>
-            =  rememberSaveable { currentPhotoList }
-
- */
 
     val photoList:MutableList<Uri>
             =  rememberSaveable { mutableListOf() }
 
     val currentVideoList = viewModel._currentVideo.collectAsState().value.toMutableList()
 
-    /*
-    val videoList:MutableList<Uri>
-            =  rememberSaveable { currentVideoList }
-
-     */
     val videoList:MutableList<Uri>
             =  rememberSaveable { mutableListOf()  }
 
@@ -365,10 +308,9 @@ fun CameraCompose( navController: NavController? = null   ) {
 
     val backStack = {
 
-     //   val tempList = mutableListOf<Uri>()
+
         findVideoList.forEachIndexed { index, isVideo ->
             if(!isVideo){
-              //  tempList.add(photoList[index] )
                 currentPhotoList.add(photoList[index] )
             }
         }
@@ -377,7 +319,6 @@ fun CameraCompose( navController: NavController? = null   ) {
             currentVideoList.add(it)
         }
 
-       // viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(tempList, videoList))
         viewModel.onEvent(CameraViewModel.Event.SetPhotoVideo(currentPhotoList, currentVideoList))
         navController?.popBackStack()
     }
@@ -476,7 +417,8 @@ fun CameraCompose( navController: NavController? = null   ) {
                     else -> {
 
                         Box(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .align(Alignment.BottomStart)
                                 .padding(
                                     start = prevViewStartPaddingValue,

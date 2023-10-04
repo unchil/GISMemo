@@ -1,5 +1,6 @@
 package com.unchil.gismemo.shared.composables
 
+import android.annotation.SuppressLint
 import android.text.format.DateUtils
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.TorchState
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CameraFlashIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     @ImageCapture.FlashMode flashMode: Int,
     onTapped: () -> Unit) {
@@ -48,7 +49,7 @@ fun CameraFlashIcon(
 
 @Composable
 fun CameraRecordIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
     IconButton(
@@ -67,7 +68,7 @@ fun CameraRecordIcon(
 
 @Composable
 fun CameraPauseIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
     IconButton(
@@ -86,7 +87,7 @@ fun CameraPauseIcon(
 
 @Composable
 fun CameraPlayIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
     IconButton(
@@ -106,7 +107,7 @@ fun CameraPlayIcon(
 
 @Composable
 fun CameraStopIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
     IconButton(
@@ -150,7 +151,7 @@ fun CameraTorchIcon(
 
 @Composable
 fun CameraCaptureIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
 
@@ -172,7 +173,7 @@ fun CameraCaptureIcon(
 
 @Composable
 fun CameraFlipIcon(
-    buttonModifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") buttonModifier: Modifier = Modifier,
     iconModifier:Modifier = Modifier,
     onTapped: () -> Unit) {
 

@@ -46,7 +46,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission", "UnrememberedMutableState", "MutableCollectionMutableState")
 @OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class,
     ExperimentalPermissionsApi::class
 )
@@ -146,7 +146,7 @@ fun DetailMemoView(navController: NavController, id:Long) {
     val isMark = mutableStateOf(memo.value?.isPin ?: false)
     val snippets = mutableStateOf(memo.value?.snippets ?: "")
 
-    val selectedTags =  mutableStateOf(selectedTagArray.value)
+    val selectedTags = remember{  mutableStateOf(selectedTagArray.value) }
 
     var isTitleBox by  rememberSaveable{  mutableStateOf(true)}
 
@@ -419,30 +419,6 @@ fun DetailMemoView(navController: NavController, id:Long) {
                     .padding(top = 50.dp, end = 10.dp),
                 cameraPositionState = cameraPositionState
             )
-
-/*
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .clip(RoundedCornerShape(2.dp))
-                    .padding(2.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
-                onClick = {
-                    hapticProcessing()
-                    isGoCurrentLocation = true
-                }
-            ) {
-                Icon(
-                    modifier = Modifier.scale(1f),
-                    imageVector = Icons.Outlined.ModeOfTravel,
-                    contentDescription = "ModeOfTravel",
-                )
-            }
-
- */
-
-
-
 
             Column(
                 modifier = Modifier

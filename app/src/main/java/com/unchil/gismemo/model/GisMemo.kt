@@ -12,21 +12,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.unchil.gismemo.R
 
 
-/*
-sealed class GisMemoData {
-    data class Photo(val imageUrl: String) : GisMemoData()
-    data class SnapShot(val imageUrl: String) : GisMemoData()
-    data class Record(val imageUrl: String) : GisMemoData()
-    data class MemoData(val dataType:GisMemoDataType,  val imageUrl: String) : GisMemoData()
-}
-
-enum class GisMemoDataType {
-    IMAGE,AUDIO,VIDEO,TEXT
-}
-
- */
-
-
 sealed class MemoData {
     data class Photo(val dataList: MutableList<Uri>) : MemoData()
     data class SnapShot(val dataList: MutableList<Uri>) : MemoData()

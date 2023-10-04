@@ -92,9 +92,6 @@ fun GISMemoTheme(
         if (darkTheme) DarkColors  else LightColors
     }
 
-   //val colorScheme = if(darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-   // val colorScheme =  if (darkTheme) DarkColors  else LightColors
-
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

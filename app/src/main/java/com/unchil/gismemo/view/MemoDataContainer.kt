@@ -1,5 +1,6 @@
 package com.unchil.gismemo.view
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -42,6 +43,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MemoDataContainer(
     onEvent:((WriteMemoViewModel.Event)->Unit)? = null,
@@ -88,13 +90,11 @@ fun MemoDataContainer(
                 icon = {
                     Icon(
                         imageVector = it.getDesc().second,
-                        contentDescription = context.resources.getString(   it.getDesc().first ) ,
-                //        tint = if( currentTabView.value ==  it) Color.Red else Color.Black
+                        contentDescription = context.resources.getString(   it.getDesc().first )
                     )
                 },
                 label = { Text( context.resources.getString(   it.getDesc().first) ) },
                 selected = currentTabView.value ==  it,
-               // selectedContentColor =  if( currentTabView.value == it) Color.Red else Color.Black,
                 onClick = {
                     hapticProcessing()
                     currentTabView.value = it
@@ -106,7 +106,6 @@ fun MemoDataContainer(
 
     Row(
         modifier = Modifier.padding(horizontal = 10.dp)
-         //   .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
@@ -659,227 +658,3 @@ fun PagerVideoView(item: MemoData.Video, onDelete:((page:Int) -> Unit)? = null, 
 
 
 }
-
-/*
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun PagerMemoDataView(item: MemoData, onDelete:((page:Int) -> Unit)? = null, channel:Channel<Int>? = null){
-
-    val isUsableHaptic = LocalUsableHaptic.current
-    val hapticFeedback = LocalHapticFeedback.current
-    val coroutineScope = rememberCoroutineScope()
-
-    fun hapticProcessing(){
-        if(isUsableHaptic){
-            coroutineScope.launch {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            }
-        }
-    }
-
-    val pagerState  =   rememberPagerState(initialPage = 0)
-
-    var videoTrackIndex by remember { mutableStateOf(0) }
-    //   val audioUriList:MutableState<List<Uri>> = remember { mutableStateOf( emptyList()) }
-
-    val defaultData:Pair<String, Int> = when(item){
-        is MemoData.Photo ->  Pair(WriteMemoDataType.PHOTO.name, item.dataList.size)
-        is MemoData.AudioText -> Pair(WriteMemoDataType.AUDIOTEXT.name, item.dataList.size)
-        is MemoData.SnapShot -> Pair(WriteMemoDataType.SNAPSHOT.name, item.dataList.size)
-        is MemoData.Video -> Pair(WriteMemoDataType.VIDEO.name, item.dataList.size)
-    }
-
-    val scrollState = rememberScrollState()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(2.dp)
-    ) {
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-
-            androidx.compose.material3.Text(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .background(color = Color.Transparent)
-                    .padding(top = 10.dp),
-                textAlign = TextAlign.Center,
-                text = defaultData.first,
-                style = MaterialTheme.typography.h6
-            )
-
-            onDelete?.let {
-                if (defaultData.second > 0) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        onClick = {
-                            hapticProcessing()
-                            it(pagerState.currentPage)
-                            channel?.let { channel ->
-                                channel.trySend(snackbarChannelList.first { snackBarChannelData ->
-                                    snackBarChannelData.channelType == SnackBarChannelType.ITEM_DELETE
-                                }.channel)
-                            }
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Delete"
-                            )
-                        }
-                    )
-                }
-            }
-
-        }
-
-        Row(
-            modifier = Modifier
-                .background(color = Color.White)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(defaultData.second) { iteration ->
-                val color = when (item) {
-                    is MemoData.Video -> {
-                        if (videoTrackIndex == iteration) Color.DarkGray else Color.LightGray
-                    }
-                    else -> {
-                        if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                        //       if (pageIndex == iteration) Color.DarkGray else Color.LightGray
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(10.dp)
-                )
-            }
-        }
-
-
-        // .verticalScroll(state = scrollState) 사용시 ExoplayerCompose minimum size 가 된다.
-
-        val draggableState =  rememberDraggableState{}
-
-        when (item) {
-            is MemoData.Video -> {
-
-                if (defaultData.second > 0) {
-
-                    Box(
-                        modifier = Modifier
-                            .draggable(
-                                state = draggableState,
-                                orientation = Orientation.Horizontal,
-                                onDragStopped = {
-                                    videoTrackIndex = if (it >= 0F) {
-                                        if (videoTrackIndex - 1 > 0) --videoTrackIndex else 0
-                                    } else {
-                                        if (videoTrackIndex < defaultData.second - 1) ++videoTrackIndex else defaultData.second - 1
-                                    }
-                                }
-                            )
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ){
-                        ExoplayerCompose(
-                            uriList = item.dataList.toList(),
-                            setTrackIndex = {exoPlayer ->
-                                exoPlayer.seekTo(videoTrackIndex, 0)
-                            }
-                        ) {
-                            videoTrackIndex = it
-                        }
-                    }
-
-
-
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                            .background(color = Color.LightGray)
-                    )
-                }
-
-            }
-            else -> {
-                if (defaultData.second > 0) {
-                    HorizontalPager(
-                        modifier = Modifier
-                            .verticalScroll(state = scrollState)
-                            .fillMaxSize()
-                            .background(color = Color.White),
-                        pageCount = defaultData.second,
-                        state = pagerState,
-                    ) { page ->
-                        when (item) {
-                            is MemoData.AudioText -> {
-                                AudioTextView(data = item.dataList[page])
-                            }
-                            is MemoData.Photo -> ImageViewer(
-                                data = (item.dataList[page]),
-                                size = Size.ORIGINAL,
-                                isZoomable = false
-                            )
-                            is MemoData.SnapShot -> ImageViewer(
-                                data = (item.dataList[page]),
-                                size = Size.ORIGINAL,
-                                isZoomable = false
-                            )
-                            else -> {}
-                        }
-                    }
-
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                            .background(color = Color.LightGray)
-                    )
-                }
-            }
-        }
-
-/*
-        when (item) {
-            is MemoData.AudioText -> {
-                if (defaultData.second > 0) {
-                    Box(
-                        modifier = Modifier
-                            .height(280.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-
-                    ) {
-                        ExoplayerCompose(
-                            uriList = item.dataList[pagerState.targetPage].second
-                        )
-                    }
-                }
-            }
-            else -> {}
-        }
-
- */
-
-
-
-
-    } // Column
-
-
-
-}
-
- */

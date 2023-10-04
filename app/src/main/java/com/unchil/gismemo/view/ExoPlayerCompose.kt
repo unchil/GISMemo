@@ -1,13 +1,6 @@
 package com.unchil.gismemo.view
 
-/*
-import com.linc.audiowaveform.AudioWaveform
-import com.linc.audiowaveform.infiniteLinearGradient
-import com.linc.audiowaveform.model.AmplitudeType
-import com.linc.audiowaveform.model.WaveformAlignment
-import linc.com.amplituda.Amplituda
-import linc.com.amplituda.callback.AmplitudaErrorListener
- */
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
@@ -39,19 +32,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-typealias Amplitudes = List<Int>
-
-/*
- fun Context.setAmplitudes( uri:Uri) :Amplitudes {
-    return  Amplituda(this).processAudio(uri.encodedPath)
-        .get(AmplitudaErrorListener {
-            it.printStackTrace()
-        })
-        .amplitudesAsList()
-}
-
- */
-
 fun Context.getExoPlayer(exoPlayerListener: Player.Listener): ExoPlayer {
     return ExoPlayer.Builder(this).build().apply {
         addListener(exoPlayerListener)
@@ -76,13 +56,11 @@ fun  ExoplayerCompose(
 
     var mediaItemDuration by remember { mutableStateOf(0L) }
 
-    var mediaItemAmplitudes:Amplitudes by  remember { mutableStateOf( emptyList() ) }
-
     var mediaItemTitle  by  remember { mutableStateOf( "" ) }
 
     val mediaItems :MutableList<MediaItem> = mutableListOf()
 
-    val coroutineScope = rememberCoroutineScope()
+
 
     lateinit var coroutineJob: Job
 
@@ -133,29 +111,6 @@ fun  ExoplayerCompose(
                         "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
                 }
 
-                /*
-
-                if(isVisibleAmplitudes) {
-                    player.playWhenReady = false
-                    player.seekTo(0L)
-                    mediaItemDuration = player.duration
-                    waveformProgress = 0F
-                    player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
-                        mediaItemAmplitudes = context.setAmplitudes(uri = uri)
-                        mediaItemTitle =
-                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
-                    }
-                }else{
-                    player.playWhenReady = false
-                    player.seekTo(0L)
-                    mediaItemDuration = player.duration
-                    player.currentMediaItem?.localConfiguration?.uri?.let { uri ->
-                        mediaItemTitle =
-                            "No.${player.currentMediaItemIndex + 1} Track ${uri.lastPathSegment.toString()}"
-                    }
-                }
-
-                 */
             }
 
         }
@@ -188,18 +143,6 @@ fun  ExoplayerCompose(
     }
 
 
-
-/*
-    val colorBrush = SolidColor(Color.Magenta)
-    val staticGradientBrush = Brush.linearGradient(colors = listOf(Color(0xff22c1c3), Color(0xfffdbb2d)))
-    val animatedGradientBrush = Brush.infiniteLinearGradient(
-        colors = listOf(Color(0xff22c1c3), Color(0xfffdbb2d)),
-        animation = tween(durationMillis = 6000, easing = LinearEasing),
-        width = 128F
-    )
-*/
-
-
     Column {
 
         if(mediaItemTitle.isNotEmpty()){
@@ -210,43 +153,6 @@ fun  ExoplayerCompose(
             )
 
         }
-/*
-        if (isVisibleAmplitudes && mediaItemAmplitudes.isNotEmpty()) {
-
-            AudioWaveform(
-                modifier = Modifier.fillMaxWidth(),
-                // Spike DrawStyle: Fill or Stroke
-                style = Fill,
-                waveformAlignment = WaveformAlignment.Center,
-                amplitudeType = AmplitudeType.Avg,
-                // Colors could be updated with Brush API
-            //  progressBrush = SolidColor(Color.Gray),
-              progressBrush = Brush.infiniteLinearGradient(
-                  colors = listOf(Color(0xff22c1c3), Color(0xfffdbb2d)),
-                  animation = tween(durationMillis = 6000, easing = LinearEasing),
-                  width = 128F
-              ),
-                waveformBrush = SolidColor(Color.LightGray),
-
-                spikeWidth = 1.dp,
-                spikePadding = 1.dp,
-                spikeRadius = 1.dp,
-                spikeAnimationSpec = tween(0),
-                progress = waveformProgress,
-                amplitudes = mediaItemAmplitudes,
-
-                onProgressChange = {
-
-                    exoPlayer.seekTo(mediaItemDuration.times(it).toLong())
-                },
-                onProgressChangeFinished = {
-
-                }
-            )
-        }
-
-
- */
 
             DisposableEffect(
                 Box(
@@ -254,26 +160,6 @@ fun  ExoplayerCompose(
                 ) {
                     AndroidView(
                         factory = { context ->
-                            /*
-                            StyledPlayerView(context).apply {
-                                player = exoPlayer
-                                controllerShowTimeoutMs = 0
-                            }
-                             */
-
-/*
-                            PlayerControlView(context).apply {
-                                player = exoPlayer
-                               showTimeoutMs = 0
-
-                                val params = FrameLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT
-                                )
-                                layoutParams = params
-                            }
-
- */
 
                             PlayerView(context).apply {
                                 player = exoPlayer
@@ -320,8 +206,6 @@ private fun PrevExoplayerCompose(){
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-    //       ExoplayerCompose( uri = "/data/data/com.example.gismemo/files/audios/20230601-092114739_record.ogg".toUri())
-
             ExoplayerCompose( uriList = uriList)
         }
 
